@@ -1,0 +1,9 @@
+[project]
+name = "infocars-pricing-showcase"
+version = "1.0.0"
+description = "Portfolio sample of InfoCars: car-ad matching, market statistics and a Claude pricing assistant"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
