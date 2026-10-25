@@ -22,3 +22,9 @@ relationship market_version
 relationship market_state
 	fromColumn: mart_market_by_version.state
 	toColumn: dim_state.state
+
+relationship c425a3c4-94bf-4f0e-a234-a1ef46d19630
+	joinOnDateBehavior: datePartOnly
+	fromColumn: fct_listings.last_seen_date
+	toColumn: LocalDateTable_28d93c39-1a26-4cec-a563-29221964910e.Date
+

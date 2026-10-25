@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ace604a86c459e2af255",
   "position": {
     "x": 432,
@@ -28,6 +28,7 @@
               },
               "queryRef": "fct_listings.listing_id",
               "nativeQueryRef": "listing_id",
+              "active": true,
               "displayName": "Ad"
             }
           ]
@@ -71,6 +72,7 @@
               },
               "queryRef": "Sum(fct_listings.gap_to_median_pct)",
               "nativeQueryRef": "Sum of gap_to_median_pct",
+              "active": true,
               "displayName": "Gap to market median"
             }
           ]

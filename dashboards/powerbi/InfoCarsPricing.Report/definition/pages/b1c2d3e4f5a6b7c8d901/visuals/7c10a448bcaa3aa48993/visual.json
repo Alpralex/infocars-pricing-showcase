@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "7c10a448bcaa3aa48993",
   "position": {
     "x": 864,
@@ -28,26 +28,8 @@
               },
               "queryRef": "dim_date.date_day",
               "nativeQueryRef": "date_day",
+              "active": true,
               "displayName": "Date"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
-                    }
-                  },
-                  "Property": "Ads Online on Date"
-                }
-              },
-              "queryRef": "fct_listings.Ads Online on Date",
-              "nativeQueryRef": "Ads Online on Date",
-              "displayName": "Ads online"
             }
           ]
         },
@@ -67,6 +49,25 @@
               "queryRef": "fct_listings.price_position",
               "nativeQueryRef": "price_position",
               "displayName": "Position"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fct_listings"
+                    }
+                  },
+                  "Property": "Ads Online on Date"
+                }
+              },
+              "queryRef": "fct_listings.Ads Online on Date",
+              "nativeQueryRef": "Ads Online on Date",
+              "displayName": "Ads online"
             }
           ]
         }

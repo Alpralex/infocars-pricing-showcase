@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "55719c2e3a41bb6a8005",
   "position": {
     "x": 792,
@@ -11,11 +11,6 @@
   },
   "visual": {
     "visualType": "slicer",
-    "syncGroup": {
-      "groupName": "ModelSync",
-      "fieldChanges": true,
-      "filterChanges": true
-    },
     "query": {
       "queryState": {
         "Values": {
@@ -32,7 +27,8 @@
                 }
               },
               "queryRef": "dim_version.model_name",
-              "nativeQueryRef": "model_name"
+              "nativeQueryRef": "model_name",
+              "active": true
             }
           ]
         }
@@ -121,6 +117,11 @@
           }
         }
       ]
+    },
+    "syncGroup": {
+      "groupName": "ModelSync",
+      "fieldChanges": true,
+      "filterChanges": true
     }
   }
 }

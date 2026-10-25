@@ -1,22 +1,27 @@
 table mart_data_quality
+	lineageTag: 22b08cab-2cfd-4a97-9411-a23d02beadc1
 
 	measure 'Ads in Step' = SUM ( mart_data_quality[ads] )
 		formatString: #,0
+		lineageTag: 5dc092f7-a4b1-4293-9779-b31cb3ca4ac5
 
 	column step_order
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: 83385bbd-f3f9-4d65-889f-9fb541e96190
 		summarizeBy: none
 		sourceColumn: step_order
 
 	column step_key
 		dataType: string
+		lineageTag: f446eb4c-72f1-4a01-bcd2-01c2c13745b8
 		summarizeBy: none
 		sourceColumn: step_key
 
 	column step
 		dataType: string
+		lineageTag: 679e8b03-450d-4a53-bee3-77eb7ce95521
 		summarizeBy: none
 		sourceColumn: step
 		sortByColumn: step_order
@@ -24,6 +29,7 @@ table mart_data_quality
 	column ads
 		dataType: int64
 		formatString: #,0
+		lineageTag: e3ee4868-5010-4b6a-adc1-0e3529079b99
 		summarizeBy: sum
 		sourceColumn: ads
 
@@ -34,3 +40,4 @@ table mart_data_quality
 					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_data_quality.parquet" ) )
 				in
 					Source
+

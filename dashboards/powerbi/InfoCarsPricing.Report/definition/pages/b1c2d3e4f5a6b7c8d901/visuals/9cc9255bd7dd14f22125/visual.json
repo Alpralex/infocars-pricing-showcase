@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "9cc9255bd7dd14f22125",
   "position": {
     "x": 16,
@@ -13,25 +13,6 @@
     "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_version"
-                    }
-                  },
-                  "Property": "car_name"
-                }
-              },
-              "queryRef": "dim_version.car_name",
-              "nativeQueryRef": "car_name",
-              "displayName": "Car"
-            }
-          ]
-        },
         "Columns": {
           "projections": [
             {
@@ -47,7 +28,28 @@
               },
               "queryRef": "fct_listings.model_year",
               "nativeQueryRef": "model_year",
+              "active": true,
               "displayName": "Model year"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_version"
+                    }
+                  },
+                  "Property": "car_name"
+                }
+              },
+              "queryRef": "dim_version.car_name",
+              "nativeQueryRef": "car_name",
+              "active": true,
+              "displayName": "Car"
             }
           ]
         },

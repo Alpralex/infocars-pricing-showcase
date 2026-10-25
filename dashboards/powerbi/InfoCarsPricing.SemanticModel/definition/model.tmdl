@@ -6,7 +6,11 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-	annotation PBI_QueryOrder = ["DataFolder","dim_date","dim_version","dim_state","fct_listings","mart_market_by_version","mart_data_quality"]
+annotation PBI_QueryOrder = ["DataFolder","dim_date","dim_version","dim_state","fct_listings","mart_market_by_version","mart_data_quality"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["MCP-PBIModeling","DevMode"]
 
 ref table dim_date
 ref table dim_version
@@ -14,3 +18,8 @@ ref table dim_state
 ref table fct_listings
 ref table mart_market_by_version
 ref table mart_data_quality
+ref table DateTableTemplate_972cd198-9dc8-4a6c-a20a-aa252e545e40
+ref table LocalDateTable_28d93c39-1a26-4cec-a563-29221964910e
+
+ref cultureInfo en-US
+

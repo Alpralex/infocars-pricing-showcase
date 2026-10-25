@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ac1a6ac9210776aead27",
   "position": {
     "x": 16,
@@ -28,26 +28,8 @@
               },
               "queryRef": "fct_listings.price_band",
               "nativeQueryRef": "price_band",
+              "active": true,
               "displayName": "Price against market"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
-                    }
-                  },
-                  "Property": "Median Days to Sell"
-                }
-              },
-              "queryRef": "fct_listings.Median Days to Sell",
-              "nativeQueryRef": "Median Days to Sell",
-              "displayName": "Median days to sell"
             }
           ]
         },
@@ -67,6 +49,25 @@
               "queryRef": "fct_listings.Still Online %",
               "nativeQueryRef": "Still Online %",
               "displayName": "Still online"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fct_listings"
+                    }
+                  },
+                  "Property": "Median Days to Sell"
+                }
+              },
+              "queryRef": "fct_listings.Median Days to Sell",
+              "nativeQueryRef": "Median Days to Sell",
+              "displayName": "Median days to sell"
             }
           ]
         }
