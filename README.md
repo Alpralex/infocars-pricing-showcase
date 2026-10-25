@@ -88,7 +88,12 @@ sql/postgres/      production-style schema, market views, quality checks, read-o
 scripts/           sample data generator and demo
 data/              1,200 synthetic listings
 tests/             matching, SQL guard, market statistics, assistant loop with a fake client
+dashboards/        dbt + DuckDB model, web dashboard, Power BI and Qlik Sense versions
 ```
+
+## Dashboards
+
+[`dashboards/`](dashboards/) rebuilds the market statistics in SQL with dbt on DuckDB and shows the same model three ways: a static web page, a Power BI project (PBIP/TMDL) and a Qlik Sense app. See its README for how to run each one.
 
 ## About the data
 

@@ -1,0 +1,7 @@
+infocars:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('INFOCARS_DB_PATH', 'infocars.duckdb') }}"
+      threads: 4

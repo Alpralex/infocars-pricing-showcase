@@ -1,0 +1,234 @@
+table fct_listings
+
+	measure 'Clean Ads' = COUNTROWS ( fct_listings )
+		formatString: #,0
+		displayFolder: Ads
+
+	measure 'Sold Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1 )
+		formatString: #,0
+		displayFolder: Ads
+
+	measure 'Ads Still Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1 )
+		formatString: #,0
+		displayFolder: Ads
+
+	measure 'Still Online %' = DIVIDE ( [Ads Still Online], [Clean Ads] )
+		formatString: 0.0%
+		displayFolder: Ads
+
+	measure 'Ads Online on Date' =
+			VAR d = MAX ( dim_date[date_day] )
+			RETURN
+				CALCULATE (
+					COUNTROWS ( fct_listings ),
+					REMOVEFILTERS ( dim_date ),
+					fct_listings[listed_date] <= d,
+					OR ( ISBLANK ( fct_listings[removed_date] ), fct_listings[removed_date] > d )
+				)
+		formatString: #,0
+		displayFolder: Ads
+
+	measure 'Ads Sold on Date' = CALCULATE ( [Sold Ads], USERELATIONSHIP ( fct_listings[removed_date], dim_date[date_day] ) )
+		formatString: #,0
+		displayFolder: Ads
+
+	measure 'Median Asking Price' = MEDIAN ( fct_listings[price_brl] )
+		formatString: \R\$ #,0
+		displayFolder: Price
+
+	measure 'Average Asking Price' = AVERAGE ( fct_listings[price_brl] )
+		formatString: \R\$ #,0
+		displayFolder: Price
+
+	measure 'Median Gap to Market %' = MEDIAN ( fct_listings[gap_to_median_pct] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Price
+
+	measure 'Ads With Market' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables" )
+		formatString: #,0
+		displayFolder: Price
+
+	measure 'Above Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market" )
+		formatString: #,0
+		displayFolder: Price
+
+	measure 'Below Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "below market" )
+		formatString: #,0
+		displayFolder: Price
+
+	measure 'Above Market %' = DIVIDE ( [Above Market Ads], [Ads With Market] )
+		formatString: 0.0%
+		displayFolder: Price
+
+	measure 'Median Days to Sell' = CALCULATE ( MEDIAN ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+		formatString: 0.0
+		displayFolder: Speed
+
+	measure 'Average Days to Sell' = CALCULATE ( AVERAGE ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+		formatString: 0.0
+		displayFolder: Speed
+
+	measure 'Sold Within 30 Days %' = DIVIDE ( CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1, fct_listings[days_on_market] <= 30 ), [Sold Ads] )
+		formatString: 0.0%
+		displayFolder: Speed
+
+	measure 'Above Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+		formatString: #,0
+		displayFolder: Stock to review
+
+	measure 'Below Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+		formatString: #,0
+		displayFolder: Stock to review
+
+	measure 'Gap Above Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+		formatString: \R\$ #,0
+		displayFolder: Stock to review
+
+	measure 'Gap Below Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+		formatString: \R\$ #,0
+		displayFolder: Stock to review
+
+	column listing_id
+		dataType: int64
+		isKey
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: listing_id
+
+	column version_key
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: version_key
+
+	column model_year
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: model_year
+
+	column state
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: state
+
+	column source
+		dataType: string
+		summarizeBy: none
+		sourceColumn: source
+
+	column match_method
+		dataType: string
+		summarizeBy: none
+		sourceColumn: match_method
+
+	column price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		summarizeBy: sum
+		sourceColumn: price_brl
+
+	column km
+		dataType: int64
+		formatString: #,0
+		summarizeBy: sum
+		sourceColumn: km
+
+	column listed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: listed_date
+
+	column removed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: removed_date
+
+	column last_seen_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: last_seen_date
+
+	column days_on_market
+		dataType: int64
+		formatString: 0
+		summarizeBy: sum
+		sourceColumn: days_on_market
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: is_active
+
+	column is_sold
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: is_sold
+
+	column comparables
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: comparables
+
+	column market_p25_brl
+		dataType: double
+		formatString: \R\$ #,0
+		summarizeBy: none
+		sourceColumn: market_p25_brl
+
+	column market_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		summarizeBy: none
+		sourceColumn: market_median_brl
+
+	column market_p75_brl
+		dataType: double
+		formatString: \R\$ #,0
+		summarizeBy: none
+		sourceColumn: market_p75_brl
+
+	column gap_to_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		summarizeBy: sum
+		sourceColumn: gap_to_median_brl
+
+	column gap_to_median_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		summarizeBy: none
+		sourceColumn: gap_to_median_pct
+
+	column price_position
+		dataType: string
+		summarizeBy: none
+		sourceColumn: price_position
+
+	column price_band
+		dataType: string
+		summarizeBy: none
+		sourceColumn: price_band
+		sortByColumn: price_band_order
+
+	column price_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: price_band_order
+
+	partition fct_listings = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "fct_listings.parquet" ) )
+				in
+					Source

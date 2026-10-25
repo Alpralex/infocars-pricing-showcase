@@ -1,0 +1,42 @@
+name: infocars
+version: "1.0.0"
+config-version: 2
+profile: infocars
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+
+vars:
+  # the repository's synthetic ads (data/sample_listings.csv), one level up from this folder
+  raw_path: "{{ env_var('INFOCARS_RAW_PATH', '../data') }}"
+  # "today" for ads still online, as SNAPSHOT_DATE in infocars/db.py
+  snapshot_date: "2025-11-01"
+  # quality rules from infocars/db.py and sql/postgres/03_quality_checks.sql
+  min_price_brl: 5000
+  max_price_brl: 1500000
+  # fewer comparable ads than this and the assistant calls the estimate weak (infocars/assistant.py)
+  min_comparables: 5
+
+seeds:
+  infocars:
+    listing_matches:
+      +column_types:
+        listing_id: integer
+        model_year: integer
+        make: varchar
+        model: varchar
+        version: varchar
+    catalog_versions:
+      +column_types:
+        sort_order: integer
+    states:
+      +column_types:
+        sort_order: integer
+
+models:
+  infocars:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

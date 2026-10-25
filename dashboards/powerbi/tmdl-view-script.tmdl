@@ -1,0 +1,542 @@
+createOrReplace
+
+	/// Folder that holds the Parquet files, with a trailing backslash. Change it in Transform data > Manage parameters.
+	expression DataFolder = "C:\\infocars-pricing-showcase\\dashboards\\powerbi\\data\\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+		annotation PBI_ResultType = Text
+
+	table dim_date
+		dataCategory: Time
+
+		column date_day
+			dataType: dateTime
+			isKey
+			formatString: yyyy-mm-dd
+			summarizeBy: none
+			sourceColumn: date_day
+
+		column week_start
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			summarizeBy: none
+			sourceColumn: week_start
+
+		column month_start
+			dataType: dateTime
+			formatString: mmm yyyy
+			summarizeBy: none
+			sourceColumn: month_start
+
+		column year_number
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: year_number
+
+		column month_number
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: month_number
+
+		column month_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: month_name
+			sortByColumn: month_number
+
+		column weekday_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: weekday_name
+
+		column is_snapshot
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: is_snapshot
+
+		partition dim_date = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "dim_date.parquet" ) )
+					in
+						Source
+
+	table dim_version
+
+		column version_key
+			dataType: string
+			isKey
+			summarizeBy: none
+			sourceColumn: version_key
+
+		column make
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: make
+
+		column model
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: model
+
+		column version
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: version
+
+		column make_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: make_name
+
+		column model_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: model_name
+
+		column version_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: version_name
+
+		column car_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: car_name
+			sortByColumn: sort_order
+
+		column body_type
+			dataType: string
+			summarizeBy: none
+			sourceColumn: body_type
+
+		column sort_order
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: sort_order
+
+		partition dim_version = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "dim_version.parquet" ) )
+					in
+						Source
+
+	table dim_state
+
+		column state
+			dataType: string
+			isKey
+			summarizeBy: none
+			sourceColumn: state
+
+		column state_name
+			dataType: string
+			summarizeBy: none
+			sourceColumn: state_name
+			sortByColumn: sort_order
+
+		column region
+			dataType: string
+			summarizeBy: none
+			sourceColumn: region
+
+		column sort_order
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: sort_order
+
+		partition dim_state = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "dim_state.parquet" ) )
+					in
+						Source
+
+	table fct_listings
+
+		measure 'Clean Ads' = COUNTROWS ( fct_listings )
+			formatString: #,0
+			displayFolder: Ads
+
+		measure 'Sold Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1 )
+			formatString: #,0
+			displayFolder: Ads
+
+		measure 'Ads Still Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1 )
+			formatString: #,0
+			displayFolder: Ads
+
+		measure 'Still Online %' = DIVIDE ( [Ads Still Online], [Clean Ads] )
+			formatString: 0.0%
+			displayFolder: Ads
+
+		measure 'Ads Online on Date' =
+				VAR d = MAX ( dim_date[date_day] )
+				RETURN
+					CALCULATE (
+						COUNTROWS ( fct_listings ),
+						REMOVEFILTERS ( dim_date ),
+						fct_listings[listed_date] <= d,
+						OR ( ISBLANK ( fct_listings[removed_date] ), fct_listings[removed_date] > d )
+					)
+			formatString: #,0
+			displayFolder: Ads
+
+		measure 'Ads Sold on Date' = CALCULATE ( [Sold Ads], USERELATIONSHIP ( fct_listings[removed_date], dim_date[date_day] ) )
+			formatString: #,0
+			displayFolder: Ads
+
+		measure 'Median Asking Price' = MEDIAN ( fct_listings[price_brl] )
+			formatString: \R\$ #,0
+			displayFolder: Price
+
+		measure 'Average Asking Price' = AVERAGE ( fct_listings[price_brl] )
+			formatString: \R\$ #,0
+			displayFolder: Price
+
+		measure 'Median Gap to Market %' = MEDIAN ( fct_listings[gap_to_median_pct] )
+			formatString: +0.0%;-0.0%;0.0%
+			displayFolder: Price
+
+		measure 'Ads With Market' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables" )
+			formatString: #,0
+			displayFolder: Price
+
+		measure 'Above Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market" )
+			formatString: #,0
+			displayFolder: Price
+
+		measure 'Below Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "below market" )
+			formatString: #,0
+			displayFolder: Price
+
+		measure 'Above Market %' = DIVIDE ( [Above Market Ads], [Ads With Market] )
+			formatString: 0.0%
+			displayFolder: Price
+
+		measure 'Median Days to Sell' = CALCULATE ( MEDIAN ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+			formatString: 0.0
+			displayFolder: Speed
+
+		measure 'Average Days to Sell' = CALCULATE ( AVERAGE ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+			formatString: 0.0
+			displayFolder: Speed
+
+		measure 'Sold Within 30 Days %' = DIVIDE ( CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1, fct_listings[days_on_market] <= 30 ), [Sold Ads] )
+			formatString: 0.0%
+			displayFolder: Speed
+
+		measure 'Above Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+			formatString: #,0
+			displayFolder: Stock to review
+
+		measure 'Below Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+			formatString: #,0
+			displayFolder: Stock to review
+
+		measure 'Gap Above Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+			formatString: \R\$ #,0
+			displayFolder: Stock to review
+
+		measure 'Gap Below Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+			formatString: \R\$ #,0
+			displayFolder: Stock to review
+
+		column listing_id
+			dataType: int64
+			isKey
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: listing_id
+
+		column version_key
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: version_key
+
+		column model_year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: model_year
+
+		column state
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: state
+
+		column source
+			dataType: string
+			summarizeBy: none
+			sourceColumn: source
+
+		column match_method
+			dataType: string
+			summarizeBy: none
+			sourceColumn: match_method
+
+		column price_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: sum
+			sourceColumn: price_brl
+
+		column km
+			dataType: int64
+			formatString: #,0
+			summarizeBy: sum
+			sourceColumn: km
+
+		column listed_date
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			summarizeBy: none
+			sourceColumn: listed_date
+
+		column removed_date
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			summarizeBy: none
+			sourceColumn: removed_date
+
+		column last_seen_date
+			dataType: dateTime
+			formatString: yyyy-mm-dd
+			summarizeBy: none
+			sourceColumn: last_seen_date
+
+		column days_on_market
+			dataType: int64
+			formatString: 0
+			summarizeBy: sum
+			sourceColumn: days_on_market
+
+		column is_active
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: is_active
+
+		column is_sold
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: is_sold
+
+		column comparables
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: comparables
+
+		column market_p25_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: market_p25_brl
+
+		column market_median_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: market_median_brl
+
+		column market_p75_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: market_p75_brl
+
+		column gap_to_median_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: sum
+			sourceColumn: gap_to_median_brl
+
+		column gap_to_median_pct
+			dataType: double
+			formatString: +0.0%;-0.0%;0.0%
+			summarizeBy: none
+			sourceColumn: gap_to_median_pct
+
+		column price_position
+			dataType: string
+			summarizeBy: none
+			sourceColumn: price_position
+
+		column price_band
+			dataType: string
+			summarizeBy: none
+			sourceColumn: price_band
+			sortByColumn: price_band_order
+
+		column price_band_order
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: price_band_order
+
+		partition fct_listings = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "fct_listings.parquet" ) )
+					in
+						Source
+
+	table mart_market_by_version
+
+		column make
+			dataType: string
+			summarizeBy: none
+			sourceColumn: make
+
+		column model
+			dataType: string
+			summarizeBy: none
+			sourceColumn: model
+
+		column version
+			dataType: string
+			summarizeBy: none
+			sourceColumn: version
+
+		column version_key
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: version_key
+
+		column model_year
+			dataType: int64
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: model_year
+
+		column state
+			dataType: string
+			isHidden
+			summarizeBy: none
+			sourceColumn: state
+
+		column listings
+			dataType: int64
+			formatString: #,0
+			summarizeBy: sum
+			sourceColumn: listings
+
+		column active_listings
+			dataType: int64
+			formatString: #,0
+			summarizeBy: sum
+			sourceColumn: active_listings
+
+		column p25_price_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: p25_price_brl
+
+		column median_price_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: median_price_brl
+
+		column p75_price_brl
+			dataType: double
+			formatString: \R\$ #,0
+			summarizeBy: none
+			sourceColumn: p75_price_brl
+
+		column median_days_to_sell
+			dataType: double
+			formatString: 0.0
+			summarizeBy: none
+			sourceColumn: median_days_to_sell
+
+		partition mart_market_by_version = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "mart_market_by_version.parquet" ) )
+					in
+						Source
+
+	table mart_data_quality
+
+		measure 'Ads in Step' = SUM ( mart_data_quality[ads] )
+			formatString: #,0
+
+		column step_order
+			dataType: int64
+			isHidden
+			formatString: 0
+			summarizeBy: none
+			sourceColumn: step_order
+
+		column step_key
+			dataType: string
+			summarizeBy: none
+			sourceColumn: step_key
+
+		column step
+			dataType: string
+			summarizeBy: none
+			sourceColumn: step
+			sortByColumn: step_order
+
+		column ads
+			dataType: int64
+			formatString: #,0
+			summarizeBy: sum
+			sourceColumn: ads
+
+		partition mart_data_quality = m
+			mode: import
+			source =
+					let
+						Source = Parquet.Document ( File.Contents ( DataFolder & "mart_data_quality.parquet" ) )
+					in
+						Source
+
+	relationship fct_listings_listed_date
+		fromColumn: fct_listings.listed_date
+		toColumn: dim_date.date_day
+
+	relationship fct_listings_removed_date
+		isActive: false
+		fromColumn: fct_listings.removed_date
+		toColumn: dim_date.date_day
+
+	relationship fct_listings_version
+		fromColumn: fct_listings.version_key
+		toColumn: dim_version.version_key
+
+	relationship fct_listings_state
+		fromColumn: fct_listings.state
+		toColumn: dim_state.state
+
+	relationship market_version
+		fromColumn: mart_market_by_version.version_key
+		toColumn: dim_version.version_key
+
+	relationship market_state
+		fromColumn: mart_market_by_version.state
+		toColumn: dim_state.state

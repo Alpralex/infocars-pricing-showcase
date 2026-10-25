@@ -1,0 +1,9 @@
+state,state_name,region,sort_order
+SP,São Paulo,Southeast,1
+MG,Minas Gerais,Southeast,2
+RJ,Rio de Janeiro,Southeast,3
+PR,Paraná,South,4
+RS,Rio Grande do Sul,South,5
+SC,Santa Catarina,South,6
+GO,Goiás,Centre-West,7
+BA,Bahia,Northeast,8

@@ -1,0 +1,24 @@
+relationship fct_listings_listed_date
+	fromColumn: fct_listings.listed_date
+	toColumn: dim_date.date_day
+
+relationship fct_listings_removed_date
+	isActive: false
+	fromColumn: fct_listings.removed_date
+	toColumn: dim_date.date_day
+
+relationship fct_listings_version
+	fromColumn: fct_listings.version_key
+	toColumn: dim_version.version_key
+
+relationship fct_listings_state
+	fromColumn: fct_listings.state
+	toColumn: dim_state.state
+
+relationship market_version
+	fromColumn: mart_market_by_version.version_key
+	toColumn: dim_version.version_key
+
+relationship market_state
+	fromColumn: mart_market_by_version.state
+	toColumn: dim_state.state

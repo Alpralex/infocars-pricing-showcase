@@ -1,0 +1,438 @@
+<meta charset="utf-8">
+<title>InfoCars Pricing Dashboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: a pricing desk for a used-car dealer. Findings first, one filter row, then price against speed of sale, the stock on the site, the market grid and the ads to reprice. */
+:root {
+  --paper: #f7f8f9;
+  --sheet: #ffffff;
+  --ink: #1b2430;
+  --muted: #5d6876;
+  --rule: #dce0e5;
+  --grid: #eceff2;
+  --signal: #1f5a85;
+  --signal-soft: #e6eef5;
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --total: #5d6876;
+  --good: #1f7a35;
+  --good-soft: #e3f1e6;
+  --warn: #b25b00;
+  --warn-soft: #fbeedd;
+  --display: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --serif: "IBM Plex Serif", Georgia, serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
+    --signal: #86b6da; --signal-soft: #1a2633;
+    --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
+    --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
+  --signal: #86b6da; --signal-soft: #1a2633;
+  --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
+  --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+  color-scheme: dark;
+}
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.55; margin: 0; }
+.wrap { max-width: 72rem; margin: 0 auto; padding-block: 2.5rem 4rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 2rem; }
+h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.15; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4.2vw, 2.5rem); font-weight: 600; }
+h2 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.label { font-size: 0.88rem; color: var(--muted); }
+.crumb { font-size: 0.9rem; }
+a { color: var(--signal); text-underline-offset: 3px; }
+header { display: grid; gap: 0.75rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; font-size: 0.9rem; color: var(--muted); }
+
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+.finding { border-top: 1px solid var(--ink); padding-top: 0.75rem; display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
+.finding b { font-weight: 600; font-size: 1rem; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; padding: 0.75rem 0; border-block: 1px solid var(--rule); position: sticky; top: env(safe-area-inset-top, 0px); background: var(--paper); z-index: 5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.filters .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+.seg button { font-family: var(--body); font-size: 0.88rem; padding: 0.35rem 0.7rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--signal-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--signal); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+.kpi { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1rem; display: grid; gap: 0.25rem; min-width: 0; }
+.kpi .v { font-family: var(--serif); font-size: 1.7rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: 0.85rem; color: var(--muted); }
+.fav { color: var(--good); } .adv { color: var(--warn); }
+
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1.25rem; }
+.panel { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1.1rem; display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
+.panel .sub { font-size: 0.9rem; color: var(--muted); }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.chart .lbl { fill: var(--ink); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.85rem; color: var(--ink); }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 0.35rem; }
+.legend i.dash { background: repeating-linear-gradient(90deg, var(--muted) 0 5px, transparent 5px 8px) !important; }
+.legend i.dash1 { background: repeating-linear-gradient(90deg, var(--s1) 0 5px, transparent 5px 8px) !important; }
+.legend i.sq { width: 10px; height: 10px; border-radius: 2px; }
+
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--paper); font-family: var(--body); font-size: 0.8rem; padding: 0.45rem 0.6rem; border-radius: 3px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); z-index: 3; line-height: 1.45; }
+.tip[hidden] { display: none; }
+
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+th, td { padding: 0.4rem 0.55rem; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+tr.sub td { font-weight: 600; border-top: 1px solid var(--ink); }
+tr.ratio td { color: var(--muted); font-style: italic; }
+tr.acct td:first-child { padding-left: 1.4rem; color: var(--muted); }
+tr.acct td { color: var(--muted); font-size: 0.8rem; }
+td.pos { background: var(--good-soft); } td.neg { background: var(--warn-soft); }
+.toggle { font-family: var(--body); font-size: 0.85rem; background: none; border: 0; padding: 0; color: var(--signal); cursor: pointer; text-decoration: underline; justify-self: start; }
+.method { display: grid; gap: 0.5rem; font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1rem; }
+.method ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; max-width: 80ch; }
+.note { font-size: 0.8rem; color: var(--muted); }
+.tag { display: inline-block; font-size: 0.75rem; padding: 0 0.4rem; border: 1px solid var(--rule); border-radius: 2px; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.legend i.dot { width: 9px; height: 9px; border-radius: 50%; }
+.seg-wrap { min-width: 0; max-width: 100%; }
+td.dim, span.dim { color: var(--muted); }
+td small { color: var(--muted); font-size: 0.75rem; margin-left: 0.2rem; }
+th.yr, td.yr { min-width: 4.2rem; }
+</style>
+
+<main class="wrap">
+  <header>
+    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects</span></p>
+    <span class="label">Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL</span>
+    <h1>Which used cars are priced out of line, and how much longer do they take to sell?</h1>
+    <p>A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, and which ads still online sit outside the market range.</p>
+    <div class="meta">
+      <span>Snapshot: 1 November 2025</span>
+      <span>dbt + DuckDB · 11 models · 56 tests</span>
+      <span>Also in Power BI and Qlik Sense</span>
+    </div>
+  </header>
+
+  <section class="findings" aria-label="Key findings">
+    <div class="finding"><span class="label">Finding 1</span><b>Cars priced under the market sell in about half the time.</b><p>Ads more than 6% below the median of comparable ads sold in a median of 17 days, and 74% of them within 30 days. Ads more than 6% above took 30 days, and only 51% sold within 30 days.</p></div>
+    <div class="finding"><span class="label">Finding 2</span><b>82 ads still online are priced above the market.</b><p>On 1 November 2025 they ask R$ 530,500 more than their comparable medians in total, a median of 7.8% each, and have been online for a median of 50.5 days.</p></div>
+    <div class="finding"><span class="label">Finding 3</span><b>31 ads still online are priced below the market.</b><p>They ask R$ 156,950 less than their comparable medians, a median of 6.1% each. They should sell fast, but the gap is margin a dealer may not need to give away.</p></div>
+    <div class="finding"><span class="label">Finding 4</span><b>33 of 1,200 ads never reach the statistics.</b><p>15 have no price or one out of range, and 18 sit far from comparable cars, usually a price typed without its last digit. 187 clean ads were matched only through typo correction, and 116 make and model spellings reduce to 7 models.</p></div>
+  </section>
+
+  <section class="filters" aria-label="Filters">
+    <div class="grp"><span class="label">Model</span><div class="seg" id="mod-seg"></div></div>
+    <div class="grp"><span class="label">State</span><div class="seg" id="st-seg"></div></div>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="Headline figures"></section>
+
+  <div class="grid2">
+    <section class="panel" aria-labelledby="band-h">
+      <h2 id="band-h">Days to sell by asking price against the market</h2>
+      <p class="sub">Median days on the site for sold ads, by how far the asking price sits from the median of comparable ads (same version and model year, other ads only).</p>
+      <div class="chart" id="bands"></div>
+      <p class="note" id="band-note"></p>
+    </section>
+    <section class="panel" aria-labelledby="sc-h">
+      <h2 id="sc-h">Every sold ad: price gap and days on the site</h2>
+      <p class="sub">Position as in the pricing assistant: above the 75th percentile of comparable ads is above market, below the 25th is below.</p>
+      <div class="legend"><span><i class="dot" style="background:var(--s1)"></i>Below market</span><span><i class="dot" style="background:var(--total)"></i>Within market range</span><span><i class="dot" style="background:var(--s2)"></i>Above market</span></div>
+      <div class="chart" id="scatter"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="panel" aria-labelledby="on-h">
+      <h2 id="on-h">Ads online per day</h2>
+      <p class="sub">An ad counts from the day it is listed to its last day online. Above-market ads are shown on their own.</p>
+      <div class="legend"><span><i style="background:var(--s1)"></i>All ads online</span><span><i style="background:var(--s2)"></i>Above market</span></div>
+      <div class="chart" id="online"></div>
+    </section>
+    <section class="panel" aria-labelledby="dq-h">
+      <h2 id="dq-h">From raw ads to market statistics</h2>
+      <p class="sub">All 1,200 raw ads, before filters. The same checks as the Python demo, rewritten in SQL.</p>
+      <div class="chart" id="quality"></div>
+      <p class="note" id="dq-note"></p>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="mk-h">
+    <h2 id="mk-h">What comparable cars are listed for</h2>
+    <p class="sub" id="mk-sub"></p>
+    <div class="tbl-wrap"><table id="market"></table></div>
+    <p class="note">Median asking price of all clean ads for the version and model year, in thousands of reais, with the number of ads. Fewer than 5 ads is a weak estimate and is greyed out, as the assistant would say.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="rv-h">
+    <h2 id="rv-h">Stock to review: ads still online and outside the market range</h2>
+    <p class="sub" id="rv-sub"></p>
+    <div class="tbl-wrap"><table id="review"></table></div>
+    <button class="toggle" id="rv-toggle" aria-expanded="false">Show all</button>
+  </section>
+
+  <section class="method" aria-label="Method">
+    <h2>How it is built</h2>
+    <ul>
+      <li>The data are the 1,200 synthetic ads of the showcase repository, generated with a fixed seed. Titles copy the mistakes of real ads; prices, mileage and dates are invented. The generator makes cars priced below market leave the site faster, so the first chart checks that the pipeline recovers that pattern. Nothing on this page is a result of the real business.</li>
+      <li>Titles are matched by the repository's own Python matcher (whole-word aliases, then fuzzy matching for typos). dbt models on DuckDB then apply the quality checks, the market statistics and the position against the market, and reproduce the demo's numbers exactly: 1,167 clean ads, 187 through typo correction, and a 2023 Onix LTZ market of 6 ads with a median of R$ 68,400.</li>
+      <li>An ad that disappears counts as sold on its last day online. Days to sell count sold ads only, so slow cars that are still online make the gap between price bands smaller, not larger.</li>
+      <li>In production InfoCars held about 250,000 listings, cut 5,114 model spellings to 641 real models, and the dealer measured a saving of about R$ 2,000 per negotiation, with time in stock down to one to three months.</li>
+      <li>The same star schema (ads, version, state, date) feeds a Power BI model in TMDL with DAX measures and a Qlik Sense app with set analysis.</li>
+    </ul>
+    <p class="note">Code: <a href="https://github.com/Alpralex/infocars-pricing-showcase">github.com/Alpralex/infocars-pricing-showcase</a></p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var D = {};
+  var state = { model: 'ALL', st: 'ALL', all: false };
+
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function txt(parent, x, y, s, attrs) { var t = el('text', Object.assign({ x: x, y: y }, attrs || {}), parent); t.textContent = s; return t; }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function niceStep(span) { var raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+  var minus = '−';
+  function brl(v) { return (v < 0 ? minus : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('en-US'); }
+  function brlS(v) { return (v < 0 ? minus : v > 0 ? '+' : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('en-US'); }
+  function kBrl(v) { return (v / 1000).toFixed(1); }
+  function pct(v, d) { if (v == null || !isFinite(v)) return '–'; return (v > 0 ? '+' : v < 0 ? minus : '') + Math.abs(v * 100).toFixed(d == null ? 1 : d) + '%'; }
+  function share(v) { return v == null || !isFinite(v) ? '–' : Math.round(v * 100) + '%'; }
+  function num(v) { return v.toLocaleString('en-US'); }
+  function days(v) { return v == null ? '–' : (Math.round(v * 10) / 10) + ' days'; }
+  function median(a) { if (!a.length) return null; var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+  function dayNum(iso) { return Math.round(Date.parse(iso + 'T00:00:00Z') / 864e5); }
+  function dayIso(n) { return new Date(n * 864e5).toISOString().slice(0, 10); }
+  function dayLabel(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+
+  // listing row: [id, version_key, year, state, price, listed, removed, days, comparables, p25, median, p75, band, source]
+  function L(r) {
+    var pos = r[10] == null ? 'few' : r[4] > r[11] ? 'above' : r[4] < r[9] ? 'below' : 'within';
+    return { id: r[0], vk: r[1], year: r[2], st: r[3], price: r[4], listed: r[5], removed: r[6], days: r[7], comp: r[8], p25: r[9], med: r[10], p75: r[11], band: r[12], src: r[13],
+      sold: r[6] != null, gap: r[10] == null ? null : r[4] - r[10], gapPct: r[10] == null ? null : r[4] / r[10] - 1, pos: pos };
+  }
+  function rows() { return D.listings.filter(function (r) { return (state.model === 'ALL' || D.ver[r.vk][2] === state.model) && (state.st === 'ALL' || r.st === state.st); }); }
+  function scopeName() { return (state.model === 'ALL' ? 'All models' : state.model) + ' · ' + (state.st === 'ALL' ? 'all states' : D.stName[state.st]); }
+  function carName(r) { var v = D.ver[r.vk]; return v[2] + ' ' + v[3]; }
+  var POS_COLOR = { below: '--s1', within: '--total', above: '--s2' };
+  var POS_NAME = { below: 'below market', within: 'within market range', above: 'above market', few: 'too few comparables' };
+
+  function renderKpis(R) {
+    var sold = R.filter(function (r) { return r.sold; }), active = R.filter(function (r) { return !r.sold; });
+    var above = active.filter(function (r) { return r.pos === 'above'; });
+    var gapAbove = above.reduce(function (s, r) { return s + r.gap; }, 0);
+    var avg = R.reduce(function (s, r) { return s + r.price; }, 0) / (R.length || 1);
+    var in30 = sold.filter(function (r) { return r.days <= 30; }).length / (sold.length || 1);
+    var tiles = [
+      ['Clean ads', num(R.length), num(active.length) + ' still online on 1 Nov 2025'],
+      ['Median asking price', R.length ? brl(median(R.map(function (r) { return r.price; }))) : '–', 'average ' + brl(avg)],
+      ['Median days to sell', days(median(sold.map(function (r) { return r.days; }))), share(in30) + ' of ' + num(sold.length) + ' sold ads went within 30 days'],
+      ['Above market, still online', num(above.length), brl(gapAbove) + ' above comparable medians']
+    ];
+    document.getElementById('kpis').innerHTML = tiles.map(function (x) {
+      return '<div class="kpi"><span class="label">' + x[0] + ' · ' + scopeName() + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>';
+    }).join('');
+  }
+
+  // ---------- days to sell by price band (columns) ----------
+  function renderBands(R) {
+    var host = document.getElementById('bands'); host.innerHTML = '';
+    var bands = D.meta.bands.filter(function (b) { return b[0] <= 5; }).map(function (b) {
+      var all = R.filter(function (r) { return r.band === b[0]; }), sold = all.filter(function (r) { return r.sold; });
+      return { name: b[1], n: all.length, sold: sold.length, med: median(sold.map(function (r) { return r.days; })),
+        in30: sold.length ? sold.filter(function (r) { return r.days <= 30; }).length / sold.length : null,
+        online: all.length ? (all.length - sold.length) / all.length : null };
+    });
+    var W = 520, H = 250, m = { t: 22, r: 8, b: 44, l: 40 };
+    var hiV = Math.max.apply(null, bands.map(function (b) { return b.med || 0; })) || 10, st = niceStep(hiV), top = Math.ceil(hiV / st) * st;
+    var bw = (W - m.l - m.r) / bands.length;
+    var Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Median days to sell by price band' }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
+    txt(svg, m.l - 6, m.t - 10, 'days', { 'text-anchor': 'end' });
+    bands.forEach(function (b, i) {
+      var cx = m.l + bw * (i + 0.5), w = Math.min(56, bw - 18), h = b.med == null ? 0 : H - m.b - Y(b.med);
+      if (b.med != null) {
+        el('path', { d: 'M' + (cx - w / 2) + ' ' + (H - m.b) + 'V' + (Y(b.med) + 4) + 'q0 -4 4 -4H' + (cx + w / 2 - 4) + 'q4 0 4 4V' + (H - m.b) + 'Z', fill: css('--s1') }, svg);
+        txt(svg, cx, Y(b.med) - 6, String(b.med), { 'text-anchor': 'middle', class: 'lbl' });
+      }
+      txt(svg, cx, H - m.b + 16, b.name, { 'text-anchor': 'middle' });
+      txt(svg, cx, H - m.b + 32, share(b.online) + ' online', { 'text-anchor': 'middle' });
+      var hit = el('rect', { x: cx - bw / 2, y: m.t, width: bw, height: H - m.t - m.b, fill: 'transparent' }, svg);
+      hit.addEventListener('pointerenter', function () {
+        var bb = svg.getBoundingClientRect();
+        tip.innerHTML = 'Asking price ' + b.name.toLowerCase() + ' vs the median<br>' + num(b.n) + ' ads, ' + num(b.sold) + ' sold<br>Median days to sell: ' + (b.med == null ? '–' : b.med) + '<br>Sold within 30 days: ' + share(b.in30) + '<br>Still online: ' + share(b.online);
+        tip.style.left = (Math.min(Math.max(cx, 90), W - 90) / W * bb.width) + 'px'; tip.style.top = ((b.med == null ? H - m.b : Y(b.med)) / H * bb.height) + 'px'; tip.hidden = false;
+      });
+      hit.addEventListener('pointerleave', function () { tip.hidden = true; });
+    });
+    var few = R.filter(function (r) { return r.band === 6; }).length;
+    document.getElementById('band-note').textContent = scopeName() + '. "Online" is the share of the band still on the site at the snapshot. ' + num(few) + ' ads have fewer than 5 comparable ads and no band.';
+  }
+
+  // ---------- scatter ----------
+  function renderScatter(R) {
+    var host = document.getElementById('scatter'); host.innerHTML = '';
+    var P = R.filter(function (r) { return r.sold && r.gapPct != null; });
+    var W = 520, H = 270, m = { t: 12, r: 12, b: 34, l: 40 };
+    var lim = 0.16, hiD = Math.max(30, Math.max.apply(null, P.map(function (r) { return r.days; }).concat([0]))), st = niceStep(hiD), top = Math.ceil(hiD / st) * st;
+    var X = function (v) { return m.l + (Math.max(-lim, Math.min(lim, v)) + lim) / (2 * lim) * (W - m.l - m.r); };
+    var Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Sold ads by price gap to the market median and days on the site' }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
+    [-0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15].forEach(function (v) { txt(svg, X(v), H - m.b + 15, v === 0 ? 'median' : pct(v, 0), { 'text-anchor': 'middle' }); });
+    el('line', { x1: X(0), x2: X(0), y1: m.t, y2: H - m.b, stroke: css('--muted'), 'stroke-dasharray': '2 3' }, svg);
+    txt(svg, W - m.r, H - 4, 'asking price vs comparable median →', { 'text-anchor': 'end' });
+    txt(svg, m.l + 4, m.t + 4, 'days on the site', {});
+    var surface = css('--sheet');
+    P.forEach(function (r) { r._x = X(r.gapPct); r._y = Y(r.days); el('circle', { cx: r._x, cy: r._y, r: 3.2, fill: css(POS_COLOR[r.pos]), 'fill-opacity': 0.8, stroke: surface, 'stroke-width': 0.8 }, svg); });
+    var ring = el('circle', { r: 6, fill: 'none', stroke: css('--ink'), 'stroke-width': 1.5, visibility: 'hidden' }, svg);
+    var hit = el('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }, svg);
+    hit.addEventListener('pointermove', function (evt) {
+      var b = svg.getBoundingClientRect(), px = (evt.clientX - b.left) / b.width * W, py = (evt.clientY - b.top) / b.height * H;
+      var best = null, bd = 14 * 14;
+      P.forEach(function (r) { var d = (r._x - px) * (r._x - px) + (r._y - py) * (r._y - py); if (d < bd) { bd = d; best = r; } });
+      if (!best) { ring.setAttribute('visibility', 'hidden'); tip.hidden = true; return; }
+      ring.setAttribute('cx', best._x); ring.setAttribute('cy', best._y); ring.setAttribute('visibility', 'visible');
+      tip.innerHTML = carName(best) + ' ' + best.year + ' · ' + best.st + '<br>Asking ' + brl(best.price) + ' · median ' + brl(best.med) + '<br>' + pct(best.gapPct) + ', ' + POS_NAME[best.pos] + '<br>Sold after ' + best.days + ' days';
+      tip.style.left = (Math.min(Math.max(best._x, 100), W - 100) / W * b.width) + 'px'; tip.style.top = (best._y / H * b.height) + 'px'; tip.hidden = false;
+    });
+    hit.addEventListener('pointerleave', function () { ring.setAttribute('visibility', 'hidden'); tip.hidden = true; });
+  }
+
+  // ---------- ads online per day ----------
+  function renderOnline(R) {
+    var host = document.getElementById('online'); host.innerHTML = '';
+    var d0 = dayNum(D.meta.first_day), d1 = dayNum(D.meta.snapshot), n = d1 - d0 + 1;
+    var all = new Array(n + 1).fill(0), ab = new Array(n + 1).fill(0);
+    R.forEach(function (r) {
+      var a = dayNum(r.listed) - d0, z = (r.removed ? dayNum(r.removed) : d1 + 1) - d0;
+      all[a]++; all[Math.min(z, n)]--; if (r.pos === 'above') { ab[a]++; ab[Math.min(z, n)]--; }
+    });
+    var A = [], B = [], ca = 0, cb = 0;
+    for (var i = 0; i < n; i++) { ca += all[i]; cb += ab[i]; A.push(ca); B.push(cb); }
+    var series = [{ name: 'All ads online', color: '--s1', values: A }, { name: 'Above market', color: '--s2', values: B }];
+    var W = 520, H = 250, m = { t: 12, r: 12, b: 26, l: 40 };
+    var hiV = Math.max.apply(null, A) || 1, st = niceStep(hiV), top = Math.ceil(hiV / st) * st;
+    var X = function (i) { return m.l + i / (n - 1) * (W - m.l - m.r); }, Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Ads online per day, all and above market' }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
+    for (var j = 0; j < n; j++) { var iso = dayIso(d0 + j); if (iso.slice(8) === '01') txt(svg, X(j), H - 8, new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { month: 'short' }), { 'text-anchor': 'middle' }); }
+    series.forEach(function (s) {
+      el('path', { d: s.values.map(function (v, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); }).join(''), fill: 'none', stroke: css(s.color), 'stroke-width': 2, 'stroke-linejoin': 'round' }, svg);
+    });
+    var cross = el('line', { y1: m.t, y2: H - m.b, stroke: css('--muted'), visibility: 'hidden' }, svg);
+    var dots = series.map(function (s) { return el('circle', { r: 4, fill: css(s.color), stroke: css('--sheet'), 'stroke-width': 2, visibility: 'hidden' }, svg); });
+    var hit = el('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }, svg);
+    hit.addEventListener('pointermove', function (evt) {
+      var b = svg.getBoundingClientRect(), px = (evt.clientX - b.left) / b.width * W;
+      var i = Math.max(0, Math.min(n - 1, Math.round((px - m.l) / (W - m.l - m.r) * (n - 1))));
+      cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('visibility', 'visible');
+      dots.forEach(function (d, k) { d.setAttribute('cx', X(i)); d.setAttribute('cy', Y(series[k].values[i])); d.setAttribute('visibility', 'visible'); });
+      tip.innerHTML = dayLabel(dayIso(d0 + i)) + ' 2025<br>All ads online: ' + A[i] + '<br>Above market: ' + B[i];
+      tip.style.left = (Math.min(Math.max(X(i), 70), W - 70) / W * b.width) + 'px'; tip.style.top = (Y(A[i]) / H * b.height) + 'px'; tip.hidden = false;
+    });
+    hit.addEventListener('pointerleave', function () { cross.setAttribute('visibility', 'hidden'); dots.forEach(function (d) { d.setAttribute('visibility', 'hidden'); }); tip.hidden = true; });
+  }
+
+  // ---------- data quality (horizontal bars) ----------
+  function renderQuality() {
+    var host = document.getElementById('quality'); host.innerHTML = '';
+    var q = {}; D.meta.quality.forEach(function (x) { q[x[0]] = x; });
+    var SHORT = { raw_ads: 'Raw ads', bad_price: 'Bad price', incomplete: 'No full match', price_outlier: 'Price outlier', clean_ads: 'Clean ads' };
+    var steps = ['raw_ads', 'bad_price', 'incomplete', 'price_outlier', 'clean_ads'].map(function (k) { return { key: k, name: SHORT[k], v: q[k][2], drop: k !== 'raw_ads' && k !== 'clean_ads' }; });
+    var W = 520, rowH = 34, m = { t: 6, r: 56, b: 6, l: 150 }, H = m.t + m.b + steps.length * rowH;
+    var X = function (v) { return m.l + v / q.raw_ads[2] * (W - m.l - m.r); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Data quality funnel' }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    steps.forEach(function (s, i) {
+      var y = m.t + i * rowH, w = Math.max(s.v ? 2 : 0, X(s.v) - m.l);
+      txt(svg, m.l - 8, y + rowH / 2 + 4, (s.drop ? 'Dropped: ' : '') + s.name, { 'text-anchor': 'end', class: s.drop ? '' : 'lbl' });
+      if (w) el('rect', { x: m.l, y: y + 8, width: w, height: rowH - 16, rx: 2, fill: s.drop ? css('--warn') : css('--total') }, svg);
+      txt(svg, m.l + w + 6, y + rowH / 2 + 4, (s.drop && s.v ? minus : '') + num(s.v), { class: 'lbl' });
+      var hit = el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent' }, svg);
+      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = q[s.key][1] + '<br>' + num(s.v) + ' ads, ' + (s.v / q.raw_ads[2] * 100).toFixed(1) + '% of raw'; tip.style.left = (Math.min(Math.max(m.l + w / 2, 110), W - 110) / W * bb.width) + 'px'; tip.style.top = ((y + 8) / H * bb.height) + 'px'; tip.hidden = false; });
+      hit.addEventListener('pointerleave', function () { tip.hidden = true; });
+    });
+    document.getElementById('dq-note').textContent = num(q.fuzzy_matched[2]) + ' of the clean ads were matched only through typo correction ("Corola", "Platinun"). The raw titles spell make and model ' + num(q.title_spellings[2]) + ' ways; after matching they are ' + q.canonical_models[2] + ' models.';
+  }
+
+  // ---------- market grid ----------
+  function renderMarket(R) {
+    var years = []; for (var y = 2025; y >= 2019; y--) years.push(y);
+    var by = {};
+    R.forEach(function (r) { var k = r.vk + '|' + r.year; (by[k] = by[k] || []).push(r.price); });
+    var vers = D.meta.versions.filter(function (v) { return state.model === 'ALL' || v[2] === state.model; });
+    var head = '<thead><tr><th>Version</th>' + years.map(function (y) { return '<th class="yr">' + y + '</th>'; }).join('') + '</tr></thead>';
+    var body = vers.map(function (v) {
+      return '<tr><td>' + v[2] + ' ' + v[3] + '</td>' + years.map(function (y) {
+        var p = by[v[0] + '|' + y]; if (!p) return '<td class="yr dim">–</td>';
+        return '<td class="yr' + (p.length < 5 ? ' dim' : '') + '">' + kBrl(median(p)) + '<small>' + p.length + '</small></td>';
+      }).join('') + '</tr>';
+    }).join('');
+    document.getElementById('market').innerHTML = head + '<tbody>' + body + '</tbody>';
+    document.getElementById('mk-sub').textContent = 'Median asking price by version and model year · ' + scopeName() + ' · R$ thousands';
+  }
+
+  // ---------- stock to review ----------
+  function renderReview(R) {
+    var list = R.filter(function (r) { return !r.sold && (r.pos === 'above' || r.pos === 'below'); })
+      .sort(function (a, b) { return Math.abs(b.gap) - Math.abs(a.gap); });
+    var shown = state.all ? list : list.slice(0, 12);
+    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th></tr></thead>';
+    var body = shown.map(function (r) {
+      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td></tr>';
+    }).join('');
+    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="10">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
+    var ab = list.filter(function (r) { return r.pos === 'above'; }), be = list.filter(function (r) { return r.pos === 'below'; });
+    document.getElementById('rv-sub').textContent = scopeName() + ' · ' + num(ab.length) + ' above market (' + brlS(ab.reduce(function (s, r) { return s + r.gap; }, 0)) + ' against the medians), ' + num(be.length) + ' below (' + brlS(be.reduce(function (s, r) { return s + r.gap; }, 0)) + '). Largest gaps first.';
+    var t = document.getElementById('rv-toggle'); t.hidden = list.length <= 12;
+    t.textContent = state.all ? 'Show the first 12' : 'Show all ' + list.length; t.setAttribute('aria-expanded', String(state.all));
+  }
+
+  function render() { var R = rows(); renderKpis(R); renderBands(R); renderScatter(R); renderOnline(R); renderQuality(); renderMarket(R); renderReview(R); }
+
+  function seg(id, key, attr) {
+    document.getElementById(id).addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      state[key] = b.dataset[attr];
+      this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      render();
+    });
+  }
+  document.getElementById('rv-toggle').addEventListener('click', function () { state.all = !state.all; renderReview(rows()); });
+
+  Promise.all(['listings', 'meta'].map(function (n) { return fetch('data/' + n + '.json').then(function (r) { return r.json(); }); }))
+    .then(function (res) {
+      D.meta = res[1]; D.listings = res[0].map(L);
+      D.ver = {}; D.meta.versions.forEach(function (v) { D.ver[v[0]] = v; });
+      D.stName = {}; D.meta.states.forEach(function (s) { D.stName[s[0]] = s[1]; });
+      var models = []; D.meta.versions.forEach(function (v) { if (models.indexOf(v[2]) < 0) models.push(v[2]); });
+      document.getElementById('mod-seg').innerHTML = '<button data-model="ALL" aria-pressed="true">All</button>' + models.map(function (x) { return '<button data-model="' + x + '" aria-pressed="false">' + x + '</button>'; }).join('');
+      document.getElementById('st-seg').innerHTML = '<button data-st="ALL" aria-pressed="true">All</button>' + D.meta.states.map(function (s) { return '<button data-st="' + s[0] + '" aria-pressed="false" title="' + s[1] + '">' + s[0] + '</button>'; }).join('');
+      seg('mod-seg', 'model', 'model'); seg('st-seg', 'st', 'st');
+      render();
+      var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(render, 150); });
+      if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+    })
+    .catch(function (err) { console.error(err); document.getElementById('kpis').innerHTML = '<p>The data files did not load. Reload the page to try again.</p>'; });
+})();
+</script>

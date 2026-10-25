@@ -1,0 +1,66 @@
+table dim_version
+
+	column version_key
+		dataType: string
+		isKey
+		summarizeBy: none
+		sourceColumn: version_key
+
+	column make
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: make
+
+	column model
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: model
+
+	column version
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: version
+
+	column make_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: make_name
+
+	column model_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: model_name
+
+	column version_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: version_name
+
+	column car_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: car_name
+		sortByColumn: sort_order
+
+	column body_type
+		dataType: string
+		summarizeBy: none
+		sourceColumn: body_type
+
+	column sort_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: sort_order
+
+	partition dim_version = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "dim_version.parquet" ) )
+				in
+					Source

@@ -1,0 +1,33 @@
+table dim_state
+
+	column state
+		dataType: string
+		isKey
+		summarizeBy: none
+		sourceColumn: state
+
+	column state_name
+		dataType: string
+		summarizeBy: none
+		sourceColumn: state_name
+		sortByColumn: sort_order
+
+	column region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: region
+
+	column sort_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: sort_order
+
+	partition dim_state = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "dim_state.parquet" ) )
+				in
+					Source
