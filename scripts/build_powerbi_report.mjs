@@ -71,6 +71,13 @@ function notInFilter(page, key, field, literals) {
 const MEASURE_TABLE = { "Ads in Step": "mart_data_quality" };
 const meas = (prop) => ({ Measure: { Expression: { SourceRef: { Entity: MEASURE_TABLE[prop] || "fct_listings" } }, Property: prop } });
 const fl = (name) => col("fct_listings", name);
+// Sum of a listing column: with one ad per scatter point it is the ad value itself.
+const sumOf = (name, displayName) => ({
+  field: { Aggregation: { Expression: fl(name), Function: 0 } },
+  queryRef: `Sum(fct_listings.${name})`,
+  nativeQueryRef: `Sum of ${name}`,
+  displayName,
+});
 
 const F = {
   model: col("dim_version", "model_name"),
@@ -91,15 +98,17 @@ const positionColors = Object.entries(POSITION_COLOR).map(([v, c]) => ({ propert
 const withMarket = (page, key) => notInFilter(page, key, F.position, ["'too few comparables'"]);
 
 function slicers(page) {
-  const model = container(page, "slicer_model", { x: 632, y: 16, w: 400, h: 80 }, {
-    visualType: "advancedSlicerVisual",
+  const model = container(page, "slicer_model", { x: 792, y: 16, w: 240, h: 80 }, {
+    visualType: "slicer",
     syncGroup: { groupName: "ModelSync", fieldChanges: true, filterChanges: true },
     query: { queryState: { Values: { projections: [proj(F.model)] } } },
-    objects: { layout: [{ properties: { rowCount: int(2), columnCount: int(4) } }] },
+    objects: {
+      data: [{ properties: { mode: str("Dropdown") } }],
+      header: [{ properties: { show: bool(true), text: str("Model") } }],
+    },
     visualContainerObjects: {
-      title: [{ properties: { show: bool(true), text: str("Model") } }],
-      general: [{ properties: { altText: str("Car model filter buttons.") } }],
-      padding: [vcoPadding(6)],
+      general: [{ properties: { altText: str("Car model filter dropdown.") } }],
+      padding: [vcoPadding(8)],
     },
   });
   const state = container(page, "slicer_state", { x: 1048, y: 16, w: 216, h: 80 }, {
@@ -125,23 +134,23 @@ function pricingPage() {
   const p = PAGE_IDS.pricing;
   z = 0;
   const cards = [
-    card(p, "card_clean_ads", { x: 16, y: 104, w: 300, h: 104 }, meas("Clean Ads"), "Clean ads", {
+    card(p, "card_clean_ads", { x: 16, y: 104, w: 300, h: 120 }, meas("Clean Ads"), "Clean ads", {
       units: "1", reference: { field: meas("Ads Still Online"), title: "still online" }, alt: "Number of clean ads, and how many are still online.",
     }),
-    card(p, "card_median_price", { x: 332, y: 104, w: 300, h: 104 }, meas("Median Asking Price"), "Median asking price", {
+    card(p, "card_median_price", { x: 332, y: 104, w: 300, h: 120 }, meas("Median Asking Price"), "Median asking price", {
       units: "1000", precision: 1, alt: "Median asking price in Brazilian reais.",
     }),
-    card(p, "card_days_to_sell", { x: 648, y: 104, w: 300, h: 104 }, meas("Median Days to Sell"), "Median days to sell", {
+    card(p, "card_days_to_sell", { x: 648, y: 104, w: 300, h: 120 }, meas("Median Days to Sell"), "Median days to sell", {
       reference: { field: meas("Sold Within 30 Days %"), title: "sold within 30 days" },
       alt: "Median days on the market for sold ads, and the share sold within 30 days.",
     }),
-    card(p, "card_above_online", { x: 964, y: 104, w: 300, h: 104 }, meas("Above Market Online"), "Ads above market, still online", {
+    card(p, "card_above_online", { x: 964, y: 104, w: 300, h: 120 }, meas("Above Market Online"), "Ads above market, still online", {
       units: "1", reference: { field: meas("Gap Above Market Online"), title: "over market median", units: "1000", precision: 1 },
       alt: "Ads still online that are priced above the market range, and how much they ask over the comparable median in total.",
     }),
   ];
   const days = meas("Median Days to Sell");
-  const byBand = container(p, "column_days_band", { x: 16, y: 224, w: 400, h: 232 }, {
+  const byBand = container(p, "column_days_band", { x: 16, y: 240, w: 400, h: 216 }, {
     visualType: "columnChart",
     query: {
       queryState: {
@@ -160,16 +169,16 @@ function pricingPage() {
     },
     visualContainerObjects: chartVcos("Median days to sell, by price against market",
       "Column chart of median days to sell for sold ads, from priced more than 6% below the comparable median to more than 6% above; dearer ads take longer.",
-      "Sold ads. Gap = asking price against the median of comparable ads"),
+      "Sold ads, by gap to the comparable median"),
   }, { filterConfig: { filters: [notInFilter(p, "band_with_market", F.band, ["'Too few comparables'"])] } });
-  const scatter = container(p, "scatter_gap_days", { x: 432, y: 224, w: 416, h: 232 }, {
+  const scatter = container(p, "scatter_gap_days", { x: 432, y: 240, w: 416, h: 216 }, {
     visualType: "scatterChart",
     query: {
       queryState: {
         Category: { projections: [named(fl("listing_id"), "Ad")] },
         Series: { projections: [named(F.position, "Position")] },
-        X: { projections: [named(fl("gap_to_median_pct"), "Gap to market median")] },
-        Y: { projections: [named(fl("days_on_market"), "Days on market")] },
+        X: { projections: [sumOf("gap_to_median_pct", "Gap to market median")] },
+        Y: { projections: [sumOf("days_on_market", "Days on market")] },
       },
     },
     objects: {
@@ -183,7 +192,7 @@ function pricingPage() {
       "Scatter plot of sold ads: gap to the comparable median on the horizontal axis and days on the market on the vertical axis, coloured by position against the market range.",
       "Sold ads with at least 5 comparables"),
   }, { filterConfig: { filters: [inFilter(p, "scatter_sold", fl("is_sold"), ["1L"]), withMarket(p, "scatter_market")] } });
-  const online = container(p, "line_online", { x: 864, y: 224, w: 400, h: 232 }, {
+  const online = container(p, "line_online", { x: 864, y: 240, w: 400, h: 216 }, {
     visualType: "lineChart",
     query: {
       queryState: {
@@ -203,7 +212,7 @@ function pricingPage() {
     visualContainerObjects: chartVcos("Ads online by day",
       "Line chart of the number of ads online each day, one line per position against the market range.", "May to November 2025"),
   }, { filterConfig: { filters: [withMarket(p, "online_market")] } });
-  const matrix = container(p, "matrix_price_year", { x: 16, y: 472, w: 400, h: 232 }, {
+  const matrix = container(p, "matrix_price_year", { x: 16, y: 472, w: 376, h: 232 }, {
     visualType: "pivotTable",
     query: {
       queryState: {
@@ -213,20 +222,22 @@ function pricingPage() {
       },
     },
     objects: {
-      columnHeaders: [{ properties: { columnAdjustment: str("growToFit"), autoSizeColumnWidth: bool(true) } }],
+      columnHeaders: [{ properties: { columnAdjustment: str("growToFit"), autoSizeColumnWidth: bool(true), fontSize: num(9) } }],
+      rowHeaders: [{ properties: { fontSize: num(9) } }],
+      values: [{ properties: { fontSize: num(9) } }],
       columnFormatting: [{ properties: { labelDisplayUnits: str("1000"), labelPrecision: int(0) }, selector: { metadata: ref(meas("Median Asking Price")) } }],
     },
     visualContainerObjects: chartVcos("Median asking price by car and model year",
       "Matrix of the median asking price and number of ads for each car version by model year.", "R$ thousands"),
   });
-  const review = container(p, "table_stock_review", { x: 432, y: 472, w: 560, h: 232 }, {
+  const review = container(p, "table_stock_review", { x: 408, y: 472, w: 592, h: 232 }, {
     visualType: "tableEx",
     query: {
       queryState: {
         Values: {
           projections: [
             named(F.car, "Car"), named(fl("model_year"), "Year"), named(F.state, "State"),
-            named(fl("price_brl"), "Price"), named(fl("market_median_brl"), "Market median"),
+            named(fl("price_brl"), "Price"), named(fl("market_median_brl"), "Market"),
             named(fl("gap_to_median_brl"), "Gap"), named(fl("gap_to_median_pct"), "Gap %"),
             named(fl("days_on_market"), "Days"), named(F.position, "Position"),
           ],
@@ -235,7 +246,8 @@ function pricingPage() {
       sortDefinition: { sort: [{ field: fl("gap_to_median_brl"), direction: "Descending" }], isDefaultSort: true },
     },
     objects: {
-      columnHeaders: [{ properties: { columnAdjustment: str("growToFit"), autoSizeColumnWidth: bool(true) } }],
+      columnHeaders: [{ properties: { columnAdjustment: str("growToFit"), autoSizeColumnWidth: bool(true), fontSize: num(9) } }],
+      values: [{ properties: { fontSize: num(9) } }],
       total: [{ properties: { totals: bool(false) } }],
     },
     visualContainerObjects: chartVcos("Stock to review",
@@ -249,7 +261,7 @@ function pricingPage() {
       ],
     },
   });
-  const quality = container(p, "bar_data_quality", { x: 1008, y: 472, w: 256, h: 232 }, {
+  const quality = container(p, "bar_data_quality", { x: 1016, y: 472, w: 248, h: 232 }, {
     visualType: "clusteredBarChart",
     query: {
       queryState: {
@@ -260,7 +272,7 @@ function pricingPage() {
     },
     objects: {
       dataPoint: [{ properties: { fill: fill(C.grey) } }],
-      labels: [{ properties: { show: bool(true), fontSize: num(9), color: fill(C.text) } }],
+      labels: [{ properties: { show: bool(true), fontSize: num(9), color: fill(C.text), labelDisplayUnits: num(1) } }],
       categoryAxis: [{ properties: { ...axisOn, fontSize: num(8) } }],
       valueAxis: [{ properties: { show: bool(false), gridlineShow: bool(false), showAxisTitle: bool(false) } }],
       legend: [{ properties: { show: bool(false) } }],

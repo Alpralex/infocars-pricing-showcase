@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "InfoCarsPricing-e93f8d96.json",
+      "name": "InfoCarsPricing-fc0d6215.json",
       "reportVersionAtImport": {
         "visual": "2.11.0",
         "report": "3.4.0",
@@ -37,8 +37,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "InfoCarsPricing-e93f8d96.json",
-          "path": "InfoCarsPricing-e93f8d96.json",
+          "name": "InfoCarsPricing-fc0d6215.json",
+          "path": "InfoCarsPricing-fc0d6215.json",
           "type": "CustomTheme"
         }
       ]

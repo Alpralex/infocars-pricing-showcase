@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "55719c2e3a41bb6a8005",
   "position": {
-    "x": 632,
+    "x": 792,
     "y": 16,
     "z": 13000,
     "height": 80,
-    "width": 400,
+    "width": 240,
     "tabOrder": 13000
   },
   "visual": {
-    "visualType": "advancedSlicerVisual",
+    "visualType": "slicer",
     "syncGroup": {
       "groupName": "ModelSync",
       "fieldChanges": true,
@@ -39,29 +39,20 @@
       }
     },
     "objects": {
-      "layout": [
+      "data": [
         {
           "properties": {
-            "rowCount": {
+            "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "2L"
-                }
-              }
-            },
-            "columnCount": {
-              "expr": {
-                "Literal": {
-                  "Value": "4L"
+                  "Value": "'Dropdown'"
                 }
               }
             }
           }
         }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
+      ],
+      "header": [
         {
           "properties": {
             "show": {
@@ -80,14 +71,16 @@
             }
           }
         }
-      ],
+      ]
+    },
+    "visualContainerObjects": {
       "general": [
         {
           "properties": {
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Car model filter buttons.'"
+                  "Value": "'Car model filter dropdown.'"
                 }
               }
             }
@@ -100,28 +93,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "6D"
+                  "Value": "8D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "6D"
+                  "Value": "8D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "6D"
+                  "Value": "8D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "6D"
+                  "Value": "8D"
                 }
               }
             }

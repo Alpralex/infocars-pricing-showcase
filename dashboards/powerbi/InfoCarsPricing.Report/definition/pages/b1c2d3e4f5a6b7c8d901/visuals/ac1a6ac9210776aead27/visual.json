@@ -3,9 +3,9 @@
   "name": "ac1a6ac9210776aead27",
   "position": {
     "x": 16,
-    "y": 224,
+    "y": 240,
     "z": 5000,
-    "height": 232,
+    "height": 216,
     "width": 400,
     "tabOrder": 5000
   },
@@ -299,7 +299,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sold ads. Gap = asking price against the median of comparable ads'"
+                  "Value": "'Sold ads, by gap to the comparable median'"
                 }
               }
             }

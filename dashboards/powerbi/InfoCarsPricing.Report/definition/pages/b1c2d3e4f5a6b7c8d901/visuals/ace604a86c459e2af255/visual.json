@@ -3,9 +3,9 @@
   "name": "ace604a86c459e2af255",
   "position": {
     "x": 432,
-    "y": 224,
+    "y": 240,
     "z": 6000,
-    "height": 232,
+    "height": 216,
     "width": 416,
     "tabOrder": 6000
   },
@@ -55,17 +55,22 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "Aggregation": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "fct_listings"
+                        }
+                      },
+                      "Property": "gap_to_median_pct"
                     }
                   },
-                  "Property": "gap_to_median_pct"
+                  "Function": 0
                 }
               },
-              "queryRef": "fct_listings.gap_to_median_pct",
-              "nativeQueryRef": "gap_to_median_pct",
+              "queryRef": "Sum(fct_listings.gap_to_median_pct)",
+              "nativeQueryRef": "Sum of gap_to_median_pct",
               "displayName": "Gap to market median"
             }
           ]
@@ -74,17 +79,22 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "Aggregation": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "fct_listings"
+                        }
+                      },
+                      "Property": "days_on_market"
                     }
                   },
-                  "Property": "days_on_market"
+                  "Function": 0
                 }
               },
-              "queryRef": "fct_listings.days_on_market",
-              "nativeQueryRef": "days_on_market",
+              "queryRef": "Sum(fct_listings.days_on_market)",
+              "nativeQueryRef": "Sum of days_on_market",
               "displayName": "Days on market"
             }
           ]
