@@ -145,7 +145,7 @@ function pricingPage() {
       alt: "Median days on the market for sold ads, and the share sold within 30 days.",
     }),
     card(p, "card_above_online", { x: 964, y: 104, w: 300, h: 120 }, meas("Above Market Online"), "Ads above market, still online", {
-      units: "1", reference: { field: meas("Gap Above Market Online"), title: "over market median", units: "1000", precision: 1 },
+      units: "1", reference: { field: meas("Gap Above Market Online"), title: "total asked above market", units: "1000", precision: 1 },
       alt: "Ads still online that are priced above the market range, and how much they ask over the comparable median in total.",
     }),
   ];
