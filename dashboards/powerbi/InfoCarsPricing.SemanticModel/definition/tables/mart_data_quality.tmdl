@@ -30,7 +30,7 @@ table mart_data_quality
 		dataType: int64
 		formatString: #,0
 		lineageTag: e3ee4868-5010-4b6a-adc1-0e3529079b99
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: ads
 
 	partition mart_data_quality = m

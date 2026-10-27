@@ -44,14 +44,14 @@ table mart_market_by_version
 		dataType: int64
 		formatString: #,0
 		lineageTag: 064d46ef-b275-428a-9fdc-2d85497cdf64
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: listings
 
 	column active_listings
 		dataType: int64
 		formatString: #,0
 		lineageTag: ca4ab99f-da6b-46dd-a3da-80e107471980
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: active_listings
 
 	column p25_price_brl
