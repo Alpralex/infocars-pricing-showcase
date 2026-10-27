@@ -114,7 +114,7 @@ table fct_listings
 		isKey
 		formatString: 0
 		lineageTag: 58b569e1-ad59-4fd8-bece-e1aa2bec7c7d
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: listing_id
 
 		annotation SummarizationSetBy = Automatic
@@ -130,7 +130,7 @@ table fct_listings
 		dataType: int64
 		formatString: 0
 		lineageTag: e56c12e8-ad43-417d-b589-b7d37f11b4b8
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: model_year
 
 		annotation SummarizationSetBy = Automatic
@@ -158,14 +158,14 @@ table fct_listings
 		dataType: double
 		formatString: \R\$ #,0
 		lineageTag: ccd37b78-48b6-4a10-9f54-450987ed41cd
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: price_brl
 
 	column km
 		dataType: int64
 		formatString: #,0
 		lineageTag: 564c6fa5-71ed-41ef-89e6-9be949d3059a
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: km
 
 	column listed_date
@@ -204,14 +204,14 @@ table fct_listings
 		dataType: int64
 		formatString: 0
 		lineageTag: f1b24b47-1f04-46d3-8e48-e23bfd4819cb
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: days_on_market
 
 	column is_active
 		dataType: int64
 		formatString: 0
 		lineageTag: f5e15acc-af7e-46e0-bdfd-feaa1e19c175
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_active
 
 		annotation SummarizationSetBy = Automatic
@@ -220,7 +220,7 @@ table fct_listings
 		dataType: int64
 		formatString: 0
 		lineageTag: d5260a75-03ef-465d-ba22-0b176c401124
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: is_sold
 
 		annotation SummarizationSetBy = Automatic
@@ -229,7 +229,7 @@ table fct_listings
 		dataType: int64
 		formatString: 0
 		lineageTag: d70f6173-09ce-4ae7-b024-665382e21ffc
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: comparables
 
 		annotation SummarizationSetBy = Automatic
@@ -238,7 +238,7 @@ table fct_listings
 		dataType: double
 		formatString: \R\$ #,0
 		lineageTag: b9b7d6c7-f3f2-4463-87bd-3160f2aa9809
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: market_p25_brl
 
 		annotation SummarizationSetBy = Automatic
@@ -247,7 +247,7 @@ table fct_listings
 		dataType: double
 		formatString: \R\$ #,0
 		lineageTag: a1de0cf5-7cf4-4afd-9b1c-e0d308af4777
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: market_median_brl
 
 		annotation SummarizationSetBy = Automatic
@@ -256,7 +256,7 @@ table fct_listings
 		dataType: double
 		formatString: \R\$ #,0
 		lineageTag: be6c447a-f8e6-4cba-89df-70df4440b9e0
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: market_p75_brl
 
 		annotation SummarizationSetBy = Automatic
@@ -265,14 +265,14 @@ table fct_listings
 		dataType: double
 		formatString: \R\$ #,0
 		lineageTag: cd758b31-2ada-4fa7-88be-62ad38805bb9
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: gap_to_median_brl
 
 	column gap_to_median_pct
 		dataType: double
 		formatString: +0.0%;-0.0%;0.0%
 		lineageTag: 59c2226e-54e4-4f8b-8833-c15fb81918ee
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: gap_to_median_pct
 
 		annotation SummarizationSetBy = Automatic
