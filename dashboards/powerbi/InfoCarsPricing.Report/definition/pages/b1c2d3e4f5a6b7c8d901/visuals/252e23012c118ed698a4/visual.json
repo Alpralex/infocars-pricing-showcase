@@ -212,7 +212,7 @@
             "titleText": {
               "expr": {
                 "Literal": {
-                  "Value": "'over market median'"
+                  "Value": "'total asked above market'"
                 }
               }
             },
@@ -251,7 +251,7 @@
             "titleText": {
               "expr": {
                 "Literal": {
-                  "Value": "'over market median'"
+                  "Value": "'total asked above market'"
                 }
               }
             },
