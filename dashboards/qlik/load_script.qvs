@@ -1,0 +1,115 @@
+///$tab Main
+// InfoCars pricing: synthetic used-car ads, matched to a catalogue, checked for bad prices and compared
+// with comparable ads (see ../README.md). Qlik Sense / Qlik Cloud.
+// The inputs are the Parquet files that scripts/export.py writes to ../powerbi/data. Upload them to the
+// space's DataFiles connection, or change vPath to a folder connection on Qlik Sense Desktop/Enterprise.
+// Parquet needs Qlik Cloud or Qlik Sense Enterprise May 2023 or later.
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyFormat='R$ #,##0;-R$ #,##0';
+SET DateFormat='YYYY-MM-DD';
+SET FirstWeekDay=0;
+
+LET vPath = 'lib://DataFiles/';
+// Snapshot of the data set: ads with no removal date were still online on this day.
+LET vSnapshot = Num(MakeDate(2025, 11, 1));
+
+// Parquet DATE columns load as dates. The fallback parses text in case a connector returns strings.
+SET vToDate = Date(Alt(Num($1), Num(Date#($1, 'YYYY-MM-DD'))), 'YYYY-MM-DD');
+
+///$tab Dimensions
+// Car is a dual (name, catalogue order) so every chart lists versions in catalogue order.
+Versions:
+LOAD
+    version_key                             AS VersionKey,
+    make_name                               AS Make,
+    model_name                              AS Model,
+    version_name                            AS Version,
+    Dual(car_name, sort_order)              AS Car,
+    body_type                               AS [Body Type]
+FROM [$(vPath)dim_version.parquet] (parquet);
+
+States:
+LOAD
+    state                                   AS State,
+    Dual(state_name, sort_order)            AS [State Name],
+    region                                  AS Region
+FROM [$(vPath)dim_state.parquet] (parquet);
+
+///$tab Facts
+// One row per clean ad. Keys: VersionKey, State, %Date (listed date) and ListingID.
+// The market columns compare each ad with the other clean ads of the same version and model year.
+Listings:
+LOAD
+    listing_id                              AS ListingID,
+    version_key                             AS VersionKey,
+    model_year                              AS [Model Year],
+    state                                   AS State,
+    source                                  AS Source,
+    match_method                            AS [Match Method],
+    price_brl                               AS Price,
+    km                                      AS Km,
+    $(vToDate(listed_date))                 AS %Date,
+    $(vToDate(removed_date))                AS [Removed Date],
+    Date(MonthStart($(vToDate(removed_date))), 'MMM YYYY') AS [Removed Month],
+    days_on_market                          AS [Days on Market],
+    is_active                               AS [Is Active],
+    is_sold                                 AS [Is Sold],
+    comparables                             AS Comparables,
+    market_p25_brl                          AS [Market P25],
+    market_median_brl                       AS [Market Median],
+    market_p75_brl                          AS [Market P75],
+    gap_to_median_brl                       AS [Gap to Median],
+    gap_to_median_pct                       AS [Gap to Median %],
+    price_position                          AS [Price Position],
+    Dual(price_band, price_band_order)      AS [Price Band],
+    1                                       AS ListingCounter
+FROM [$(vPath)fct_listings.parquet] (parquet);
+
+///$tab Days online
+// One row per ad and day on the site, for the "ads online per day" chart. It links to Listings by
+// ListingID only; Online Date is its own field, so it does not create a loop with the calendar.
+// An ad is online from its listed date to the day before its removal (or to the snapshot).
+OnlineDays:
+LOAD
+    ListingID,
+    Date(%Date + IterNo() - 1)              AS [Online Date],
+    1                                       AS OnlineFlag
+RESIDENT Listings
+WHILE %Date + IterNo() - 1 < If(IsNull([Removed Date]), $(vSnapshot) + 1, [Removed Date]);
+
+///$tab Data quality
+// Stand-alone table (no shared fields): the demo's quality report, from raw ads to clean ads.
+DataQuality:
+LOAD
+    step_key                                AS [Quality Step Key],
+    Dual(step, step_order)                  AS [Quality Step],
+    ads                                     AS [Quality Ads]
+FROM [$(vPath)mart_data_quality.parquet] (parquet);
+
+///$tab Calendar
+// Master calendar on the listed date, from the first ad to the snapshot.
+TempRange:
+LOAD Min(%Date) AS MinD RESIDENT Listings;
+LET vMinD = Num(Peek('MinD', 0, 'TempRange'));
+DROP TABLE TempRange;
+
+MasterCalendar:
+LOAD
+    Date(d)                                 AS %Date,
+    Year(d)                                 AS Year,
+    Month(d)                                AS Month,
+    Date(MonthStart(d), 'MMM YYYY')         AS YearMonth,
+    Date(WeekStart(d), 'YYYY-MM-DD')        AS [Week Start],
+    WeekDay(d)                              AS Weekday;
+LOAD $(vMinD) + IterNo() - 1 AS d
+AUTOGENERATE 1 WHILE $(vMinD) + IterNo() - 1 <= $(vSnapshot);
+
+///$tab Variables
+// Master measures are listed in master_items.md; variables keep the expressions in one place.
+SET vCleanAds          = Sum(ListingCounter);
+SET vSoldAds           = Sum({<[Is Sold]={1}>} ListingCounter);
+SET vMedianDaysToSell  = Median({<[Is Sold]={1}>} [Days on Market]);
+SET vAboveMarketOnline = Sum({<[Is Active]={1}, [Price Position]={'above market'}>} ListingCounter);
+SET vGapAboveOnline    = Sum({<[Is Active]={1}, [Price Position]={'above market'}>} [Gap to Median]);
+SET vAdsOnline         = Sum({<%Date=, Year=, Month=, YearMonth=, [Week Start]=, Weekday=>} OnlineFlag);

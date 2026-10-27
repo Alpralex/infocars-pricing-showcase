@@ -1,0 +1,420 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "mart_data_quality.step": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_data_quality",
+			          "ConceptualProperty": "step"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Step": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "mart_data_quality.ads_in_step": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "mart_data_quality",
+			          "ConceptualProperty": "Ads in Step"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ads": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_date.date_day": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_date",
+			          "ConceptualProperty": "date_day"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Date": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.ads_online_on_date": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "Ads Online on Date"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ads online": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.price_position": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "price_position"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Position": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.model_year": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "model_year"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Year": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Model year": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.price_brl": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "price_brl"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Price": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.market_median_brl": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "market_median_brl"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Market": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.gap_to_median_brl": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "gap_to_median_brl"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gap": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.gap_to_median_pct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "gap_to_median_pct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gap %": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.days_on_market": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "days_on_market"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Days": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.median_asking_price": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "Median Asking Price"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Median price": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.clean_ads": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "Clean Ads"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ads": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.price_band": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "price_band"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Price against market": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.median_days_to_sell": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "Median Days to Sell"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Median days to sell": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.still_online_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "Still Online %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Still online": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "fct_listings.listing_id": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "fct_listings",
+			          "ConceptualProperty": "listing_id"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ad": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_version.car_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_version",
+			          "ConceptualProperty": "car_name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Car": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "dim_state.state": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "dim_state",
+			          "ConceptualProperty": "state"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "State": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

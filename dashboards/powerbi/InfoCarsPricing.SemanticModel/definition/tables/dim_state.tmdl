@@ -1,0 +1,39 @@
+table dim_state
+	lineageTag: b7d16435-b552-44bb-ae53-91191e91410c
+
+	column state
+		dataType: string
+		isKey
+		lineageTag: efeeaf05-0b5d-45a9-9bf3-db48f2250e34
+		summarizeBy: none
+		sourceColumn: state
+
+	column state_name
+		dataType: string
+		lineageTag: c282f297-f077-4808-9136-41a69a35ceb7
+		summarizeBy: none
+		sourceColumn: state_name
+		sortByColumn: sort_order
+
+	column region
+		dataType: string
+		lineageTag: 3a5bd91a-e4ed-4621-8941-6062e07a0ac6
+		summarizeBy: none
+		sourceColumn: region
+
+	column sort_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 40dae8a6-356d-4318-9372-4004625d214d
+		summarizeBy: none
+		sourceColumn: sort_order
+
+	partition dim_state = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "dim_state.parquet" ) )
+				in
+					Source
+

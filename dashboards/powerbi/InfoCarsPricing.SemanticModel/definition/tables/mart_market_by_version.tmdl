@@ -1,0 +1,92 @@
+table mart_market_by_version
+	lineageTag: d21acfb5-bd80-40e5-95df-edc424cdd12e
+
+	column make
+		dataType: string
+		lineageTag: ae7fdac4-0779-41e0-b1eb-7069c3383993
+		summarizeBy: none
+		sourceColumn: make
+
+	column model
+		dataType: string
+		lineageTag: 00986545-e79a-41fa-9ce5-011c163048ff
+		summarizeBy: none
+		sourceColumn: model
+
+	column version
+		dataType: string
+		lineageTag: 95a87270-cbf8-4211-bcd8-fabac0d37a6c
+		summarizeBy: none
+		sourceColumn: version
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: 01f00e25-a07d-4c8b-9711-42ec193f7b43
+		summarizeBy: none
+		sourceColumn: version_key
+
+	column model_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3fd446b3-f472-497b-8a60-65f5bc535399
+		summarizeBy: none
+		sourceColumn: model_year
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: 49900572-84ef-4fb2-950f-ef5bc2ce2dd1
+		summarizeBy: none
+		sourceColumn: state
+
+	column listings
+		dataType: int64
+		formatString: #,0
+		lineageTag: 064d46ef-b275-428a-9fdc-2d85497cdf64
+		summarizeBy: sum
+		sourceColumn: listings
+
+	column active_listings
+		dataType: int64
+		formatString: #,0
+		lineageTag: ca4ab99f-da6b-46dd-a3da-80e107471980
+		summarizeBy: sum
+		sourceColumn: active_listings
+
+	column p25_price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: e119aae9-8597-479e-b1c7-9c7ef5d76b6d
+		summarizeBy: none
+		sourceColumn: p25_price_brl
+
+	column median_price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 97042963-a050-4727-a835-291d321d4850
+		summarizeBy: none
+		sourceColumn: median_price_brl
+
+	column p75_price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 3e79a6bd-9678-4064-b417-ef252d17bc74
+		summarizeBy: none
+		sourceColumn: p75_price_brl
+
+	column median_days_to_sell
+		dataType: double
+		formatString: 0.0
+		lineageTag: 54fac453-e192-4466-a668-f186cd5772c0
+		summarizeBy: none
+		sourceColumn: median_days_to_sell
+
+	partition mart_market_by_version = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_market_by_version.parquet" ) )
+				in
+					Source
+

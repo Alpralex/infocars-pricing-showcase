@@ -1,0 +1,310 @@
+table fct_listings
+	lineageTag: 6cfdb000-a471-426f-8948-6fb725dd7653
+
+	measure 'Clean Ads' = COUNTROWS ( fct_listings )
+		formatString: #,0
+		displayFolder: Ads
+		lineageTag: c2c8973f-8240-4399-b29d-9956b360722d
+
+	measure 'Sold Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1 )
+		formatString: #,0
+		displayFolder: Ads
+		lineageTag: 0e62fb4d-23cd-42ad-a9c6-7c33059f3c49
+
+	measure 'Ads Still Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1 )
+		formatString: #,0
+		displayFolder: Ads
+		lineageTag: fc8f2af4-fb51-4abf-8b89-93197e048aed
+
+	measure 'Still Online %' = DIVIDE ( [Ads Still Online], [Clean Ads] )
+		formatString: 0.0%
+		displayFolder: Ads
+		lineageTag: 8a84875c-b8c8-4019-9f35-1a2dced07ff9
+
+	measure 'Ads Online on Date' =
+			VAR d = MAX ( dim_date[date_day] )
+			RETURN
+				CALCULATE (
+					COUNTROWS ( fct_listings ),
+					REMOVEFILTERS ( dim_date ),
+					fct_listings[listed_date] <= d,
+					OR ( ISBLANK ( fct_listings[removed_date] ), fct_listings[removed_date] > d )
+				)
+		formatString: #,0
+		displayFolder: Ads
+		lineageTag: 28d4915a-67e2-4de5-a932-7dbb5a0e8839
+
+	measure 'Ads Sold on Date' = CALCULATE ( [Sold Ads], USERELATIONSHIP ( fct_listings[removed_date], dim_date[date_day] ) )
+		formatString: #,0
+		displayFolder: Ads
+		lineageTag: 62af0cb8-3299-4df6-a102-a4b5f707ea54
+
+	measure 'Median Asking Price' = MEDIAN ( fct_listings[price_brl] )
+		formatString: \R\$ #,0
+		displayFolder: Price
+		lineageTag: 76a2330b-6d72-4bd0-8db6-463940170d14
+
+	measure 'Average Asking Price' = AVERAGE ( fct_listings[price_brl] )
+		formatString: \R\$ #,0
+		displayFolder: Price
+		lineageTag: 081fd38b-7cbf-497d-95d7-ab4366a2e91f
+
+	measure 'Median Gap to Market %' = MEDIAN ( fct_listings[gap_to_median_pct] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Price
+		lineageTag: 657195c6-5a27-4a5f-bb19-c9692d5f4c7c
+
+	measure 'Ads With Market' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables" )
+		formatString: #,0
+		displayFolder: Price
+		lineageTag: c6905bdc-38da-451f-8b0c-eed3d6da1589
+
+	measure 'Above Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market" )
+		formatString: #,0
+		displayFolder: Price
+		lineageTag: 2670e189-3a0d-41b5-aa26-457bddbcb3ad
+
+	measure 'Below Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "below market" )
+		formatString: #,0
+		displayFolder: Price
+		lineageTag: 31e49b6b-2148-44ec-b032-70784cf95634
+
+	measure 'Above Market %' = DIVIDE ( [Above Market Ads], [Ads With Market] )
+		formatString: 0.0%
+		displayFolder: Price
+		lineageTag: 0c793a10-f69f-45ff-a9d4-b428fbd8e809
+
+	measure 'Median Days to Sell' = CALCULATE ( MEDIAN ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+		formatString: 0.0
+		displayFolder: Speed
+		lineageTag: 3c075f86-7aa4-451e-bab6-f55438630457
+
+	measure 'Average Days to Sell' = CALCULATE ( AVERAGE ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
+		formatString: 0.0
+		displayFolder: Speed
+		lineageTag: fd6ea4c3-f7a2-44ca-b3af-ab177b427656
+
+	measure 'Sold Within 30 Days %' = DIVIDE ( CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1, fct_listings[days_on_market] <= 30 ), [Sold Ads] )
+		formatString: 0.0%
+		displayFolder: Speed
+		lineageTag: 7795abd7-be2e-4396-81c4-a86eb59df398
+
+	measure 'Above Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+		formatString: #,0
+		displayFolder: Stock to review
+		lineageTag: 9915c089-a0ed-4ccf-bbbd-9f2070f3795c
+
+	measure 'Below Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+		formatString: #,0
+		displayFolder: Stock to review
+		lineageTag: 0a623103-55c6-4948-b551-2c94094f28ed
+
+	measure 'Gap Above Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
+		formatString: \R\$ #,0
+		displayFolder: Stock to review
+		lineageTag: dcc24489-5101-463f-9890-246f490400a8
+
+	measure 'Gap Below Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
+		formatString: \R\$ #,0
+		displayFolder: Stock to review
+		lineageTag: d82a99be-4dce-4288-a049-e90551829642
+
+	column listing_id
+		dataType: int64
+		isKey
+		formatString: 0
+		lineageTag: 58b569e1-ad59-4fd8-bece-e1aa2bec7c7d
+		summarizeBy: sum
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: cb50ff61-1fc7-43fc-b67f-cde0a2e977e2
+		summarizeBy: none
+		sourceColumn: version_key
+
+	column model_year
+		dataType: int64
+		formatString: 0
+		lineageTag: e56c12e8-ad43-417d-b589-b7d37f11b4b8
+		summarizeBy: sum
+		sourceColumn: model_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: a624af2c-f979-4dc9-9656-38d85d3d2a82
+		summarizeBy: none
+		sourceColumn: state
+
+	column source
+		dataType: string
+		lineageTag: c83e6c0f-8952-4fda-ab7d-cf0325f4b133
+		summarizeBy: none
+		sourceColumn: source
+
+	column match_method
+		dataType: string
+		lineageTag: 96e7aea5-45f0-4982-a45d-2b58b9dc6e87
+		summarizeBy: none
+		sourceColumn: match_method
+
+	column price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: ccd37b78-48b6-4a10-9f54-450987ed41cd
+		summarizeBy: sum
+		sourceColumn: price_brl
+
+	column km
+		dataType: int64
+		formatString: #,0
+		lineageTag: 564c6fa5-71ed-41ef-89e6-9be949d3059a
+		summarizeBy: sum
+		sourceColumn: km
+
+	column listed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: bde755ad-290e-43ef-ac49-ade89a6e6902
+		summarizeBy: none
+		sourceColumn: listed_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column removed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c9728487-cb4a-43ce-bc0e-829c33bc915a
+		summarizeBy: none
+		sourceColumn: removed_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column last_seen_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: ec0f3552-511b-492f-8c75-404a3de34885
+		summarizeBy: none
+		sourceColumn: last_seen_date
+
+		variation Variação
+			isDefault
+			relationship: c425a3c4-94bf-4f0e-a234-a1ef46d19630
+			defaultHierarchy: LocalDateTable_28d93c39-1a26-4cec-a563-29221964910e.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_on_market
+		dataType: int64
+		formatString: 0
+		lineageTag: f1b24b47-1f04-46d3-8e48-e23bfd4819cb
+		summarizeBy: sum
+		sourceColumn: days_on_market
+
+	column is_active
+		dataType: int64
+		formatString: 0
+		lineageTag: f5e15acc-af7e-46e0-bdfd-feaa1e19c175
+		summarizeBy: sum
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: d5260a75-03ef-465d-ba22-0b176c401124
+		summarizeBy: sum
+		sourceColumn: is_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column comparables
+		dataType: int64
+		formatString: 0
+		lineageTag: d70f6173-09ce-4ae7-b024-665382e21ffc
+		summarizeBy: sum
+		sourceColumn: comparables
+
+		annotation SummarizationSetBy = Automatic
+
+	column market_p25_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: b9b7d6c7-f3f2-4463-87bd-3160f2aa9809
+		summarizeBy: sum
+		sourceColumn: market_p25_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column market_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: a1de0cf5-7cf4-4afd-9b1c-e0d308af4777
+		summarizeBy: sum
+		sourceColumn: market_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column market_p75_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: be6c447a-f8e6-4cba-89df-70df4440b9e0
+		summarizeBy: sum
+		sourceColumn: market_p75_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column gap_to_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: cd758b31-2ada-4fa7-88be-62ad38805bb9
+		summarizeBy: sum
+		sourceColumn: gap_to_median_brl
+
+	column gap_to_median_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 59c2226e-54e4-4f8b-8833-c15fb81918ee
+		summarizeBy: sum
+		sourceColumn: gap_to_median_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_position
+		dataType: string
+		lineageTag: de04be1a-1f11-4aee-9e6c-4271b7ab7ec2
+		summarizeBy: none
+		sourceColumn: price_position
+
+	column price_band
+		dataType: string
+		lineageTag: c3355240-d6ca-4a36-a4af-95d8f2eaf635
+		summarizeBy: none
+		sourceColumn: price_band
+		sortByColumn: price_band_order
+
+	column price_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1f301d9c-6b7b-40fd-917e-fafa68403ea0
+		summarizeBy: sum
+		sourceColumn: price_band_order
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fct_listings = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "fct_listings.parquet" ) )
+				in
+					Source
+

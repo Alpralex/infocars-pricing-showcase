@@ -1,0 +1,78 @@
+table dim_version
+	lineageTag: 5d739638-6937-499e-9573-2172548f219e
+
+	column version_key
+		dataType: string
+		isKey
+		lineageTag: 237385cc-5988-4d3d-ad28-5798546b45e3
+		summarizeBy: none
+		sourceColumn: version_key
+
+	column make
+		dataType: string
+		isHidden
+		lineageTag: f342e1f1-40ab-4e76-8efe-97177d3a511a
+		summarizeBy: none
+		sourceColumn: make
+
+	column model
+		dataType: string
+		isHidden
+		lineageTag: 7ea5e047-b980-47bd-9afe-d631f643794c
+		summarizeBy: none
+		sourceColumn: model
+
+	column version
+		dataType: string
+		isHidden
+		lineageTag: b395929f-2a8c-42e5-8e47-9ecf32dfd089
+		summarizeBy: none
+		sourceColumn: version
+
+	column make_name
+		dataType: string
+		lineageTag: 76df780f-0ee6-4be0-b7aa-8bb9d5681079
+		summarizeBy: none
+		sourceColumn: make_name
+
+	column model_name
+		dataType: string
+		lineageTag: 14013735-aa0c-4e0d-afa3-425d03ac6e2d
+		summarizeBy: none
+		sourceColumn: model_name
+
+	column version_name
+		dataType: string
+		lineageTag: e248cbe4-cac5-43be-9dcf-442643bba8c5
+		summarizeBy: none
+		sourceColumn: version_name
+
+	column car_name
+		dataType: string
+		lineageTag: 70a48143-4a46-4afb-8312-98d610a0fc61
+		summarizeBy: none
+		sourceColumn: car_name
+		sortByColumn: sort_order
+
+	column body_type
+		dataType: string
+		lineageTag: 3c008eb3-eb3a-4a1c-9276-42c505b2eaa0
+		summarizeBy: none
+		sourceColumn: body_type
+
+	column sort_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0e4de46a-7828-4e68-b29c-019122d54382
+		summarizeBy: none
+		sourceColumn: sort_order
+
+	partition dim_version = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "dim_version.parquet" ) )
+				in
+					Source
+

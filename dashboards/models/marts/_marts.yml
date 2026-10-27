@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: dim_version
+    description: Canonical make, model and version (the catalogue), with display names.
+    columns:
+      - name: version_key
+        tests: [unique, not_null]
+      - name: body_type
+        tests:
+          - accepted_values: {values: ['Hatch', 'Sedan', 'SUV']}
+  - name: dim_state
+    columns:
+      - name: state
+        tests: [unique, not_null]
+  - name: dim_date
+    columns:
+      - name: date_day
+        tests: [unique, not_null]
+  - name: fct_listings
+    description: One row per clean ad, with the market for the same version and model year (other ads only).
+    columns:
+      - name: listing_id
+        tests:
+          - unique
+          - not_null
+          - relationships: {to: ref('stg_raw_listings'), field: listing_id}
+      - name: version_key
+        tests:
+          - not_null
+          - relationships: {to: ref('dim_version'), field: version_key}
+      - name: state
+        tests:
+          - relationships: {to: ref('dim_state'), field: state}
+      - name: listed_date
+        tests:
+          - not_null
+          - relationships: {to: ref('dim_date'), field: date_day}
+      - name: removed_date
+        tests:
+          - relationships: {to: ref('dim_date'), field: date_day}
+      - name: price_brl
+        tests: [not_null]
+      - name: days_on_market
+        tests: [not_null]
+      - name: price_position
+        tests:
+          - accepted_values: {values: ['above market', 'below market', 'within market range', 'too few comparables']}
+      - name: price_band
+        tests:
+          - accepted_values: {values: ['Below -6%', '-6% to -2%', '-2% to +2%', '+2% to +6%', 'Above +6%', 'Too few comparables']}
+  - name: mart_market_by_version
+    description: Port of mv_market_by_version, per version, model year and state, ads last seen in the 180 days to the snapshot.
+    tests:
+      - unique_combination: {columns: [version_key, model_year, state]}
+    columns:
+      - name: listings
+        tests: [not_null]
+  - name: mart_price_position
+    description: Days to sell and share still online by price band against comparable ads.
+    columns:
+      - name: price_band
+        tests: [unique, not_null]
+  - name: mart_stock_out_of_line
+    description: Ads still online on the snapshot date priced above the 75th or below the 25th percentile of comparable ads.
+    columns:
+      - name: listing_id
+        tests: [unique, not_null]
+      - name: comparables
+        tests: [not_null]
+  - name: mart_data_quality
+    description: The demo's data-quality report, one row per step.
+    columns:
+      - name: step_key
+        tests: [unique, not_null]
+      - name: ads
+        tests: [not_null]

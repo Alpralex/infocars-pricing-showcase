@@ -1,0 +1,23 @@
+version: 2
+
+seeds:
+  - name: listing_matches
+    description: Output of the repository's matcher (infocars/normalize.py) for every raw ad, written by scripts/match_titles.py.
+    columns:
+      - name: listing_id
+        tests: [unique, not_null]
+      - name: match_method
+        tests:
+          - accepted_values: {values: ['exact', 'fuzzy', 'unmatched']}
+  - name: catalog_versions
+    description: Canonical make, model and version from infocars/catalog.py, with display names.
+    tests:
+      - unique_combination: {columns: [model, version]}
+    columns:
+      - name: version_key
+        tests: [unique, not_null]
+  - name: states
+    description: Brazilian states that appear in the sample.
+    columns:
+      - name: state
+        tests: [unique, not_null]
