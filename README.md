@@ -1,5 +1,9 @@
 # InfoCars pricing showcase
 
+[![Dashboard screenshot](https://guilhermerigonato.com/img/infocars.webp)](https://guilhermerigonato.com/infocars/)
+
+**Live:** [case study](https://guilhermerigonato.com/infocars/) · [Power BI report (publish to web)](https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9) · [all projects](https://guilhermerigonato.com)
+
 InfoCars was a pricing tool for used-car dealers in Brazil. It collected car ads from sale websites, matched each one to a standard make, model, version and year, and showed dealers what comparable cars were listed for and how long they took to sell. A chat assistant answered pricing questions in plain language.
 
 I built it at Informar Dados in 2025 and sold it to a car dealer. This repository is a **rebuilt sample** written for my portfolio. It shows how the main parts worked, using synthetic data. It does not contain the production code, real listings or the scraper.
