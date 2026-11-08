@@ -3,53 +3,53 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a pricing desk for a used-car dealer. Findings first, one filter row, then price against speed of sale, the stock on the site, the market grid and the ads to reprice. */
 :root {
-  --paper: #f7f8f9;
-  --sheet: #ffffff;
-  --ink: #1b2430;
-  --muted: #5d6876;
-  --rule: #dce0e5;
-  --grid: #eceff2;
-  --signal: #1f5a85;
-  --signal-soft: #e6eef5;
-  --s1: #2a78d6;
-  --s2: #eb6834;
-  --total: #5d6876;
-  --good: #1f7a35;
-  --good-soft: #e3f1e6;
-  --warn: #b25b00;
-  --warn-soft: #fbeedd;
-  --display: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --serif: "IBM Plex Serif", Georgia, serif;
-  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-}
+  --paper: #c4cbd2;
+      --sheet: #eef1f4;
+      --ink: #182027;
+      --muted: #3b434b;
+      --rule: #a1a9af;
+      --grid: #d9dee3;
+      --signal: #970d63;
+      --signal-soft: #f1dce6;
+      --s1: #3d5a73;
+      --s2: #970d63;
+      --total: #6e767d;
+      --good: #1f6b3a;
+      --good-soft: #d3e6d9;
+      --warn: #b42318;
+      --warn-soft: #f2d9d5;
+      --display: "Hanken Grotesk", system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Newsreader", Georgia, serif;
+      --body: "Newsreader", Georgia, serif;
+      --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
-    --signal: #86b6da; --signal-soft: #1a2633;
-    --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
-    --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+    --paper: #13171b; --sheet: #1b2026; --ink: #e3e7eb; --muted: #9aa4ae; --rule: #333b44; --grid: #242a31;
+        --signal: #e07ab0; --signal-soft: #3a1f2e;
+        --s1: #8fb0cc; --s2: #e07ab0; --total: #8a939b;
+        --good: #6cc08a; --good-soft: #1a3324; --warn: #f08a7e; --warn-soft: #3d1f1c;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
-  --signal: #86b6da; --signal-soft: #1a2633;
-  --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
-  --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+  --paper: #13171b; --sheet: #1b2026; --ink: #e3e7eb; --muted: #9aa4ae; --rule: #333b44; --grid: #242a31;
+        --signal: #e07ab0; --signal-soft: #3a1f2e;
+        --s1: #8fb0cc; --s2: #e07ab0; --total: #8a939b;
+        --good: #6cc08a; --good-soft: #1a3324; --warn: #f08a7e; --warn-soft: #3d1f1c;
   color-scheme: dark;
 }
 body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.55; margin: 0; }
 .wrap { max-width: 72rem; margin: 0 auto; padding-block: 2.5rem 4rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 2rem; }
 h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.15; text-wrap: balance; }
-h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4.2vw, 2.5rem); font-weight: 600; }
+h1 { font-family: var(--display); font-size: clamp(1.8rem, 4.2vw, 2.6rem); font-weight: 600; letter-spacing: -0.02em; padding-bottom: .5rem; border-bottom: 2px solid var(--ink); }
 h2 { font-size: 1.05rem; font-weight: 600; }
 p { margin: 0; max-width: 68ch; }
-.label { font-size: 0.88rem; color: var(--muted); }
+.label { font-size: 0.88rem; color: var(--muted); font-family: var(--display); }
 .crumb { font-size: 0.9rem; }
 a { color: var(--signal); text-underline-offset: 3px; }
 header { display: grid; gap: 0.75rem; }
@@ -57,29 +57,29 @@ header { display: grid; gap: 0.75rem; }
 
 .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
 .finding { border-top: 1px solid var(--ink); padding-top: 0.75rem; display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
-.finding b { font-weight: 600; font-size: 1rem; }
+.finding b { font-family: var(--display); font-weight: 600; font-size: 1rem; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; padding: 0.75rem 0; border-block: 1px solid var(--rule); position: sticky; top: env(safe-area-inset-top, 0px); background: var(--paper); z-index: 5; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
 .filters .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
-.seg button { font-family: var(--body); font-size: 0.88rem; padding: 0.35rem 0.7rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
+.seg button { font-family: var(--display); font-size: 0.88rem; padding: 0.35rem 0.7rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
 .seg button:last-child { border-right: 0; }
 .seg button[aria-pressed="true"] { background: var(--signal-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--signal); }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
 
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
-.kpi { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1rem; display: grid; gap: 0.25rem; min-width: 0; }
-.kpi .v { font-family: var(--serif); font-size: 1.7rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.kpi { background: var(--sheet); border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: 2px; padding: 1rem; display: grid; gap: 0.25rem; min-width: 0; }
+.kpi .v { font-family: var(--mono); font-size: 1.55rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .kpi .d { font-size: 0.85rem; color: var(--muted); }
 .fav { color: var(--good); } .adv { color: var(--warn); }
 
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1.25rem; }
-.panel { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1.1rem; display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
+.panel { background: var(--sheet); border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: 2px; padding: 1.1rem; display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
 .panel .sub { font-size: 0.9rem; color: var(--muted); }
 .chart { position: relative; width: 100%; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-.chart text { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.chart text { font-family: var(--display); font-size: 11px; fill: var(--muted); }
 .chart .lbl { fill: var(--ink); font-weight: 600; }
 .legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.85rem; color: var(--ink); }
 .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 0.35rem; }
@@ -92,7 +92,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outlin
 
 .tbl-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
-th, td { padding: 0.4rem 0.55rem; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th, td { font-family: var(--display); padding: 0.4rem 0.55rem; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
 th { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
 th:first-child, td:first-child { text-align: left; }
 tr.sub td { font-weight: 600; border-top: 1px solid var(--ink); }
@@ -111,11 +111,41 @@ td.pos { background: var(--good-soft); } td.neg { background: var(--warn-soft); 
 td.dim, span.dim { color: var(--muted); }
 td small { color: var(--muted); font-size: 0.75rem; margin-left: 0.2rem; }
 th.yr, td.yr { min-width: 4.2rem; }
+
+    .links { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+    .btn { font-family: var(--display); font-weight: 500; font-size: .9rem; border: 1px solid var(--ink); border-radius: 2px; padding: .45rem .9rem; color: var(--ink); text-decoration: none; background: transparent; cursor: pointer; }
+    .btn.primary { background: var(--signal); border-color: var(--signal); color: #fff; }
+    .btn:hover { background: var(--signal-soft); }
+    .btn.primary:hover { filter: brightness(.9); background: var(--signal); }
+    .jump { display: flex; flex-wrap: wrap; gap: .25rem .9rem; font-family: var(--display); font-size: .85rem; width: 100%; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
+    .jump a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    .jump a:hover { border-bottom-color: var(--signal); }
+    .headline { font-family: var(--display); font-weight: 600; font-size: clamp(1.05rem, 2.2vw, 1.3rem); line-height: 1.35; color: var(--signal); max-width: 60ch; margin: 0; text-wrap: balance; }
+    .headline-note { font-size: .85rem; color: var(--muted); margin-top: .35rem; }
+    .panel, .grid2, .findings { scroll-margin-top: 8rem; }
+    #pnl tbody tr[data-line] { cursor: pointer; }
+    #pnl tbody tr[data-line]:hover td, #pnl tbody tr[data-line]:focus td { background: var(--signal-soft); }
+    #pnl tbody tr[data-line]:focus { outline: none; }
+    #pnl tbody tr[data-line]:focus-visible td:first-child { box-shadow: inset 3px 0 0 var(--signal); }
+    dialog.line { border: 1px solid var(--rule); border-top: 3px solid var(--signal); border-radius: 2px; padding: 0; background: var(--sheet); color: var(--ink); width: min(38rem, calc(100vw - 32px)); }
+    dialog.line::backdrop { background: rgb(19 23 27 / .45); }
+    .line .in { padding: 1.25rem; display: grid; gap: .9rem; }
+    .line h2 { font-size: 1.3rem; }
+    .line .why { font-family: var(--display); font-weight: 600; color: var(--signal); }
+    .line .close { justify-self: end; }
+    .line .bar { display: inline-block; height: 10px; border-radius: 1px; vertical-align: middle; }
+    .whatif { display: grid; gap: 1rem; }
+.whatif .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; font-family: var(--display); }
+.whatif input[type=range] { width: min(22rem, 100%); accent-color: var(--signal); }
+.whatif output { font-family: var(--mono); font-size: 1.3rem; color: var(--signal); min-width: 3.5ch; }
+.whatif .bar { height: 14px; background: var(--grid); border-radius: 1px; position: relative; overflow: hidden; }
+.whatif .bar i { position: absolute; inset: 0 auto 0 0; background: var(--signal); }
+.yes { color: var(--good); font-weight: 600; } .no { color: var(--muted); }
 </style>
 
 <main class="wrap">
   <header>
-    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects</span></p>
+    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects /</span> <a href="/infocars/">InfoCars</a></p>
     <span class="label">Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL</span>
     <h1>Which used cars are priced out of line, and how much longer do they take to sell?</h1>
     <p>A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, and which ads still online sit outside the market range.</p>
@@ -124,9 +154,19 @@ th.yr, td.yr { min-width: 4.2rem; }
       <span>dbt + DuckDB · 11 models · 56 tests</span>
       <span>Also in Power BI and Qlik Sense</span>
     </div>
+    <div class="links">
+      <a class="btn primary" href="https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9" target="_blank" rel="noopener">Open the Power BI report ↗</a>
+      <a class="btn" href="/infocars/">Case study</a>
+      <a class="btn" href="/infocars/notebook/">Python notebook</a>
+      <a class="btn" href="https://github.com/Alpralex/infocars-pricing-showcase">Code on GitHub</a>
+    </div>
+    <div>
+      <p class="headline" id="headline" aria-live="polite"></p>
+      <p class="headline-note">This sentence is computed from the data and rewrites itself when you change the model, the state or the price cut below.</p>
+    </div>
   </header>
 
-  <section class="findings" aria-label="Key findings">
+  <section class="findings" id="findings" aria-label="Key findings">
     <div class="finding"><span class="label">Finding 1</span><b>Cars priced under the market sell in about half the time.</b><p>Ads more than 6% below the median of comparable ads sold in a median of 17 days, and 74% of them within 30 days. Ads more than 6% above took 30 days, and only 51% sold within 30 days.</p></div>
     <div class="finding"><span class="label">Finding 2</span><b>82 ads still online are priced above the market.</b><p>On 1 November 2025 they ask R$ 530,500 more than their comparable medians in total, a median of 7.8% each, and have been online for a median of 50.5 days.</p></div>
     <div class="finding"><span class="label">Finding 3</span><b>31 ads still online are priced below the market.</b><p>They ask R$ 156,950 less than their comparable medians, a median of 6.1% each. They should sell fast, but the gap is margin a dealer may not need to give away.</p></div>
@@ -134,13 +174,14 @@ th.yr, td.yr { min-width: 4.2rem; }
   </section>
 
   <section class="filters" aria-label="Filters">
+    <nav class="jump" aria-label="Sections"><a href="#findings">Findings</a><a href="#speed">Price and speed</a><a href="#ads-online">Online and quality</a><a href="#market-prices">Market prices</a><a href="#whatif">Price cut</a><a href="#stock">Stock to review</a><a href="#method">How it is built</a></nav>
     <div class="grp"><span class="label">Model</span><div class="seg" id="mod-seg"></div></div>
     <div class="grp"><span class="label">State</span><div class="seg" id="st-seg"></div></div>
   </section>
 
   <section class="kpis" id="kpis" aria-label="Headline figures"></section>
 
-  <div class="grid2">
+  <div class="grid2" id="speed">
     <section class="panel" aria-labelledby="band-h">
       <h2 id="band-h">Days to sell by asking price against the market</h2>
       <p class="sub">Median days on the site for sold ads, by how far the asking price sits from the median of comparable ads (same version and model year, other ads only).</p>
@@ -155,7 +196,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     </section>
   </div>
 
-  <div class="grid2">
+  <div class="grid2" id="ads-online">
     <section class="panel" aria-labelledby="on-h">
       <h2 id="on-h">Ads online per day</h2>
       <p class="sub">An ad counts from the day it is listed to its last day online. Above-market ads are shown on their own.</p>
@@ -170,21 +211,29 @@ th.yr, td.yr { min-width: 4.2rem; }
     </section>
   </div>
 
-  <section class="panel" aria-labelledby="mk-h">
+  <section class="panel" id="market-prices" aria-labelledby="mk-h">
     <h2 id="mk-h">What comparable cars are listed for</h2>
     <p class="sub" id="mk-sub"></p>
     <div class="tbl-wrap"><table id="market"></table></div>
     <p class="note">Median asking price of all clean ads for the version and model year, in thousands of reais, with the number of ads. Fewer than 5 ads is a weak estimate and is greyed out, as the assistant would say.</p>
   </section>
 
-  <section class="panel" aria-labelledby="rv-h">
+  <section class="panel whatif" id="whatif" aria-labelledby="wi-h">
+    <h2 id="wi-h">What would a price cut do to the overpriced stock?</h2>
+    <p class="sub">Cut the asking price of every ad still online and above its market range, and count how many fall back to or below the 75th percentile of comparable ads. The Power BI report has the same what-if parameter on its Price review page.</p>
+    <div class="ctl"><label for="cut">Price cut</label><input type="range" id="cut" min="0" max="15" step="1" value="5" aria-describedby="wi-out"><output id="cut-out" for="cut">5%</output></div>
+    <div class="kpis" id="wi-kpis" aria-live="polite"></div>
+    <div><div class="bar" aria-hidden="true"><i id="wi-bar"></i></div><p class="note" id="wi-out"></p></div>
+  </section>
+
+  <section class="panel" id="stock" aria-labelledby="rv-h">
     <h2 id="rv-h">Stock to review: ads still online and outside the market range</h2>
     <p class="sub" id="rv-sub"></p>
     <div class="tbl-wrap"><table id="review"></table></div>
     <button class="toggle" id="rv-toggle" aria-expanded="false">Show all</button>
   </section>
 
-  <section class="method" aria-label="Method">
+  <section class="method" id="method" aria-label="Method">
     <h2>How it is built</h2>
     <ul>
       <li>The data are the 1,200 synthetic ads of the showcase repository, generated with a fixed seed. Titles copy the mistakes of real ads; prices, mileage and dates are invented. The generator makes cars priced below market leave the site faster, so the first chart checks that the pipeline recovers that pattern. Nothing on this page is a result of the real business.</li>
@@ -201,7 +250,7 @@ th.yr, td.yr { min-width: 4.2rem; }
 (function () {
   var NS = 'http://www.w3.org/2000/svg';
   var D = {};
-  var state = { model: 'ALL', st: 'ALL', all: false };
+  var state = { model: 'ALL', st: 'ALL', all: false, cut: 5 };
 
   function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
   function txt(parent, x, y, s, attrs) { var t = el('text', Object.assign({ x: x, y: y }, attrs || {}), parent); t.textContent = s; return t; }
@@ -397,18 +446,48 @@ th.yr, td.yr { min-width: 4.2rem; }
     var list = R.filter(function (r) { return !r.sold && (r.pos === 'above' || r.pos === 'below'); })
       .sort(function (a, b) { return Math.abs(b.gap) - Math.abs(a.gap); });
     var shown = state.all ? list : list.slice(0, 12);
-    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th></tr></thead>';
+    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th><th>After a ' + state.cut + '% cut</th></tr></thead>';
     var body = shown.map(function (r) {
-      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td></tr>';
+      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td>' + (r.pos === 'above' ? '<td>' + brl(r.price * (1 - state.cut / 100)) + (r.price * (1 - state.cut / 100) <= r.p75 ? ' <span class="yes">in range</span>' : ' <span class="no">still above</span>') + '</td>' : '<td class="dim">–</td>') + '</tr>';
     }).join('');
-    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="10">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
+    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
     var ab = list.filter(function (r) { return r.pos === 'above'; }), be = list.filter(function (r) { return r.pos === 'below'; });
     document.getElementById('rv-sub').textContent = scopeName() + ' · ' + num(ab.length) + ' above market (' + brlS(ab.reduce(function (s, r) { return s + r.gap; }, 0)) + ' against the medians), ' + num(be.length) + ' below (' + brlS(be.reduce(function (s, r) { return s + r.gap; }, 0)) + '). Largest gaps first.';
     var t = document.getElementById('rv-toggle'); t.hidden = list.length <= 12;
     t.textContent = state.all ? 'Show the first 12' : 'Show all ' + list.length; t.setAttribute('aria-expanded', String(state.all));
   }
 
-  function render() { var R = rows(); renderKpis(R); renderBands(R); renderScatter(R); renderOnline(R); renderQuality(); renderMarket(R); renderReview(R); }
+  // What-if price cut: the web version of the Power BI parameter
+  function whatIf(R) {
+    var over = R.filter(function (r) { return !r.sold && r.pos === 'above'; }), c = state.cut / 100;
+    var back = over.filter(function (r) { return r.price * (1 - c) <= r.p75; });
+    var given = over.reduce(function (s, r) { return s + r.price * c; }, 0);
+    var sold = R.filter(function (r) { return r.sold; });
+    function md(p) { return median(sold.filter(function (r) { return r.pos === p; }).map(function (r) { return r.days; })); }
+    return { over: over.length, back: back.length, given: given, dOver: md('above'), dIn: md('within') };
+  }
+  function renderWhatIf(R) {
+    var w = whatIf(R);
+    document.getElementById('cut-out').textContent = state.cut + '%';
+    var tiles = [['Overpriced ads online', num(w.over), 'above the 75th percentile of comparables'],
+      ['Back in range after the cut', num(w.back), w.over ? share(w.back / w.over) + ' of the overpriced stock' : '–'],
+      ['Asking price given up', brl(w.given), 'over all ' + num(w.over) + ' overpriced ads'],
+      ['Days to sell: overpriced / in range', days(w.dOver).replace(' days', '') + ' / ' + days(w.dIn), 'median for sold ads']];
+    document.getElementById('wi-kpis').innerHTML = tiles.map(function (x) { return '<div class="kpi"><span class="label">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
+    document.getElementById('wi-bar').style.width = (w.over ? 100 * w.back / w.over : 0) + '%';
+    document.getElementById('wi-out').textContent = w.over ? num(w.back) + ' of ' + num(w.over) + ' overpriced ads back in their market range at a ' + state.cut + '% cut.' : 'No overpriced ads online in this selection.';
+  }
+  function renderHeadline(R) {
+    var w = whatIf(R), ads = R.length, withM = R.filter(function (r) { return r.pos !== 'few'; }).length, ab = R.filter(function (r) { return r.pos === 'above'; }).length;
+    var out = !ads ? 'No ads in this selection.' :
+      scopeName() + ': ' + num(ab) + ' of ' + num(ads) + ' ads (' + share(withM ? ab / withM : null) + ' of those with enough comparables) were priced above their market range' +
+      (w.dOver != null && w.dIn != null ? ' and took a median of ' + Math.round(w.dOver) + ' days to sell, against ' + Math.round(w.dIn) + ' within range' : '') + '. ' +
+      (w.over ? 'A ' + state.cut + '% price cut would bring ' + num(w.back) + ' of the ' + num(w.over) + ' still online back into range, for ' + brl(w.given) + ' less in asking price.' : 'None is still online.');
+    document.getElementById('headline').textContent = out;
+  }
+  document.getElementById('cut').addEventListener('input', function () { state.cut = Number(this.value); var R = rows(); renderHeadline(R); renderWhatIf(R); renderReview(R); });
+
+  function render() { var R = rows(); renderHeadline(R); renderWhatIf(R); renderKpis(R); renderBands(R); renderScatter(R); renderOnline(R); renderQuality(); renderMarket(R); renderReview(R); }
 
   function seg(id, key, attr) {
     document.getElementById(id).addEventListener('click', function (e) {
