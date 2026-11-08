@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "875323bb9c2bdc92296e",
   "position": {
-    "x": 408,
-    "y": 472,
-    "z": 9000,
-    "height": 232,
-    "width": 592,
-    "tabOrder": 9000
+    "x": 432,
+    "y": 256,
+    "z": 1300,
+    "height": 448,
+    "width": 832,
+    "tabOrder": 1300
   },
   "visual": {
     "visualType": "tableEx",
@@ -15,6 +15,21 @@
       "queryState": {
         "Values": {
           "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fct_listings"
+                    }
+                  },
+                  "Property": "listing_id"
+                }
+              },
+              "queryRef": "fct_listings.listing_id",
+              "nativeQueryRef": "listing_id",
+              "displayName": "Ad"
+            },
             {
               "field": {
                 "Column": {
@@ -73,7 +88,7 @@
               },
               "queryRef": "fct_listings.price_brl",
               "nativeQueryRef": "price_brl",
-              "displayName": "Price"
+              "displayName": "Asking price"
             },
             {
               "field": {
@@ -83,27 +98,12 @@
                       "Entity": "fct_listings"
                     }
                   },
-                  "Property": "market_median_brl"
+                  "Property": "market_p75_brl"
                 }
               },
-              "queryRef": "fct_listings.market_median_brl",
-              "nativeQueryRef": "market_median_brl",
-              "displayName": "Market"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
-                    }
-                  },
-                  "Property": "gap_to_median_brl"
-                }
-              },
-              "queryRef": "fct_listings.gap_to_median_brl",
-              "nativeQueryRef": "gap_to_median_brl",
-              "displayName": "Gap"
+              "queryRef": "fct_listings.market_p75_brl",
+              "nativeQueryRef": "market_p75_brl",
+              "displayName": "Top of market range"
             },
             {
               "field": {
@@ -118,7 +118,7 @@
               },
               "queryRef": "fct_listings.gap_to_median_pct",
               "nativeQueryRef": "gap_to_median_pct",
-              "displayName": "Gap %"
+              "displayName": "Gap to median"
             },
             {
               "field": {
@@ -133,22 +133,37 @@
               },
               "queryRef": "fct_listings.days_on_market",
               "nativeQueryRef": "days_on_market",
-              "displayName": "Days"
+              "displayName": "Days online"
             },
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
                       "Entity": "fct_listings"
                     }
                   },
-                  "Property": "price_position"
+                  "Property": "Price After Cut"
                 }
               },
-              "queryRef": "fct_listings.price_position",
-              "nativeQueryRef": "price_position",
-              "displayName": "Position"
+              "queryRef": "fct_listings.Price After Cut",
+              "nativeQueryRef": "Price After Cut",
+              "displayName": "Price after cut"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fct_listings"
+                    }
+                  },
+                  "Property": "In Range After Cut"
+                }
+              },
+              "queryRef": "fct_listings.In Range After Cut",
+              "nativeQueryRef": "In Range After Cut",
+              "displayName": "In range after cut"
             }
           ]
         }
@@ -241,7 +256,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Stock to review'"
+                  "Value": "'Overpriced ads still online'"
                 }
               }
             }
@@ -308,7 +323,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Still online, outside the market range, largest gap first'"
+                  "Value": "'Largest gap to market first. Top of market range = 75th percentile of comparable ads'"
                 }
               }
             }
@@ -416,13 +431,6 @@
                       {
                         "Literal": {
                           "Value": "'above market'"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'below market'"
                         }
                       }
                     ]

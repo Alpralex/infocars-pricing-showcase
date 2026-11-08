@@ -1,0 +1,23 @@
+table 'Price Cut'
+	lineageTag: d7272344-25ad-5704-be0d-f1fa083ecfa7
+
+	/// What-if parameter: the price cut tried on the overpriced ads still online, in whole percent.
+	measure 'Price Cut Value' = SELECTEDVALUE ( 'Price Cut'[Price Cut %], 5 ) / 100
+		formatString: 0%
+		displayFolder: What-if
+		lineageTag: 5c828fba-7211-52fd-b525-2029f02f33ec
+
+	column 'Price Cut %'
+		dataType: int64
+		formatString: 0\%
+		lineageTag: e6ed60c7-bf68-57ba-a634-41ff74cb5ce9
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = User
+
+	partition 'Price Cut' = calculated
+		mode: import
+		source = GENERATESERIES ( 0, 15, 1 )
+
+	annotation PBI_Id = e810f2e887fc51009e831d48ab800cb1

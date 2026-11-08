@@ -3,10 +3,10 @@
   "name": "6e94361dd61d22521873",
   "position": {
     "x": 16,
-    "y": 58,
+    "y": 80,
     "z": 12000,
-    "height": 40,
-    "width": 600,
+    "height": 24,
+    "width": 740,
     "tabOrder": 12000
   },
   "visual": {
@@ -22,8 +22,8 @@
                     "value": "And how much longer do they take to sell? Used-car ads in Brazil, May to November 2025",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "13px",
-                      "color": "#5D6876"
+                      "fontSize": "12px",
+                      "color": "#3B434B"
                     }
                   }
                 ],

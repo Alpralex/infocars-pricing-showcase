@@ -58,16 +58,24 @@ mart_data_quality                        (8 rows, stand-alone: raw ads to clean 
 | Median Days to Sell by `price_band`, Below −6% → Above +6% | 17, 20, 20.5, 27.5, 30 |
 | Model = Onix, State = SP | 51 ads, median R$ 59,600, 20 days to sell |
 
-## Report to build (one page, 1280 × 720)
+## Report pages and what to try
 
-1. **Header:** text box with the question *Which used cars are priced out of line, and how much longer do they take to sell?*
-2. **Slicers** in one row: `dim_version[model_name]` (buttons) and `dim_state[state]` (dropdown).
-3. **Four cards:** Clean Ads, Median Asking Price, Median Days to Sell (Sold Within 30 Days % as subtitle), Above Market Online (Gap Above Market Online as subtitle).
-4. **Column chart:** `fct_listings[price_band]` on the axis, Median Days to Sell as the value, Still Online % in the tooltip. Filter out *Too few comparables*.
-5. **Scatter chart:** `fct_listings[listing_id]` as values, `gap_to_median_pct` on x, `days_on_market` on y, `price_position` as legend, filtered to `is_sold = 1` and position not *too few comparables*.
-6. **Line chart:** `dim_date[date_day]` on the axis, Ads Online on Date as the value, `fct_listings[price_position]` as the legend (the measure only removes the date filter, so the legend still splits it).
-7. **Matrix:** `dim_version[car_name]` in rows, `fct_listings[model_year]` in columns, Median Asking Price and Clean Ads as values.
-8. **Table "Stock to review":** car_name, model_year, state, price_brl, market_median_brl, gap_to_median_brl, gap_to_median_pct, days_on_market, price_position, filtered to `is_active = 1` and position above or below market, sorted by gap.
-9. **Bar chart:** `mart_data_quality[step]` with Ads in Step.
+The report has three pages, a navigation bar on every page and the Almanac theme. Every magenta sentence is a DAX measure that rewrites itself with the filters.
+
+1. **Start here.** The question, the live answer for each page (select it to open the page), how to use the report and how it is built.
+2. **Market.** Which ads are priced above their market range and how much longer they take to sell: four cards, median days to sell by price band, gap to market against days to sell, ads online by day, median price by car and model year, and the data-quality funnel. Headline with no filters: *Of 1,167 clean ads, 289 (31% of those with enough comparables) were priced above their market range. They took a median of 35 days to sell, against 20 for ads within range and 18 for ads below it. 82 overpriced ads are still online.*
+3. **Price review.** A what-if **Price cut** parameter (0% to 15%, default 5%) applied to the overpriced ads still online. Cards, a bar chart by car and the ad-level table show how many ads the cut brings back into their market range (at or below the 75th percentile of comparable ads) and how much asking price it gives up. Headline at 5%: *A 5% price cut would bring 63 of the 82 overpriced ads still online back into their market range, for R$ 371,365 less in asking price.* At 3% it is 41 ads, at 10% 80.
+
+The model and slicer filters are synced between Market and Price review. Auto date/time is off, so the model has no hidden date tables; `dim_date` is the only calendar. Every base measure has a description, visible when you hover over it in the Data pane.
+
+| What-if measure | Definition |
+| --- | --- |
+| Price Cut Value | The chosen cut, from the `Price Cut` table (GENERATESERIES 0–15) |
+| Back in Range After Cut, Back in Range After Cut % | Overpriced ads still online whose price × (1 − cut) ≤ `market_p75_brl` |
+| Asking Price Given Up | Sum of price × cut over the overpriced ads still online |
+| Price After Cut | Price × (1 − cut) for one ad |
+| Median Days to Sell Above Market, Median Days to Sell In Range | Median Days to Sell for sold ads in each price position |
+
+`tmdl-view-script.tmdl` still creates the original one-page model, without the what-if table and the headline measures.
 
 Publish with *Publish to web* from your own Fabric workspace and put the link in the portfolio.

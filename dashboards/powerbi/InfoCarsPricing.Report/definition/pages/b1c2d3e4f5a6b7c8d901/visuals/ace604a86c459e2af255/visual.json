@@ -3,7 +3,7 @@
   "name": "ace604a86c459e2af255",
   "position": {
     "x": 432,
-    "y": 240,
+    "y": 256,
     "z": 6000,
     "height": 216,
     "width": 416,
@@ -153,7 +153,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2A78D6'"
+                      "Value": "'#970D63'"
                     }
                   }
                 }
@@ -264,7 +264,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5D6876'"
+                      "Value": "'#3B434B'"
                     }
                   }
                 }
@@ -289,7 +289,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#ECEFF2'"
+                      "Value": "'#D9DEE3'"
                     }
                   }
                 }
@@ -320,7 +320,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5D6876'"
+                      "Value": "'#3B434B'"
                     }
                   }
                 }
@@ -345,7 +345,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#ECEFF2'"
+                      "Value": "'#D9DEE3'"
                     }
                   }
                 }
@@ -383,7 +383,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5D6876'"
+                      "Value": "'#3B434B'"
                     }
                   }
                 }
