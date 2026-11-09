@@ -6,10 +6,10 @@ table mart_liquidity_curve
 			VAR d = SELECTEDVALUE ( mart_liquidity_curve[day] )
 			VAR g = SELECTEDVALUE ( mart_liquidity_curve[group_name] )
 			VAR Cohort =
-				IF (
-					ISBLANK ( g ) || g = "All models",
-					FILTER ( fct_listings, fct_listings[listed_date] <= DATE ( 2025, 8, 3 ) ),
-					CALCULATETABLE ( FILTER ( fct_listings, fct_listings[listed_date] <= DATE ( 2025, 8, 3 ) ), KEEPFILTERS ( dim_version[model_name] = g ) )
+				FILTER (
+					fct_listings,
+					fct_listings[listed_date] <= DATE ( 2025, 8, 3 )
+						&& ( ISBLANK ( g ) || g = "All models" || RELATED ( dim_version[model_name] ) = g )
 				)
 			VAR Online =
 				FILTER ( Cohort, ISBLANK ( fct_listings[removed_date] ) || fct_listings[removed_date] > fct_listings[listed_date] + d )
