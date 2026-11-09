@@ -53,12 +53,12 @@ table mart_price_changes
 					ISBLANK ( N ),
 					"No ads online with a market in this selection.",
 					"Of " & FORMAT ( N, "#,0" ) & " ads online with a market, " & FORMAT ( Hi, "#,0" ) & IF ( Hi = 1, " is", " are" )
-						& " at high risk of getting stuck (score 60 or more): a median of " & FORMAT ( [High Risk Median Days Online], "0" ) & " days online and "
-						& FORMAT ( [High Risk Median Gap], "0%" ) & " over the comparable median; R$ " & FORMAT ( [High Risk Cut to Range] + 0, "#,0" )
+						& " at high risk of getting stuck (score 60 or more), a median of " & FORMAT ( [High Risk Median Days Online], "0" ) & " days online and "
+						& FORMAT ( [High Risk Median Gap], "0%" ) & " over the market; R$ " & FORMAT ( [High Risk Cut to Range] + 0, "#,0" )
 						& " of cuts would bring them back into range. "
-						& IF ( NOT ISBLANK ( S30 ), FORMAT ( 1 - S30, "0%" ) & " of ads leave the site within 30 days and " & FORMAT ( S90, "0%" ) & " are still online after 90. ", "" )
+						& IF ( NOT ISBLANK ( S30 ), FORMAT ( 1 - S30, "0%" ) & " of ads leave within 30 days, " & FORMAT ( S90, "0%" ) & " are still online after 90. ", "" )
 						& IF ( Cut > 0, "The " & FORMAT ( Cut, "#,0" ) & " ads that cut their price sold a median of " & FORMAT ( [Median Days to Sell After Cut], "0" )
-							& " days after the cut, against " & FORMAT ( [Never Cut Median Days to Sell], "0" ) & " days in all for ads that never cut.", "" )
+							& " days after the cut (" & FORMAT ( [Never Cut Median Days to Sell], "0" ) & " for ads that never cut).", "" )
 				)
 		isHidden
 		displayFolder: Story

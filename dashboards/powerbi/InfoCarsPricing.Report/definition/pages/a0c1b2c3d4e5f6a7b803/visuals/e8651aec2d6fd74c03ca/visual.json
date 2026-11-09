@@ -43,7 +43,7 @@
               },
               "queryRef": "mart_buy_list.priority_score",
               "nativeQueryRef": "priority_score",
-              "displayName": "Priority"
+              "displayName": "Prio"
             },
             {
               "field": {
@@ -118,7 +118,7 @@
               },
               "queryRef": "mart_buy_list.days_on_market",
               "nativeQueryRef": "days_on_market",
-              "displayName": "Days online"
+              "displayName": "Days"
             },
             {
               "field": {
@@ -148,7 +148,7 @@
               },
               "queryRef": "mart_buy_list.market_median_brl",
               "nativeQueryRef": "market_median_brl",
-              "displayName": "Comparable median"
+              "displayName": "Median"
             },
             {
               "field": {
@@ -178,7 +178,7 @@
               },
               "queryRef": "mart_buy_list.target_offer_brl",
               "nativeQueryRef": "target_offer_brl",
-              "displayName": "Target offer"
+              "displayName": "Offer"
             },
             {
               "field": {
@@ -193,7 +193,7 @@
               },
               "queryRef": "mart_buy_list.margin_at_target_brl",
               "nativeQueryRef": "margin_at_target_brl",
-              "displayName": "Margin at target"
+              "displayName": "Margin"
             }
           ]
         }
