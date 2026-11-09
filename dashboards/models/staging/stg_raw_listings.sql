@@ -7,5 +7,12 @@ select
     nullif(km, '')::integer             as km,
     nullif(state, '')                   as state,
     listed_at::date                     as listed_date,
-    nullif(removed_at, '')::date        as removed_date
+    nullif(removed_at, '')::date        as removed_date,
+    -- version 2 attributes (the production table had them: seller account, gearbox, fuel, colour, photos, city)
+    seller_type,
+    transmission,
+    fuel,
+    colour,
+    photos::integer                     as photos,
+    city
 from read_csv('{{ var("raw_path") }}/sample_listings.csv', header = true, all_varchar = true)

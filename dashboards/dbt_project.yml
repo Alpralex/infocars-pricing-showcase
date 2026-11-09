@@ -17,6 +17,8 @@ vars:
   max_price_brl: 1500000
   # fewer comparable ads than this and the assistant calls the estimate weak (infocars/assistant.py)
   min_comparables: 5
+  # fewest clean ads of one version and model year for a price-on-km regression (mart_km_depreciation)
+  min_regression_ads: 8
 
 seeds:
   infocars:

@@ -11,6 +11,22 @@ models:
       - name: source
         tests:
           - accepted_values: {values: ['portal_a', 'portal_b', 'portal_c']}
+      - name: seller_type
+        tests:
+          - accepted_values: {values: ['private', 'dealer']}
+      - name: transmission
+        tests:
+          - accepted_values: {values: ['automatic', 'manual']}
+  - name: stg_price_changes
+    description: One price change per ad that cut its price while online; the listing's price is the price after the cut.
+    columns:
+      - name: listing_id
+        tests:
+          - unique
+          - not_null
+          - relationships: {to: ref('stg_raw_listings'), field: listing_id}
+      - name: changed_date
+        tests: [not_null]
   - name: stg_listing_matches
     columns:
       - name: listing_id

@@ -25,6 +25,7 @@ peers as (
 select
     j.listing_id, j.source, j.title, j.title_spelling, j.price_brl, j.km, j.state,
     j.make, j.model, j.version, j.version_key, j.model_year, j.match_method,
+    j.seller_type, j.transmission, j.fuel, j.colour, j.photos, j.city,
     j.listed_date, j.removed_date,
     coalesce(j.removed_date, '{{ var("snapshot_date") }}'::date) as last_seen_date,
     (coalesce(j.removed_date, '{{ var("snapshot_date") }}'::date) - j.listed_date)::integer as days_on_market,
