@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
-  "name": "875323bb9c2bdc92296e",
+  "name": "e66456d0c190479d203d",
   "position": {
-    "x": 408,
-    "y": 472,
-    "z": 9000,
-    "height": 232,
-    "width": 592,
-    "tabOrder": 9000
+    "x": 532,
+    "y": 284,
+    "z": 1300,
+    "height": 420,
+    "width": 732,
+    "tabOrder": 1300
   },
   "visual": {
     "visualType": "tableEx",
@@ -20,13 +20,43 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_version"
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "risk_band"
+                }
+              },
+              "queryRef": "mart_stock_risk.risk_band",
+              "nativeQueryRef": "risk_band",
+              "displayName": "Risk"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "risk_score"
+                }
+              },
+              "queryRef": "mart_stock_risk.risk_score",
+              "nativeQueryRef": "risk_score",
+              "displayName": "Score"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
                     }
                   },
                   "Property": "car_name"
                 }
               },
-              "queryRef": "dim_version.car_name",
+              "queryRef": "mart_stock_risk.car_name",
               "nativeQueryRef": "car_name",
               "displayName": "Car"
             },
@@ -35,13 +65,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
                     }
                   },
                   "Property": "model_year"
                 }
               },
-              "queryRef": "fct_listings.model_year",
+              "queryRef": "mart_stock_risk.model_year",
               "nativeQueryRef": "model_year",
               "displayName": "Year"
             },
@@ -50,13 +80,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_state"
+                      "Entity": "mart_stock_risk"
                     }
                   },
                   "Property": "state"
                 }
               },
-              "queryRef": "dim_state.state",
+              "queryRef": "mart_stock_risk.state",
               "nativeQueryRef": "state",
               "displayName": "State"
             },
@@ -65,44 +95,44 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "days_on_market"
+                }
+              },
+              "queryRef": "mart_stock_risk.days_on_market",
+              "nativeQueryRef": "days_on_market",
+              "displayName": "Days online"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
                     }
                   },
                   "Property": "price_brl"
                 }
               },
-              "queryRef": "fct_listings.price_brl",
+              "queryRef": "mart_stock_risk.price_brl",
               "nativeQueryRef": "price_brl",
-              "displayName": "Price"
+              "displayName": "Asking"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
                     }
                   },
-                  "Property": "market_median_brl"
+                  "Property": "gap_to_median_pct"
                 }
               },
-              "queryRef": "fct_listings.market_median_brl",
-              "nativeQueryRef": "market_median_brl",
-              "displayName": "Market"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fct_listings"
-                    }
-                  },
-                  "Property": "gap_to_median_brl"
-                }
-              },
-              "queryRef": "fct_listings.gap_to_median_brl",
-              "nativeQueryRef": "gap_to_median_brl",
+              "queryRef": "mart_stock_risk.gap_to_median_pct",
+              "nativeQueryRef": "gap_to_median_pct",
               "displayName": "Gap"
             },
             {
@@ -110,45 +140,60 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
                     }
                   },
-                  "Property": "gap_to_median_pct"
+                  "Property": "price_points"
                 }
               },
-              "queryRef": "fct_listings.gap_to_median_pct",
-              "nativeQueryRef": "gap_to_median_pct",
-              "displayName": "Gap %"
+              "queryRef": "mart_stock_risk.price_points",
+              "nativeQueryRef": "price_points",
+              "displayName": "Price pts"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
                     }
                   },
-                  "Property": "days_on_market"
+                  "Property": "time_points"
                 }
               },
-              "queryRef": "fct_listings.days_on_market",
-              "nativeQueryRef": "days_on_market",
-              "displayName": "Days"
+              "queryRef": "mart_stock_risk.time_points",
+              "nativeQueryRef": "time_points",
+              "displayName": "Time pts"
             },
             {
               "field": {
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fct_listings"
+                      "Entity": "mart_stock_risk"
                     }
                   },
-                  "Property": "price_position"
+                  "Property": "mileage_points"
                 }
               },
-              "queryRef": "fct_listings.price_position",
-              "nativeQueryRef": "price_position",
-              "displayName": "Position"
+              "queryRef": "mart_stock_risk.mileage_points",
+              "nativeQueryRef": "mileage_points",
+              "displayName": "km pts"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "cut_to_range_brl"
+                }
+              },
+              "queryRef": "mart_stock_risk.cut_to_range_brl",
+              "nativeQueryRef": "cut_to_range_brl",
+              "displayName": "Cut to range"
             }
           ]
         }
@@ -160,10 +205,10 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "fct_listings"
+                    "Entity": "mart_stock_risk"
                   }
                 },
-                "Property": "gap_to_median_brl"
+                "Property": "risk_score"
               }
             },
             "direction": "Descending"
@@ -241,7 +286,27 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Stock to review'"
+                  "Value": "'Ads online by risk of getting stuck'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Highest score first. The points show why: price (max 50), time online (max 30), kilometres (max 20)'"
                 }
               }
             }
@@ -254,7 +319,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Table of ads still online priced above or below the market range, with car, model year, state, price, market median, gap in reais and percent, days on the market and position, largest gap first.'"
+                  "Value": "'Table of ads online with their risk score and its three components, car, year, state, days online, asking price, gap and the cut that would bring the ad into range.'"
                 }
               }
             }
@@ -294,146 +359,7 @@
             }
           }
         }
-      ],
-      "subTitle": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Still online, outside the market range, largest gap first'"
-                }
-              }
-            }
-          }
-        }
       ]
     }
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "Filtercae5c7e10e42333b9c65e4d7",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_listings"
-              }
-            },
-            "Property": "is_active"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fct_listings",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "f"
-                          }
-                        },
-                        "Property": "is_active"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "1L"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        "howCreated": "User"
-      },
-      {
-        "name": "Filter4658c8e4ca05a99386d088d4",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "fct_listings"
-              }
-            },
-            "Property": "price_position"
-          }
-        },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "f",
-              "Entity": "fct_listings",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "f"
-                          }
-                        },
-                        "Property": "price_position"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'above market'"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'below market'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        "howCreated": "User"
-      }
-    ]
   }
 }

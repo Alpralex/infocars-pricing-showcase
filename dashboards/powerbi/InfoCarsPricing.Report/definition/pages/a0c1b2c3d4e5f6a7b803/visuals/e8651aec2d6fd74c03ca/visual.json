@@ -1,0 +1,378 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "e8651aec2d6fd74c03ca",
+  "position": {
+    "x": 432,
+    "y": 284,
+    "z": 1300,
+    "height": 420,
+    "width": 832,
+    "tabOrder": 1300
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "buy_class"
+                }
+              },
+              "queryRef": "mart_buy_list.buy_class",
+              "nativeQueryRef": "buy_class",
+              "displayName": "Class"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "priority_score"
+                }
+              },
+              "queryRef": "mart_buy_list.priority_score",
+              "nativeQueryRef": "priority_score",
+              "displayName": "Prio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "car_name"
+                }
+              },
+              "queryRef": "mart_buy_list.car_name",
+              "nativeQueryRef": "car_name",
+              "displayName": "Car"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "model_year"
+                }
+              },
+              "queryRef": "mart_buy_list.model_year",
+              "nativeQueryRef": "model_year",
+              "displayName": "Year"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "city"
+                }
+              },
+              "queryRef": "mart_buy_list.city",
+              "nativeQueryRef": "city",
+              "displayName": "City"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "km"
+                }
+              },
+              "queryRef": "mart_buy_list.km",
+              "nativeQueryRef": "km",
+              "displayName": "km"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "days_on_market"
+                }
+              },
+              "queryRef": "mart_buy_list.days_on_market",
+              "nativeQueryRef": "days_on_market",
+              "displayName": "Days"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "price_brl"
+                }
+              },
+              "queryRef": "mart_buy_list.price_brl",
+              "nativeQueryRef": "price_brl",
+              "displayName": "Asking"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "market_median_brl"
+                }
+              },
+              "queryRef": "mart_buy_list.market_median_brl",
+              "nativeQueryRef": "market_median_brl",
+              "displayName": "Median"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "gap_to_median_pct"
+                }
+              },
+              "queryRef": "mart_buy_list.gap_to_median_pct",
+              "nativeQueryRef": "gap_to_median_pct",
+              "displayName": "Gap"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "target_offer_brl"
+                }
+              },
+              "queryRef": "mart_buy_list.target_offer_brl",
+              "nativeQueryRef": "target_offer_brl",
+              "displayName": "Offer"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "margin_at_target_brl"
+                }
+              },
+              "queryRef": "mart_buy_list.margin_at_target_brl",
+              "nativeQueryRef": "margin_at_target_brl",
+              "displayName": "Margin"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_buy_list"
+                  }
+                },
+                "Property": "buy_class"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_buy_list"
+                  }
+                },
+                "Property": "priority_score"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'The buy list'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Buy now first, then by priority: discount, days online, kilometres under the market'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Table of private-seller ads to buy, with class, priority, car, year, city, kilometres, days online, asking price, comparable median, gap, target offer and margin at target.'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

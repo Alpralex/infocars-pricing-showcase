@@ -1,0 +1,183 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "1d3489cc3e9204ca311f",
+  "position": {
+    "x": 864,
+    "y": 284,
+    "z": 1230,
+    "height": 420,
+    "width": 400,
+    "tabOrder": 1230
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_km_depreciation"
+                    }
+                  },
+                  "Property": "car_name"
+                }
+              },
+              "queryRef": "mart_km_depreciation.car_name",
+              "nativeQueryRef": "car_name",
+              "displayName": "Car"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_km_depreciation"
+                    }
+                  },
+                  "Property": "Loss per 10k km"
+                }
+              },
+              "queryRef": "mart_km_depreciation.Loss per 10k km",
+              "nativeQueryRef": "Loss per 10k km",
+              "displayName": "Loss per 10,000 km"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_km_depreciation"
+                    }
+                  },
+                  "Property": "Fit R2"
+                }
+              },
+              "queryRef": "mart_km_depreciation.Fit R2",
+              "nativeQueryRef": "Fit R2",
+              "displayName": "R squared"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_km_depreciation"
+                    }
+                  },
+                  "Property": "Ads in Regression"
+                }
+              },
+              "queryRef": "mart_km_depreciation.Ads in Regression",
+              "nativeQueryRef": "Ads in Regression",
+              "displayName": "Ads"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_km_depreciation"
+                  }
+                },
+                "Property": "Loss per 10k km"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#182027'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Loss per 10,000 km, by car (all states)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Loss per 10,000 km, by car (all states)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Least-squares fit of price on km inside each model year, groups of 8 or more ads'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

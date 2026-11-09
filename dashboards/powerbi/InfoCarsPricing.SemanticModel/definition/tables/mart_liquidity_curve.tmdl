@@ -1,0 +1,135 @@
+table mart_liquidity_curve
+	lineageTag: 480e6535-2e02-545d-9e07-0e13ae464e36
+
+	/// Share of the cohort (clean ads listed at least 90 days before the snapshot) still online after the day on the axis, for the model on the legend or all models; computed from fct_listings so the slicers apply.
+	measure 'Still Online Share' =
+			VAR d = SELECTEDVALUE ( mart_liquidity_curve[day] )
+			VAR g = SELECTEDVALUE ( mart_liquidity_curve[group_name] )
+			VAR Cohort =
+				FILTER (
+					fct_listings,
+					fct_listings[listed_date] <= DATE ( 2025, 8, 3 )
+						&& ( ISBLANK ( g ) || g = "All models" || RELATED ( dim_version[model_name] ) = g )
+				)
+			VAR Online =
+				FILTER ( Cohort, ISBLANK ( fct_listings[removed_date] ) || fct_listings[removed_date] > fct_listings[listed_date] + d )
+			RETURN
+				DIVIDE ( COUNTROWS ( Online ), COUNTROWS ( Cohort ) )
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: e9f8007e-3325-55dc-bbe2-e7ece83deb12
+
+
+	/// Share of ads still online 30 days after listing, all models.
+	measure 'Still Online at 30 Days' =
+			CALCULATE ( [Still Online Share], mart_liquidity_curve[day] = 30, mart_liquidity_curve[group_name] = "All models" )
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: 63f0dfba-eae4-523f-b329-4fd5d346b569
+
+
+	/// Share of ads that left the site within 30 days of listing, all models: 1 - [Still Online at 30 Days].
+	measure 'Gone Within 30 Days' =
+			1 - [Still Online at 30 Days]
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: 78c43c8d-3b00-5420-86ec-d507428d7fb7
+
+
+	/// Share of ads still online 90 days after listing, all models.
+	measure 'Still Online at 90 Days' =
+			CALCULATE ( [Still Online Share], mart_liquidity_curve[day] = 90, mart_liquidity_curve[group_name] = "All models" )
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: 03c7c2cf-8912-5f85-afb4-c88105cf9903
+
+
+	column group_name
+		dataType: string
+		lineageTag: 09eb5363-eef5-5e17-9d0c-f7b38795fb32
+		summarizeBy: none
+		sourceColumn: group_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column group_order
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 4aef5c59-50c3-584b-a629-2d79571dd15f
+		summarizeBy: none
+		sourceColumn: group_order
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column day
+		dataType: int64
+		formatString: #,0
+		lineageTag: 1fee68e3-b006-58f8-8c06-c98955b1ae88
+		summarizeBy: none
+		sourceColumn: day
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column ads_observed
+		dataType: int64
+		formatString: #,0
+		lineageTag: f4ee92d6-5f1a-528f-95f4-c88c3f71ef15
+		summarizeBy: none
+		sourceColumn: ads_observed
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column still_online
+		dataType: int64
+		formatString: #,0
+		lineageTag: fed3c213-d3a0-5b3a-8c2a-0600b2108291
+		summarizeBy: none
+		sourceColumn: still_online
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column sold_by_day
+		dataType: int64
+		formatString: #,0
+		lineageTag: d8daf628-2f0a-5b47-b737-325c48efab2f
+		summarizeBy: none
+		sourceColumn: sold_by_day
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column still_online_share
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 2d6270e7-1ac9-5c6b-a7af-63565a2e12b6
+		summarizeBy: none
+		sourceColumn: still_online_share
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column sold_share
+		dataType: double
+		formatString: 0.0%
+		lineageTag: e76fd476-88ad-5261-b5a0-a66ae2889098
+		summarizeBy: none
+		sourceColumn: sold_share
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_liquidity_curve = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_liquidity_curve.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table

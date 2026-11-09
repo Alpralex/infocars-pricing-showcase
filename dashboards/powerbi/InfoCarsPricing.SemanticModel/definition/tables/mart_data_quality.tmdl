@@ -1,6 +1,7 @@
 table mart_data_quality
 	lineageTag: 22b08cab-2cfd-4a97-9411-a23d02beadc1
 
+	/// Ads remaining after each cleaning step of the raw-to-clean funnel.
 	measure 'Ads in Step' = SUM ( mart_data_quality[ads] )
 		formatString: #,0
 		lineageTag: 5dc092f7-a4b1-4293-9779-b31cb3ca4ac5
@@ -14,6 +15,7 @@ table mart_data_quality
 		sourceColumn: step_order
 
 	column step_key
+		isHidden
 		dataType: string
 		lineageTag: f446eb4c-72f1-4a01-bcd2-01c2c13745b8
 		summarizeBy: none

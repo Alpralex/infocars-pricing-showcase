@@ -3,9 +3,9 @@
   "name": "1b91f8b5820c1ce105a3",
   "position": {
     "x": 1016,
-    "y": 472,
+    "y": 484,
     "z": 10000,
-    "height": 232,
+    "height": 220,
     "width": 248,
     "tabOrder": 10000
   },
@@ -81,7 +81,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5D6876'"
+                      "Value": "'#3B434B'"
                     }
                   }
                 }
@@ -112,7 +112,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B2430'"
+                      "Value": "'#182027'"
                     }
                   }
                 }
@@ -150,7 +150,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#5D6876'"
+                      "Value": "'#3B434B'"
                     }
                   }
                 }
@@ -221,7 +221,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'From raw ads to clean ads'"
+                  "Value": "'From raw ads to clean ads (all ads)'"
                 }
               }
             }

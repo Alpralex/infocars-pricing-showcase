@@ -2,6 +2,7 @@ table dim_version
 	lineageTag: 5d739638-6937-499e-9573-2172548f219e
 
 	column version_key
+		isHidden
 		dataType: string
 		isKey
 		lineageTag: 237385cc-5988-4d3d-ad28-5798546b45e3

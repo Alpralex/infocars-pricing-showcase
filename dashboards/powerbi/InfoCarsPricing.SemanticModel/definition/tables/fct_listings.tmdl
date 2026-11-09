@@ -1,26 +1,31 @@
 table fct_listings
 	lineageTag: 6cfdb000-a471-426f-8948-6fb725dd7653
 
+	/// Ads left after the quality checks: one row per ad.
 	measure 'Clean Ads' = COUNTROWS ( fct_listings )
 		formatString: #,0
 		displayFolder: Ads
 		lineageTag: c2c8973f-8240-4399-b29d-9956b360722d
 
+	/// Ads that disappeared from the site; an ad that disappears counts as sold on its last day online.
 	measure 'Sold Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1 )
 		formatString: #,0
 		displayFolder: Ads
 		lineageTag: 0e62fb4d-23cd-42ad-a9c6-7c33059f3c49
 
+	/// Ads still on the site on the last day of data.
 	measure 'Ads Still Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1 )
 		formatString: #,0
 		displayFolder: Ads
 		lineageTag: fc8f2af4-fb51-4abf-8b89-93197e048aed
 
+	/// Share of clean ads still on the site.
 	measure 'Still Online %' = DIVIDE ( [Ads Still Online], [Clean Ads] )
 		formatString: 0.0%
 		displayFolder: Ads
 		lineageTag: 8a84875c-b8c8-4019-9f35-1a2dced07ff9
 
+	/// Ads listed on or before the date and not yet removed on it. Ignores the date filter on the fact table.
 	measure 'Ads Online on Date' =
 			VAR d = MAX ( dim_date[date_day] )
 			RETURN
@@ -34,82 +39,201 @@ table fct_listings
 		displayFolder: Ads
 		lineageTag: 28d4915a-67e2-4de5-a932-7dbb5a0e8839
 
+	/// Sold ads by removal date, through the inactive relationship to the calendar.
 	measure 'Ads Sold on Date' = CALCULATE ( [Sold Ads], USERELATIONSHIP ( fct_listings[removed_date], dim_date[date_day] ) )
 		formatString: #,0
 		displayFolder: Ads
 		lineageTag: 62af0cb8-3299-4df6-a102-a4b5f707ea54
 
+	/// Median asking price in reais.
 	measure 'Median Asking Price' = MEDIAN ( fct_listings[price_brl] )
 		formatString: \R\$ #,0
 		displayFolder: Price
 		lineageTag: 76a2330b-6d72-4bd0-8db6-463940170d14
 
+	/// Average asking price in reais.
 	measure 'Average Asking Price' = AVERAGE ( fct_listings[price_brl] )
 		formatString: \R\$ #,0
 		displayFolder: Price
 		lineageTag: 081fd38b-7cbf-497d-95d7-ab4366a2e91f
 
+	/// Median of the asking price over the median of comparable ads, minus 1.
 	measure 'Median Gap to Market %' = MEDIAN ( fct_listings[gap_to_median_pct] )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: Price
 		lineageTag: 657195c6-5a27-4a5f-bb19-c9692d5f4c7c
 
+	/// Ads with at least five comparable ads (same version, model year and state), so they have a market position.
 	measure 'Ads With Market' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables" )
 		formatString: #,0
 		displayFolder: Price
 		lineageTag: c6905bdc-38da-451f-8b0c-eed3d6da1589
 
+	/// Ads priced above the 75th percentile of comparable ads.
 	measure 'Above Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market" )
 		formatString: #,0
 		displayFolder: Price
 		lineageTag: 2670e189-3a0d-41b5-aa26-457bddbcb3ad
 
+	/// Ads priced below the 25th percentile of comparable ads.
 	measure 'Below Market Ads' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "below market" )
 		formatString: #,0
 		displayFolder: Price
 		lineageTag: 31e49b6b-2148-44ec-b032-70784cf95634
 
+	/// Above-market ads as a share of ads with enough comparables.
 	measure 'Above Market %' = DIVIDE ( [Above Market Ads], [Ads With Market] )
 		formatString: 0.0%
 		displayFolder: Price
 		lineageTag: 0c793a10-f69f-45ff-a9d4-b428fbd8e809
 
+	/// Median days on the site for sold ads.
 	measure 'Median Days to Sell' = CALCULATE ( MEDIAN ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
 		formatString: 0.0
 		displayFolder: Speed
 		lineageTag: 3c075f86-7aa4-451e-bab6-f55438630457
 
+	/// Average days on the site for sold ads.
 	measure 'Average Days to Sell' = CALCULATE ( AVERAGE ( fct_listings[days_on_market] ), fct_listings[is_sold] = 1 )
 		formatString: 0.0
 		displayFolder: Speed
 		lineageTag: fd6ea4c3-f7a2-44ca-b3af-ab177b427656
 
+	/// Share of sold ads that sold within 30 days.
 	measure 'Sold Within 30 Days %' = DIVIDE ( CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_sold] = 1, fct_listings[days_on_market] <= 30 ), [Sold Ads] )
 		formatString: 0.0%
 		displayFolder: Speed
 		lineageTag: 7795abd7-be2e-4396-81c4-a86eb59df398
 
+	/// Overpriced ads still online: the stock a dealer should review first.
 	measure 'Above Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
 		formatString: #,0
 		displayFolder: Stock to review
 		lineageTag: 9915c089-a0ed-4ccf-bbbd-9f2070f3795c
 
+	/// Underpriced ads still online: possible money left on the table.
 	measure 'Below Market Online' = CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
 		formatString: #,0
 		displayFolder: Stock to review
 		lineageTag: 0a623103-55c6-4948-b551-2c94094f28ed
 
+	/// Sum of the asking price above the market median, for overpriced ads still online.
 	measure 'Gap Above Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "above market" )
 		formatString: \R\$ #,0
 		displayFolder: Stock to review
 		lineageTag: dcc24489-5101-463f-9890-246f490400a8
 
+	/// Sum of the asking price below the market median, for underpriced ads still online.
 	measure 'Gap Below Market Online' = CALCULATE ( SUM ( fct_listings[gap_to_median_brl] ), fct_listings[is_active] = 1, fct_listings[price_position] = "below market" )
 		formatString: \R\$ #,0
 		displayFolder: Stock to review
 		lineageTag: d82a99be-4dce-4288-a049-e90551829642
 
+	/// Overpriced ads still online whose asking price, after the price cut, is at or below the 75th percentile of comparable ads.
+	measure 'Back in Range After Cut' =
+			VAR Cut = [Price Cut Value]
+			RETURN
+				COALESCE (
+					COUNTROWS ( FILTER ( CALCULATETABLE ( fct_listings, fct_listings[is_active] = 1, fct_listings[price_position] = "above market" ), fct_listings[price_brl] * ( 1 - Cut ) <= fct_listings[market_p75_brl] ) ),
+					0
+				)
+		formatString: #,0
+		displayFolder: What-if
+		lineageTag: ec352293-c0ef-50a4-bc11-87f1a0e8903d
+
+	/// Share of the overpriced ads still online that the price cut brings back into their market range.
+	measure 'Back in Range After Cut %' =
+			DIVIDE ( [Back in Range After Cut], [Above Market Online] )
+		formatString: 0%
+		displayFolder: What-if
+		lineageTag: 22a3530d-8508-5d09-96a2-eec07fc839da
+
+	/// Asking price given up if every overpriced ad still online is cut by the chosen percentage.
+	measure 'Asking Price Given Up' =
+			VAR Cut = [Price Cut Value]
+			RETURN
+				SUMX ( CALCULATETABLE ( fct_listings, fct_listings[is_active] = 1, fct_listings[price_position] = "above market" ), fct_listings[price_brl] * Cut )
+		formatString: \R\$ #,0
+		displayFolder: What-if
+		lineageTag: 42340618-f7b8-5a2b-a716-c3ad6558da75
+
+	/// Asking price of one ad after the price cut. Blank above the ad level.
+	measure 'Price After Cut' =
+			IF ( HASONEVALUE ( fct_listings[listing_id] ), SUM ( fct_listings[price_brl] ) * ( 1 - [Price Cut Value] ) )
+		formatString: \R\$ #,0
+		displayFolder: What-if
+		lineageTag: df7bda2c-524a-5ed0-91a5-9630226020b8
+
+	/// Median days on the site for sold ads priced above their market range.
+	measure 'Median Days to Sell Above Market' =
+			CALCULATE ( [Median Days to Sell], fct_listings[price_position] = "above market" )
+		formatString: 0
+		displayFolder: What-if
+		lineageTag: 93ce23fb-95bd-5efa-8ae2-da8939c3c109
+
+	/// Median days on the site for sold ads priced within their market range (25th to 75th percentile of comparables).
+	measure 'Median Days to Sell In Range' =
+			CALCULATE ( [Median Days to Sell], fct_listings[price_position] = "within market range" )
+		formatString: 0
+		displayFolder: What-if
+		lineageTag: 13eb13cb-09d9-5c35-af2e-f059f18307e1
+
+	/// Whether one ad's price after the cut is inside its market range. Used in the Price review table.
+	measure 'In Range After Cut' =
+			IF (
+				HASONEVALUE ( fct_listings[listing_id] ),
+				IF ( SUM ( fct_listings[price_brl] ) * ( 1 - [Price Cut Value] ) <= SUM ( fct_listings[market_p75_brl] ), "yes", "no" )
+			)
+		isHidden
+		displayFolder: Story
+		lineageTag: 5a9ed246-e33d-564f-800a-9fa4aa919219
+
+	/// One-sentence answer for the Market page: how many ads are overpriced and how much longer they take to sell.
+	measure 'Headline Market' =
+			VAR Ads = [Clean Ads]
+			VAR Over = [Above Market Ads]
+			VAR DOver = [Median Days to Sell Above Market]
+			VAR DIn = [Median Days to Sell In Range]
+			VAR DBelow = CALCULATE ( [Median Days to Sell], fct_listings[price_position] = "below market" )
+			VAR Online = [Above Market Online]
+			RETURN
+				IF (
+					ISBLANK ( Ads ),
+					"No ads in this selection.",
+					"Of " & FORMAT ( Ads, "#,0" ) & " clean ads, " & FORMAT ( Over + 0, "#,0" ) & " (" & FORMAT ( [Above Market %], "0%" )
+						& " of those with enough comparables) were priced above their market range. "
+						& IF ( NOT ISBLANK ( DOver ) && NOT ISBLANK ( DIn ),
+							"They took a median of " & FORMAT ( DOver, "0" ) & " days to sell, against " & FORMAT ( DIn, "0" ) & " for ads within range"
+								& IF ( NOT ISBLANK ( DBelow ), " and " & FORMAT ( DBelow, "0" ) & " for ads below it", "" ) & ". ",
+							"" )
+						& FORMAT ( Online + 0, "#,0" ) & " overpriced ads are still online."
+				)
+		isHidden
+		displayFolder: Story
+		lineageTag: 81294f66-22f5-588e-be85-695873a638dd
+
+	/// One-sentence answer for the Price review page: what the chosen price cut does to the overpriced stock.
+	measure 'Headline Review' =
+			VAR Cut = [Price Cut Value]
+			VAR Online = [Above Market Online]
+			VAR Back = [Back in Range After Cut]
+			VAR DOver = [Median Days to Sell Above Market]
+			VAR DIn = [Median Days to Sell In Range]
+			RETURN
+				IF (
+					COALESCE ( Online, 0 ) = 0,
+					"No overpriced ads are still online in this selection.",
+					"A " & FORMAT ( Cut, "0%" ) & " price cut would bring " & FORMAT ( Back, "#,0" ) & " of the " & FORMAT ( Online, "#,0" )
+						& " overpriced ads still online back into their market range, for R$ " & FORMAT ( [Asking Price Given Up], "#,0" ) & " less in asking price."
+						& IF ( NOT ISBLANK ( DOver ) && NOT ISBLANK ( DIn ),
+							" Ads within range sold in a median of " & FORMAT ( DIn, "0" ) & " days; overpriced ones took " & FORMAT ( DOver, "0" ) & ".", "" )
+				)
+		isHidden
+		displayFolder: Story
+		lineageTag: 61ce553b-b57d-543f-a079-c8797fe4d66b
+
 	column listing_id
+		isHidden
 		dataType: int64
 		isKey
 		formatString: 0
@@ -192,11 +316,6 @@ table fct_listings
 		lineageTag: ec0f3552-511b-492f-8c75-404a3de34885
 		summarizeBy: none
 		sourceColumn: last_seen_date
-
-		variation Variação
-			isDefault
-			relationship: c425a3c4-94bf-4f0e-a234-a1ef46d19630
-			defaultHierarchy: LocalDateTable_28d93c39-1a26-4cec-a563-29221964910e.'Date Hierarchy'
 
 		annotation UnderlyingDateTimeDataType = Date
 
@@ -297,6 +416,172 @@ table fct_listings
 		lineageTag: 1f301d9c-6b7b-40fd-917e-fafa68403ea0
 		summarizeBy: sum
 		sourceColumn: price_band_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: ec43bac6-37fe-554f-9165-728e259ebb7b
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_type
+		dataType: string
+		lineageTag: e4d7e76b-8895-58c5-a227-7e9e7d353dd0
+		summarizeBy: none
+		sourceColumn: seller_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column transmission
+		dataType: string
+		lineageTag: f707b800-2eed-57ec-bec1-387022a4a901
+		summarizeBy: none
+		sourceColumn: transmission
+
+		annotation SummarizationSetBy = Automatic
+
+	column fuel
+		dataType: string
+		lineageTag: 2f60c674-c6b8-54b8-9f77-b7cc7754f5f9
+		summarizeBy: none
+		sourceColumn: fuel
+
+		annotation SummarizationSetBy = Automatic
+
+	column colour
+		dataType: string
+		lineageTag: ec185367-68af-5837-9d6f-b3fea489a052
+		summarizeBy: none
+		sourceColumn: colour
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos
+		dataType: int64
+		formatString: #,0
+		lineageTag: 41615225-9b25-598a-a823-e1d53da4ac52
+		summarizeBy: none
+		sourceColumn: photos
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_band
+		dataType: string
+		lineageTag: de69d787-271a-5b3a-bfef-9e47f4e63d38
+		summarizeBy: none
+		sourceColumn: km_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_label
+		dataType: string
+		isHidden
+		lineageTag: 9fee2dbd-be71-500f-a1ee-14fff776d07d
+		summarizeBy: none
+		sourceColumn: seller_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column gearbox_label
+		dataType: string
+		isHidden
+		lineageTag: 5c4dbd8a-6046-5142-bb64-493b5e1d0b92
+		summarizeBy: none
+		sourceColumn: gearbox_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column fuel_label
+		dataType: string
+		isHidden
+		lineageTag: e0195d9d-836a-5c48-8fdb-1833272d5290
+		summarizeBy: none
+		sourceColumn: fuel_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_band
+		dataType: string
+		isHidden
+		lineageTag: 8c963a87-e6c0-5625-bbf6-b4dd8d133adb
+		summarizeBy: none
+		sourceColumn: photos_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_band_order
+		dataType: int64
+		isHidden
+		lineageTag: 44a02e5d-ef44-59a1-aa89-708fe1a77c04
+		summarizeBy: none
+		sourceColumn: photos_band_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e09ee32a-9cfa-5019-9e01-538fcc915f8c
+		summarizeBy: none
+		sourceColumn: km_band_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column had_price_cut
+		dataType: int64
+		formatString: 0
+		lineageTag: 99d594a9-c8a5-5a5f-9ba4-00adffdaa0ba
+		summarizeBy: none
+		sourceColumn: had_price_cut
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_cut_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: bee34be3-c467-5cf7-bc3e-368aa85455de
+		summarizeBy: none
+		sourceColumn: price_cut_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_before_cut_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 493bedee-014b-5904-9e17-a80a4a097c79
+		summarizeBy: none
+		sourceColumn: price_before_cut_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_cut_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: e42f1e10-8a60-5992-b75c-81d2b64001a1
+		summarizeBy: none
+		sourceColumn: price_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column market_median_km
+		dataType: double
+		formatString: #,0
+		lineageTag: 6290906e-9b93-5d56-8b8b-fb2968cdf873
+		summarizeBy: none
+		sourceColumn: market_median_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_vs_market
+		dataType: double
+		formatString: #,0
+		lineageTag: a5afa8d2-f1cc-5257-b63d-ed7cf1e857cd
+		summarizeBy: none
+		sourceColumn: km_vs_market
 
 		annotation SummarizationSetBy = Automatic
 

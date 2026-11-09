@@ -1,0 +1,343 @@
+table mart_price_changes
+	lineageTag: a3ab2091-edbd-597c-b04c-1e91b857b386
+
+	/// Ads that cut their asking price once while online.
+	measure 'Ads That Cut the Price' =
+			CALCULATE ( COUNTROWS ( mart_price_changes ), mart_price_changes[had_price_cut] = 1 )
+		formatString: #,0
+		displayFolder: Stock risk
+		lineageTag: fb52811b-3db1-5b88-9b93-deace4c01f07
+
+
+	/// Median size of the cut.
+	measure 'Median Cut %' =
+			CALCULATE ( MEDIAN ( mart_price_changes[price_cut_pct] ), mart_price_changes[had_price_cut] = 1 )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Stock risk
+		lineageTag: 843ad064-12fa-532e-a966-947ba16548c7
+
+
+	/// Median days from the cut to the sale, for cut ads that sold.
+	measure 'Median Days to Sell After Cut' =
+			CALCULATE ( MEDIAN ( mart_price_changes[days_after_cut] ), mart_price_changes[had_price_cut] = 1, mart_price_changes[is_sold] = 1 )
+		formatString: 0
+		displayFolder: Stock risk
+		lineageTag: 286afed5-ff5c-580b-9d0e-72ed88ce19fd
+
+
+	/// Median days on the site for sold ads that never cut their price.
+	measure 'Never Cut Median Days to Sell' =
+			CALCULATE ( MEDIAN ( mart_price_changes[days_on_market] ), mart_price_changes[had_price_cut] = 0, mart_price_changes[is_sold] = 1 )
+		formatString: 0
+		displayFolder: Stock risk
+		lineageTag: 43a0b56b-83a6-529a-ba9d-3e27e22f674c
+
+
+	/// Share of the cuts that took an ad from above its market range to inside it.
+	measure 'Cuts Into Range %' =
+			DIVIDE ( CALCULATE ( SUM ( mart_price_changes[cut_brought_into_range] ) ), [Ads That Cut the Price] )
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: f5e78e5f-2f64-58aa-b451-ec2af33869d3
+
+
+	/// One-sentence answer for the Stock risk page: which ads are likely to get stuck, how fast the stock turns, and whether price cuts work.
+	measure 'Headline Stock' =
+			VAR N = [Ads Scored]
+			VAR Hi = [High Risk Ads] + 0
+			VAR S30 = [Still Online at 30 Days]
+			VAR S90 = [Still Online at 90 Days]
+			VAR Cut = [Ads That Cut the Price] + 0
+			RETURN
+				IF (
+					ISBLANK ( N ),
+					"No ads online with a market in this selection.",
+					"Of " & FORMAT ( N, "#,0" ) & " ads online with a market, " & FORMAT ( Hi, "#,0" ) & IF ( Hi = 1, " is", " are" )
+						& " at high risk of getting stuck (score 60 or more), a median of " & FORMAT ( [High Risk Median Days Online], "0" ) & " days online and "
+						& FORMAT ( [High Risk Median Gap], "0%" ) & " over the market; R$ " & FORMAT ( [High Risk Cut to Range] + 0, "#,0" )
+						& " of cuts would bring them back into range. "
+						& IF ( NOT ISBLANK ( S30 ), FORMAT ( 1 - S30, "0%" ) & " of ads leave within 30 days, " & FORMAT ( S90, "0%" ) & " are still online after 90. ", "" )
+						& IF ( Cut > 0, "The " & FORMAT ( Cut, "#,0" ) & " ads that cut their price sold a median of " & FORMAT ( [Median Days to Sell After Cut], "0" )
+							& " days after the cut (" & FORMAT ( [Never Cut Median Days to Sell], "0" ) & " for ads that never cut).", "" )
+				)
+		isHidden
+		displayFolder: Story
+		lineageTag: b1e93857-fee6-5a69-a316-f5ffbf66a00b
+
+
+	column listing_id
+		isHidden
+		dataType: int64
+		isKey
+		formatString: #,0
+		lineageTag: 10e49e88-7277-5718-8884-6fb0cfeef108
+		summarizeBy: none
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: e53c50f5-5f5a-51b9-83e1-712dad2eaa47
+		summarizeBy: none
+		sourceColumn: version_key
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column car_name
+		dataType: string
+		lineageTag: 731fd927-70fe-5b63-9d74-7abf02196b04
+		summarizeBy: none
+		sourceColumn: car_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_year
+		dataType: int64
+		formatString: #,0
+		lineageTag: caab03a8-c9a0-5812-9f20-15c3414ed00f
+		summarizeBy: none
+		sourceColumn: model_year
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: 3bfc06b9-8822-5627-a91b-a99a4204f4fc
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column seller_type
+		dataType: string
+		lineageTag: 67e40f13-d808-5b8a-8391-7aea39af9b5a
+		summarizeBy: none
+		sourceColumn: seller_type
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column listed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: b14e930d-a255-5822-9ef5-8269e6917f3a
+		summarizeBy: none
+		sourceColumn: listed_date
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column removed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: b43b4db0-28cb-5aa7-9b69-5bc3930441a4
+		summarizeBy: none
+		sourceColumn: removed_date
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column days_on_market
+		dataType: int64
+		formatString: #,0
+		lineageTag: 35b69d68-7bd5-5a0d-b3f2-1ab92258cc09
+		summarizeBy: none
+		sourceColumn: days_on_market
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column cut_group
+		dataType: string
+		lineageTag: efc82958-07b1-56fe-ad31-0a96b49784f1
+		summarizeBy: none
+		sourceColumn: cut_group
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_cut_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 5cc1002a-f88c-5330-80ed-a255f1cb048c
+		summarizeBy: none
+		sourceColumn: price_cut_date
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_before_cut_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: ebbce232-5ba1-582b-845b-488336c0ab0a
+		summarizeBy: none
+		sourceColumn: price_before_cut_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_after_cut_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: abdf8c2b-806a-58d0-9f78-a4780bfbad54
+		summarizeBy: none
+		sourceColumn: price_after_cut_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_cut_pct
+		dataType: double
+		formatString: 0.0%
+		lineageTag: d4819220-3431-53ef-94ad-504cad00120c
+		summarizeBy: none
+		sourceColumn: price_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column cut_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: c387e692-6e1d-5166-8ab2-707ea5d504c0
+		summarizeBy: none
+		sourceColumn: cut_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column days_before_cut
+		dataType: int64
+		formatString: #,0
+		lineageTag: 1c528a77-9844-5b10-bc23-b389b3bdf16e
+		summarizeBy: none
+		sourceColumn: days_before_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column days_after_cut
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6a5095d8-b186-51ce-bae0-ae6e4a3bc071
+		summarizeBy: none
+		sourceColumn: days_after_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: d2ca2b19-4fe5-5148-87d1-677a69b7f30a
+		summarizeBy: none
+		sourceColumn: market_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_p75_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 747e9309-9442-5b4c-b365-44bd3662bb48
+		summarizeBy: none
+		sourceColumn: market_p75_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_before_cut_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: a61fe9c6-14a4-5d45-aa9d-fb124f0f2f17
+		summarizeBy: none
+		sourceColumn: gap_before_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_after_cut_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 03701695-b82b-5cd2-8ec4-65b14450482d
+		summarizeBy: none
+		sourceColumn: gap_after_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column position_before_cut
+		dataType: string
+		lineageTag: 8e20bd0c-2b12-560f-bec5-c44cb5f7606d
+		summarizeBy: none
+		sourceColumn: position_before_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column position_after_cut
+		dataType: string
+		lineageTag: c0d0296e-556e-5ccc-a336-492913f91cf3
+		summarizeBy: none
+		sourceColumn: position_after_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column is_sold
+		dataType: int64
+		formatString: #,0
+		lineageTag: c5ea67e8-b0a4-513e-a3e9-12e8c1cbb994
+		summarizeBy: none
+		sourceColumn: is_sold
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column is_active
+		dataType: int64
+		formatString: #,0
+		lineageTag: 449f50ed-f6f0-5c85-9dee-aabdd2a4b094
+		summarizeBy: none
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column had_price_cut
+		dataType: int64
+		formatString: #,0
+		lineageTag: 144f82a2-f254-50be-a82e-f4ee2d5d3cee
+		summarizeBy: none
+		sourceColumn: had_price_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column cut_brought_into_range
+		dataType: int64
+		formatString: #,0
+		lineageTag: 831c7069-7c8c-5b84-b131-9a49a45f0910
+		summarizeBy: none
+		sourceColumn: cut_brought_into_range
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_price_changes = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_price_changes.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "f744580ad2e4de9bd6ab",
+  "position": {
+    "x": 432,
+    "y": 284,
+    "z": 1220,
+    "height": 420,
+    "width": 416,
+    "tabOrder": 1220
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "factor"
+                }
+              },
+              "queryRef": "mart_price_drivers.factor",
+              "nativeQueryRef": "factor",
+              "displayName": "Factor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "level"
+                }
+              },
+              "queryRef": "mart_price_drivers.level",
+              "nativeQueryRef": "level",
+              "displayName": "Level"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "Median Gap at Level"
+                }
+              },
+              "queryRef": "mart_price_drivers.Median Gap at Level",
+              "nativeQueryRef": "Median Gap at Level",
+              "displayName": "Median gap to market"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_price_drivers"
+                  }
+                },
+                "Property": "factor_order"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#6E767D'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'All factors at a glance'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'All factors at a glance'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every level of every factor; expand with the + on the axis. Seller and photos move the price, colour and fuel do not'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

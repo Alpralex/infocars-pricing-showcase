@@ -1,0 +1,196 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "db0937c1d0d866f1d6dd",
+  "position": {
+    "x": 16,
+    "y": 364,
+    "z": 1210,
+    "height": 340,
+    "width": 400,
+    "tabOrder": 1210
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "level"
+                }
+              },
+              "queryRef": "mart_price_drivers.level",
+              "nativeQueryRef": "level",
+              "displayName": "Level"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "Median Gap at Level"
+                }
+              },
+              "queryRef": "mart_price_drivers.Median Gap at Level",
+              "nativeQueryRef": "Median Gap at Level",
+              "displayName": "Median gap to market"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "Ads at Level"
+                }
+              },
+              "queryRef": "mart_price_drivers.Ads at Level",
+              "nativeQueryRef": "Ads at Level",
+              "displayName": "Ads"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_price_drivers"
+                    }
+                  },
+                  "Property": "Above Market Share at Level"
+                }
+              },
+              "queryRef": "mart_price_drivers.Above Market Share at Level",
+              "nativeQueryRef": "Above Market Share at Level",
+              "displayName": "Above market"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_price_drivers"
+                  }
+                },
+                "Property": "level_order"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#970D63'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "concatenateLabels": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Median gap to the comparable median, by level'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Median gap to the comparable median, by level'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pick the factor above. Hover for the number of ads and the share above market'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

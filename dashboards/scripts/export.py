@@ -18,14 +18,28 @@ tables = {
     "dim_state": "select * from dim_state",
     # flags as 0/1 integers so Power BI and Qlik read them the same way
     "fct_listings": """
-        select listing_id, version_key, model_year, state, source, match_method, price_brl, km,
+        select listing_id, version_key, model_year, state, city, source, match_method, price_brl, km,
+               seller_type, transmission, fuel, colour, photos, km_band, km_band_order,
+               seller_label, gearbox_label, fuel_label, photos_band, photos_band_order,
                listed_date, removed_date, last_seen_date, days_on_market,
                is_active::integer as is_active, is_sold::integer as is_sold,
-               comparables, market_p25_brl, market_median_brl, market_p75_brl,
+               had_price_cut::integer as had_price_cut, price_cut_date, price_before_cut_brl, price_cut_pct,
+               comparables, market_p25_brl, market_median_brl, market_p75_brl, market_median_km, km_vs_market,
                gap_to_median_brl, gap_to_median_pct, price_position, price_band, price_band_order
         from fct_listings order by listing_id""",
     "mart_market_by_version": "select * from mart_market_by_version order by version_key, model_year, state",
     "mart_data_quality": "select * from mart_data_quality order by step_order",
+    # version 2 marts (flags as 0/1 integers)
+    "mart_km_depreciation": "select * from mart_km_depreciation order by loss_per_10k_km_brl",
+    "mart_price_drivers": "select * from mart_price_drivers order by factor_order, level_order",
+    "mart_buy_list": "select * exclude (had_price_cut), had_price_cut::integer as had_price_cut from mart_buy_list order by buy_class_order, priority_score desc",
+    "mart_price_changes": """
+        select * exclude (is_sold, is_active, had_price_cut, cut_brought_into_range),
+               is_sold::integer as is_sold, is_active::integer as is_active, had_price_cut::integer as had_price_cut,
+               cut_brought_into_range::integer as cut_brought_into_range
+        from mart_price_changes order by listing_id""",
+    "mart_liquidity_curve": "select * from mart_liquidity_curve order by group_order, group_name, day",
+    "mart_stock_risk": "select * from mart_stock_risk order by risk_score desc, listing_id",
 }
 for name, sql in tables.items():
     con.execute(f"copy ({sql}) to 'powerbi/data/{name}.parquet' (format parquet, compression zstd)")
@@ -44,13 +58,26 @@ def dump(name, data):
 
 
 # id, version key, model year, state, price, listed (YYYY-MM-DD), removed or null, days on market,
-# comparables, market p25, median, p75 (null with fewer than 5 comparables), price band (1-6), source
+# comparables, market p25, median, p75 (null with fewer than 5 comparables), price band (1-6), source,
+# then the version 2 columns: km, market median km, seller type (p/d), transmission (a/m), fuel (f/p/h), colour,
+# photos, city, price before the cut (null when the ad never cut), cut date
 dump("listings", rows("""
     select listing_id, version_key, model_year, state, price_brl::integer,
            strftime(listed_date, '%Y-%m-%d'), strftime(removed_date, '%Y-%m-%d'), days_on_market,
            comparables, market_p25_brl::integer, market_median_brl::integer, market_p75_brl::integer,
-           price_band_order, source
+           price_band_order, source,
+           km, market_median_km::integer, left(seller_type, 1), left(transmission, 1), left(fuel, 1), colour,
+           photos, city, price_before_cut_brl::integer, strftime(price_cut_date, '%Y-%m-%d')
     from fct_listings order by listing_id"""))
+
+# the version 2 marts the web page draws without recomputing: the km regression and the liquidity curve
+dump("depreciation", rows("""
+    select version_key, car_name, ads, model_years, median_price_brl::integer, loss_per_10k_km_brl::integer,
+           round(loss_per_10k_km_pct, 4), round(r2, 3)
+    from mart_km_depreciation order by loss_per_10k_km_brl"""))
+dump("liquidity", rows("""
+    select group_name, day, ads_observed, still_online, round(still_online_share, 4)
+    from mart_liquidity_curve order by group_order, group_name, day"""))
 
 meta = {
     "versions": rows("select version_key, make_name, model_name, version_name, body_type from dim_version order by sort_order"),

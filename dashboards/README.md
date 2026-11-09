@@ -32,6 +32,16 @@ to price: the market for each car, where an ad sits against it, and how that rel
 3. **31 ads still online are priced below the market**, R$ 156,950 under their comparable medians (median −6.1%).
 4. **33 of 1,200 ads never reach the statistics:** 15 with no price or one out of range, 18 far from comparable cars.
    187 clean ads were matched only through typo correction, and 116 make and model spellings reduce to 7 models.
+5. **Kilometres cost about R$ 5,840 per 10,000 km (−6.5% of the price)** on a least-squares fit inside each version
+   and model year, pooled over 20 versions and 699 ads (R² 0.48). Private sellers ask a median 2.0% under their
+   market and dealers 1.8% over; ads with fewer than 8 photos sit 2.6% under; over 100,000 km, 7.1% under.
+6. **34 private ads still online are at or below their market.** 4 are 8% or more under (*Buy now*, R$ 17,182 of
+   expected margin at the asking price) and 19 are 3% to 8% under (*Negotiate*, R$ 45,540, or R$ 118,240 at a 90%
+   target offer).
+7. **54% of the stock leaves within 30 days and 12% is still online after 90** (cohort of 639 ads listed at least
+   90 days before the snapshot). Of 180 ads still online with a market, 15 are high risk of getting stuck (price, time
+   and mileage score ≥ 60); R$ 68,200 of cuts would bring them back into range. The 87 ads that cut their price once
+   (median −5.1%) sold a median of 10 days after the cut; 24 of the cuts brought the ad back into its market range.
 
 ## Model
 
@@ -46,10 +56,16 @@ seeds/catalog_versions.csv, seeds/states.csv                     │
                                                                  ├─▶ mart_market_by_version   port of mv_market_by_version
                                                                  ├─▶ mart_price_position      days to sell by price band
                                                                  ├─▶ mart_stock_out_of_line   ads online outside p25–p75
+                                                                 ├─▶ mart_km_depreciation    price on km, per version
+                                                                 ├─▶ mart_price_drivers      median gap by factor and level
+                                                                 ├─▶ mart_buy_list           private ads worth buying
+                                                                 ├─▶ mart_liquidity_curve    share still online by day
+                                                                 ├─▶ mart_stock_risk         risk of getting stuck, 0–100
+../data/sample_price_changes.csv ─▶ stg_price_changes ───────────┴─▶ mart_price_changes      did the cut work?
              stg_listings_screened ───────────────────────────────── mart_data_quality        raw ads to clean ads
 ```
 
-- **11 models, 56 tests, 3 seeds.** Besides unique, not-null, relationships and accepted values, the tests check that
+- **18 models, 90 tests, 3 seeds.** Besides unique, not-null, relationships and accepted values, the tests check that
   every raw ad ends in exactly one outcome, that percentiles are ordered, that each ad's position agrees with its
   percentiles, that days on the market agree with the dates, and that the SQL reproduces the Python demo exactly
   (1,200 raw, 15 bad prices, 18 outliers, 1,167 clean, 187 fuzzy, 116 spellings to 7 models, and a 2023 Onix LTZ
@@ -65,6 +81,15 @@ seeds/catalog_versions.csv, seeds/states.csv                     │
   The price band is the gap to the comparable median: below −6%, −6% to −2%, −2% to +2%, +2% to +6%, above +6%.
 - **Days on the market:** an ad that disappears counts as sold on its last day online; ads still online are measured
   to the snapshot. Days to sell use sold ads only, which understates the gap between bands rather than inflating it.
+- **The second layer (v2)** brings back what the production screens had beyond the price check. `fct_listings` carries
+  seller type, gearbox, fuel, colour, photos, city, a km band and the ad's one price cut (`sample_price_changes.csv`).
+  `mart_km_depreciation` is the production `km_price_analyzer` as SQL (`regr_slope` inside version × model year, groups
+  of 8 or more, pooled per version); `mart_price_drivers` is the median gap to market by factor and level;
+  `mart_buy_list` is the WhatsApp "oportunidades" query with the dealer rule (pays 90% of the market, preparation 2%);
+  `mart_liquidity_curve` is the liquidity funnel at fixed days over a 90-day cohort; `mart_stock_risk` scores every
+  active ad (price 50, time 30, mileage 20 points, High ≥ 60, Medium ≥ 35) and `mart_price_changes` compares ads that
+  cut their price once with ads that never did. Singular tests check that margins add up, that the curve never rises,
+  that the risk points add up to the score and that every recorded change is a cut.
 - `mart_market_by_version` is the production materialised view (`../sql/postgres/02_market_views.sql`) in DuckDB,
   with `current_date` replaced by the snapshot date.
 
@@ -75,7 +100,7 @@ From this folder, with the repository one level up:
 ```bash
 pip install dbt-duckdb==1.9.1
 python scripts/match_titles.py      # optional: rewrites seeds/ from the raw titles (already committed)
-dbt build --profiles-dir .          # 11 models, 56 tests, 3 seeds
+dbt build --profiles-dir .          # 18 models, 90 tests, 3 seeds
 python scripts/export.py            # powerbi/data/*.parquet and web/data/*.json
 cd web && python -m http.server     # then open http://localhost:8000
 ```
@@ -111,13 +136,20 @@ Verified with DuckDB against the marts. With no filters, both apps should show:
 | Onix in SP: ads / median price / median days to sell | 51 / R$ 59,600 / 20 |
 | 2023 Onix LTZ, all states: ads / median price | 6 / R$ 68,400 |
 | Data quality: raw / bad price / incomplete / outlier / clean | 1,200 / 15 / 0 / 18 / 1,167 |
+| Loss per 10,000 km, pooled: R$ / % of price / R² / ads | −R$ 5,840 / −6.5% / 0.48 / 699 |
+| Median gap to market: private seller / dealer | −2.0% / +1.8% |
+| Buy list: candidates / Buy now / Negotiate / Wait | 34 / 4 / 19 / 11 |
+| Buy now: expected margin at asking price / at target offer | R$ 17,182 / R$ 18,957 |
+| Still online after 30 / 90 days (cohort of 639) | 46.3% / 11.9% |
+| Stock risk: scored / High / Medium / Low; cuts to range for High | 180 / 15 / 66 / 99; R$ 68,200 |
+| Ads that cut the price / median cut / median days to sell after the cut / cuts into range | 87 / −5.1% / 10 / 24 |
 
 ## Files
 
 ```
 dbt_project.yml, profiles.yml   dbt on DuckDB, paths from environment variables
 seeds/                          title matches, catalogue, states
-models/staging, models/marts    dbt models
+models/staging, models/marts    dbt models (18)
 tests/generic, tests/singular   unique_combination and the reconciliation tests
 scripts/match_titles.py         runs the repository's matcher and writes the seeds
 scripts/export.py               Parquet for Power BI and Qlik, JSON for the web page

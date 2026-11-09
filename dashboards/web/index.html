@@ -3,53 +3,53 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a pricing desk for a used-car dealer. Findings first, one filter row, then price against speed of sale, the stock on the site, the market grid and the ads to reprice. */
 :root {
-  --paper: #f7f8f9;
-  --sheet: #ffffff;
-  --ink: #1b2430;
-  --muted: #5d6876;
-  --rule: #dce0e5;
-  --grid: #eceff2;
-  --signal: #1f5a85;
-  --signal-soft: #e6eef5;
-  --s1: #2a78d6;
-  --s2: #eb6834;
-  --total: #5d6876;
-  --good: #1f7a35;
-  --good-soft: #e3f1e6;
-  --warn: #b25b00;
-  --warn-soft: #fbeedd;
-  --display: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --serif: "IBM Plex Serif", Georgia, serif;
-  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-}
+  --paper: #c4cbd2;
+      --sheet: #eef1f4;
+      --ink: #182027;
+      --muted: #3b434b;
+      --rule: #a1a9af;
+      --grid: #d9dee3;
+      --signal: #970d63;
+      --signal-soft: #f1dce6;
+      --s1: #3d5a73;
+      --s2: #970d63;
+      --total: #6e767d;
+      --good: #1f6b3a;
+      --good-soft: #d3e6d9;
+      --warn: #b42318;
+      --warn-soft: #f2d9d5;
+      --display: "Hanken Grotesk", system-ui, "Helvetica Neue", Arial, sans-serif;
+      --serif: "Newsreader", Georgia, serif;
+      --body: "Newsreader", Georgia, serif;
+      --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
-    --signal: #86b6da; --signal-soft: #1a2633;
-    --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
-    --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+    --paper: #13171b; --sheet: #1b2026; --ink: #e3e7eb; --muted: #9aa4ae; --rule: #333b44; --grid: #242a31;
+        --signal: #e07ab0; --signal-soft: #3a1f2e;
+        --s1: #8fb0cc; --s2: #e07ab0; --total: #8a939b;
+        --good: #6cc08a; --good-soft: #1a3324; --warn: #f08a7e; --warn-soft: #3d1f1c;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #121519; --sheet: #181c21; --ink: #e3e7eb; --muted: #97a2ad; --rule: #2a3038; --grid: #20252c;
-  --signal: #86b6da; --signal-soft: #1a2633;
-  --s1: #3987e5; --s2: #d95926; --total: #8a95a1;
-  --good: #5cb873; --good-soft: #17301e; --warn: #e09a4a; --warn-soft: #3a2812;
+  --paper: #13171b; --sheet: #1b2026; --ink: #e3e7eb; --muted: #9aa4ae; --rule: #333b44; --grid: #242a31;
+        --signal: #e07ab0; --signal-soft: #3a1f2e;
+        --s1: #8fb0cc; --s2: #e07ab0; --total: #8a939b;
+        --good: #6cc08a; --good-soft: #1a3324; --warn: #f08a7e; --warn-soft: #3d1f1c;
   color-scheme: dark;
 }
 body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 1rem; line-height: 1.55; margin: 0; }
 .wrap { max-width: 72rem; margin: 0 auto; padding-block: 2.5rem 4rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 2rem; }
 h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.15; text-wrap: balance; }
-h1 { font-family: var(--serif); font-size: clamp(1.8rem, 4.2vw, 2.5rem); font-weight: 600; }
+h1 { font-family: var(--display); font-size: clamp(1.8rem, 4.2vw, 2.6rem); font-weight: 600; letter-spacing: -0.02em; padding-bottom: .5rem; border-bottom: 2px solid var(--ink); }
 h2 { font-size: 1.05rem; font-weight: 600; }
 p { margin: 0; max-width: 68ch; }
-.label { font-size: 0.88rem; color: var(--muted); }
+.label { font-size: 0.88rem; color: var(--muted); font-family: var(--display); }
 .crumb { font-size: 0.9rem; }
 a { color: var(--signal); text-underline-offset: 3px; }
 header { display: grid; gap: 0.75rem; }
@@ -57,29 +57,29 @@ header { display: grid; gap: 0.75rem; }
 
 .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
 .finding { border-top: 1px solid var(--ink); padding-top: 0.75rem; display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
-.finding b { font-weight: 600; font-size: 1rem; }
+.finding b { font-family: var(--display); font-weight: 600; font-size: 1rem; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; padding: 0.75rem 0; border-block: 1px solid var(--rule); position: sticky; top: env(safe-area-inset-top, 0px); background: var(--paper); z-index: 5; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
 .filters .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
-.seg button { font-family: var(--body); font-size: 0.88rem; padding: 0.35rem 0.7rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
+.seg button { font-family: var(--display); font-size: 0.88rem; padding: 0.35rem 0.7rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
 .seg button:last-child { border-right: 0; }
 .seg button[aria-pressed="true"] { background: var(--signal-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--signal); }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
 
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
-.kpi { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1rem; display: grid; gap: 0.25rem; min-width: 0; }
-.kpi .v { font-family: var(--serif); font-size: 1.7rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.kpi { background: var(--sheet); border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: 2px; padding: 1rem; display: grid; gap: 0.25rem; min-width: 0; }
+.kpi .v { font-family: var(--mono); font-size: 1.55rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .kpi .d { font-size: 0.85rem; color: var(--muted); }
 .fav { color: var(--good); } .adv { color: var(--warn); }
 
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 1.25rem; }
-.panel { background: var(--sheet); border: 1px solid var(--rule); border-radius: 2px; padding: 1.1rem; display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
+.panel { background: var(--sheet); border: 1px solid var(--rule); border-top: 2px solid var(--ink); border-radius: 2px; padding: 1.1rem; display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
 .panel .sub { font-size: 0.9rem; color: var(--muted); }
 .chart { position: relative; width: 100%; }
 .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-.chart text { font-family: var(--body); font-size: 11px; fill: var(--muted); }
+.chart text { font-family: var(--display); font-size: 11px; fill: var(--muted); }
 .chart .lbl { fill: var(--ink); font-weight: 600; }
 .legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.85rem; color: var(--ink); }
 .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 0.35rem; }
@@ -92,7 +92,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--signal); outlin
 
 .tbl-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
-th, td { padding: 0.4rem 0.55rem; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th, td { font-family: var(--display); padding: 0.4rem 0.55rem; text-align: right; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; white-space: nowrap; }
 th { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
 th:first-child, td:first-child { text-align: left; }
 tr.sub td { font-weight: 600; border-top: 1px solid var(--ink); }
@@ -111,36 +111,86 @@ td.pos { background: var(--good-soft); } td.neg { background: var(--warn-soft); 
 td.dim, span.dim { color: var(--muted); }
 td small { color: var(--muted); font-size: 0.75rem; margin-left: 0.2rem; }
 th.yr, td.yr { min-width: 4.2rem; }
+
+    .links { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+    .btn { font-family: var(--display); font-weight: 500; font-size: .9rem; border: 1px solid var(--ink); border-radius: 2px; padding: .45rem .9rem; color: var(--ink); text-decoration: none; background: transparent; cursor: pointer; }
+    .btn.primary { background: var(--signal); border-color: var(--signal); color: #fff; }
+    .btn:hover { background: var(--signal-soft); }
+    .btn.primary:hover { filter: brightness(.9); background: var(--signal); }
+    .jump { display: flex; flex-wrap: wrap; gap: .25rem .9rem; font-family: var(--display); font-size: .85rem; width: 100%; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
+    .jump a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    .jump a:hover { border-bottom-color: var(--signal); }
+    .headline { font-family: var(--display); font-weight: 600; font-size: clamp(1.05rem, 2.2vw, 1.3rem); line-height: 1.35; color: var(--signal); max-width: 60ch; margin: 0; text-wrap: balance; }
+    .headline-note { font-size: .85rem; color: var(--muted); margin-top: .35rem; }
+    .panel, .grid2, .findings { scroll-margin-top: 8rem; }
+    #pnl tbody tr[data-line] { cursor: pointer; }
+    #pnl tbody tr[data-line]:hover td, #pnl tbody tr[data-line]:focus td { background: var(--signal-soft); }
+    #pnl tbody tr[data-line]:focus { outline: none; }
+    #pnl tbody tr[data-line]:focus-visible td:first-child { box-shadow: inset 3px 0 0 var(--signal); }
+    dialog.line { border: 1px solid var(--rule); border-top: 3px solid var(--signal); border-radius: 2px; padding: 0; background: var(--sheet); color: var(--ink); width: min(38rem, calc(100vw - 32px)); }
+    dialog.line::backdrop { background: rgb(19 23 27 / .45); }
+    .line .in { padding: 1.25rem; display: grid; gap: .9rem; }
+    .line h2 { font-size: 1.3rem; }
+    .line .why { font-family: var(--display); font-weight: 600; color: var(--signal); }
+    .line .close { justify-self: end; }
+    .line .bar { display: inline-block; height: 10px; border-radius: 1px; vertical-align: middle; }
+    .whatif { display: grid; gap: 1rem; }
+.whatif .ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; font-family: var(--display); }
+.whatif input[type=range] { width: min(22rem, 100%); accent-color: var(--signal); }
+.whatif output { font-family: var(--mono); font-size: 1.3rem; color: var(--signal); min-width: 3.5ch; }
+.whatif .bar { height: 14px; background: var(--grid); border-radius: 1px; position: relative; overflow: hidden; }
+.whatif .bar i { position: absolute; inset: 0 auto 0 0; background: var(--signal); }
+.yes { color: var(--good); font-weight: 600; } .no { color: var(--muted); }
+.cls { display: inline-block; font-family: var(--display); font-size: .75rem; font-weight: 600; padding: 0 .45rem; border-radius: 2px; }
+.cls.now { background: var(--signal); color: #fff; } .cls.neg { background: var(--signal-soft); color: var(--ink); } .cls.wait { border: 1px solid var(--rule); color: var(--muted); }
+.cls.high { background: var(--warn-soft); color: var(--warn); } .cls.med { background: var(--signal-soft); } .cls.low { border: 1px solid var(--rule); color: var(--muted); }
+.pts { display: inline-block; height: 8px; border-radius: 1px; vertical-align: middle; }
+.drv .seg { margin-bottom: .25rem; }
 </style>
 
 <main class="wrap">
   <header>
-    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects</span></p>
-    <span class="label">Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL</span>
-    <h1>Which used cars are priced out of line, and how much longer do they take to sell?</h1>
-    <p>A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, and which ads still online sit outside the market range.</p>
+    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects /</span> <a href="/infocars/">InfoCars</a></p>
+    <span class="label">Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL · version 2</span>
+    <h1>Which used cars are priced out of line, which are worth buying, and what moves the price?</h1>
+    <p>A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, which private-seller ads a dealer should buy, what moves the price (kilometres, seller, gearbox, photos), and which ads online are likely to get stuck.</p>
     <div class="meta">
       <span>Snapshot: 1 November 2025</span>
-      <span>dbt + DuckDB · 11 models · 56 tests</span>
+      <span>dbt + DuckDB · 18 models · 90 tests</span>
       <span>Also in Power BI and Qlik Sense</span>
+    </div>
+    <div class="links">
+      <a class="btn primary" href="https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9" target="_blank" rel="noopener">Open the Power BI report ↗</a>
+      <a class="btn" href="/infocars/">Case study</a>
+      <a class="btn" href="/infocars/notebook/">Python notebook</a>
+      <a class="btn" href="https://github.com/Alpralex/infocars-pricing-showcase">Code on GitHub</a>
+    </div>
+    <div>
+      <p class="headline" id="headline" aria-live="polite"></p>
+      <p class="headline" id="headline2" aria-live="polite" style="font-weight:500"></p>
+      <p class="headline-note">These sentences are computed from the data and rewrite themselves when you change the model, the state or the price cut below.</p>
     </div>
   </header>
 
-  <section class="findings" aria-label="Key findings">
+  <section class="findings" id="findings" aria-label="Key findings">
     <div class="finding"><span class="label">Finding 1</span><b>Cars priced under the market sell in about half the time.</b><p>Ads more than 6% below the median of comparable ads sold in a median of 17 days, and 74% of them within 30 days. Ads more than 6% above took 30 days, and only 51% sold within 30 days.</p></div>
     <div class="finding"><span class="label">Finding 2</span><b>82 ads still online are priced above the market.</b><p>On 1 November 2025 they ask R$ 530,500 more than their comparable medians in total, a median of 7.8% each, and have been online for a median of 50.5 days.</p></div>
     <div class="finding"><span class="label">Finding 3</span><b>31 ads still online are priced below the market.</b><p>They ask R$ 156,950 less than their comparable medians, a median of 6.1% each. They should sell fast, but the gap is margin a dealer may not need to give away.</p></div>
-    <div class="finding"><span class="label">Finding 4</span><b>33 of 1,200 ads never reach the statistics.</b><p>15 have no price or one out of range, and 18 sit far from comparable cars, usually a price typed without its last digit. 187 clean ads were matched only through typo correction, and 116 make and model spellings reduce to 7 models.</p></div>
+    <div class="finding"><span class="label">Finding 4</span><b>34 private-seller ads online are at or below their market median; 4 are a buy at the asking price.</b><p>Bought at a target offer of 90% of the comparable median, the 23 ads in Buy now and Negotiate would clear R$ 137,197 after preparation, a median of R$ 5,548 per car. Private sellers ask 2.0% under the comparable median and dealers 1.8% over.</p></div>
+    <div class="finding"><span class="label">Finding 5</span><b>Same car, same year: each 10,000 km takes about R$ 5,840 (6.5%) off the asking price.</b><p>A least-squares fit of price on km inside each version and model year, over 699 ads in groups of 8 or more. Kilometres explain 48% of the price spread; ads with 16 or more photos sit 1.8% above the market, colour and fuel move it by 2% at most.</p></div>
+    <div class="finding"><span class="label">Finding 6</span><b>Half of the ads leave the site within 30 days; the 87 that cut their price sold a median of 9 days after the cut.</b><p>46% of ads are still online after 30 days and 12% after 90. 15 ads online score 60 or more on the stock-risk scale (price, days online, kilometres): R$ 68,200 of cuts would bring them back into range.</p></div>
+    <div class="finding"><span class="label">Finding 7</span><b>33 of 1,200 ads never reach the statistics.</b><p>15 have no price or one out of range, and 18 sit far from comparable cars, usually a price typed without its last digit. 187 clean ads were matched only through typo correction, and 116 make and model spellings reduce to 7 models.</p></div>
   </section>
 
   <section class="filters" aria-label="Filters">
+    <nav class="jump" aria-label="Sections"><a href="#findings">Findings</a><a href="#speed">Price and speed</a><a href="#ads-online">Online and quality</a><a href="#market-prices">Market prices</a><a href="#whatif">Price cut</a><a href="#buy">Buy list</a><a href="#drivers">Price drivers</a><a href="#risk">Stock risk</a><a href="#stock">Stock to review</a><a href="#method">How it is built</a></nav>
     <div class="grp"><span class="label">Model</span><div class="seg" id="mod-seg"></div></div>
     <div class="grp"><span class="label">State</span><div class="seg" id="st-seg"></div></div>
   </section>
 
   <section class="kpis" id="kpis" aria-label="Headline figures"></section>
 
-  <div class="grid2">
+  <div class="grid2" id="speed">
     <section class="panel" aria-labelledby="band-h">
       <h2 id="band-h">Days to sell by asking price against the market</h2>
       <p class="sub">Median days on the site for sold ads, by how far the asking price sits from the median of comparable ads (same version and model year, other ads only).</p>
@@ -155,7 +205,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     </section>
   </div>
 
-  <div class="grid2">
+  <div class="grid2" id="ads-online">
     <section class="panel" aria-labelledby="on-h">
       <h2 id="on-h">Ads online per day</h2>
       <p class="sub">An ad counts from the day it is listed to its last day online. Above-market ads are shown on their own.</p>
@@ -170,27 +220,77 @@ th.yr, td.yr { min-width: 4.2rem; }
     </section>
   </div>
 
-  <section class="panel" aria-labelledby="mk-h">
+  <section class="panel" id="market-prices" aria-labelledby="mk-h">
     <h2 id="mk-h">What comparable cars are listed for</h2>
     <p class="sub" id="mk-sub"></p>
     <div class="tbl-wrap"><table id="market"></table></div>
     <p class="note">Median asking price of all clean ads for the version and model year, in thousands of reais, with the number of ads. Fewer than 5 ads is a weak estimate and is greyed out, as the assistant would say.</p>
   </section>
 
-  <section class="panel" aria-labelledby="rv-h">
+  <section class="panel whatif" id="whatif" aria-labelledby="wi-h">
+    <h2 id="wi-h">What would a price cut do to the overpriced stock?</h2>
+    <p class="sub">Cut the asking price of every ad still online and above its market range, and count how many fall back to or below the 75th percentile of comparable ads. The Power BI report has the same what-if parameter on its Price review page.</p>
+    <div class="ctl"><label for="cut">Price cut</label><input type="range" id="cut" min="0" max="15" step="1" value="5" aria-describedby="wi-out"><output id="cut-out" for="cut">5%</output></div>
+    <div class="kpis" id="wi-kpis" aria-live="polite"></div>
+    <div><div class="bar" aria-hidden="true"><i id="wi-bar"></i></div><p class="note" id="wi-out"></p></div>
+  </section>
+
+  <section class="panel" id="buy" aria-labelledby="buy-h">
+    <h2 id="buy-h">Buy list: which private-seller ads are worth buying this morning?</h2>
+    <p class="sub">Ads from private sellers still online, asked at or below the median of comparable ads. A dealer pays about 90% of the market price (the target offer) and spends about 2% on preparation; the margin is the comparable median less what is paid less preparation. Buy now: 8% or more under the median. Negotiate: 3% to 8%. Wait: under 3%.</p>
+    <div class="kpis" id="buy-kpis" aria-live="polite"></div>
+    <div class="tbl-wrap"><table id="buy-table"></table></div>
+    <p class="note" id="buy-note"></p>
+  </section>
+
+  <div class="grid2" id="drivers">
+    <section class="panel drv" aria-labelledby="dr-h">
+      <h2 id="dr-h">What moves an ad's price against its market?</h2>
+      <p class="sub">Median gap of the asking price to the median of comparable ads (same version and model year, so the car and its age are held constant), by factor. Pick a factor.</p>
+      <div class="seg" id="drv-seg"><button data-f="Mileage" aria-pressed="true">Mileage</button><button data-f="Seller" aria-pressed="false">Seller</button><button data-f="Gearbox" aria-pressed="false">Gearbox</button><button data-f="Fuel" aria-pressed="false">Fuel</button><button data-f="Colour" aria-pressed="false">Colour</button><button data-f="Photos" aria-pressed="false">Photos</button></div>
+      <div class="chart" id="drv-chart"></div>
+      <p class="note" id="drv-note"></p>
+    </section>
+    <section class="panel" aria-labelledby="km-h">
+      <h2 id="km-h">Loss of asking price per 10,000 km, by car</h2>
+      <p class="sub">Least-squares fit of price on kilometres inside each version and model year, over groups of 8 or more clean ads, pooled per version and weighted by ads. The production tool computed the same figure to adjust a quote to the car's mileage.</p>
+      <div class="tbl-wrap"><table id="km-table"></table></div>
+      <p class="note" id="km-note"></p>
+    </section>
+  </div>
+
+  <div class="grid2" id="risk">
+    <section class="panel" aria-labelledby="lq-h">
+      <h2 id="lq-h">How fast the stock turns: share of ads still online by days since listing</h2>
+      <p class="sub">Ads listed at least 90 days before the snapshot, so every ad could be followed for 90 days. The selected model is drawn against all models.</p>
+      <div class="legend"><span><i style="background:var(--s2)"></i>All models</span><span id="lq-leg-model" hidden><i style="background:var(--s1)"></i><span></span></span></div>
+      <div class="chart" id="liquidity"></div>
+      <p class="note" id="lq-note"></p>
+    </section>
+    <section class="panel" aria-labelledby="rk-h">
+      <h2 id="rk-h">Ads online most likely to get stuck</h2>
+      <p class="sub">Risk score 0-100 per ad still online with a market: price above the comparable median (up to 50 points, full at +15%), days online (up to 30, full at 90 days), kilometres above the comparable median (up to 20, full at +50%). High: 60 or more.</p>
+      <div class="tbl-wrap"><table id="risk-table"></table></div>
+      <button class="toggle" id="rk-toggle" aria-expanded="false">Show all</button>
+      <p class="note" id="rk-note"></p>
+    </section>
+  </div>
+
+  <section class="panel" id="stock" aria-labelledby="rv-h">
     <h2 id="rv-h">Stock to review: ads still online and outside the market range</h2>
     <p class="sub" id="rv-sub"></p>
     <div class="tbl-wrap"><table id="review"></table></div>
     <button class="toggle" id="rv-toggle" aria-expanded="false">Show all</button>
   </section>
 
-  <section class="method" aria-label="Method">
+  <section class="method" id="method" aria-label="Method">
     <h2>How it is built</h2>
     <ul>
       <li>The data are the 1,200 synthetic ads of the showcase repository, generated with a fixed seed. Titles copy the mistakes of real ads; prices, mileage and dates are invented. The generator makes cars priced below market leave the site faster, so the first chart checks that the pipeline recovers that pattern. Nothing on this page is a result of the real business.</li>
       <li>Titles are matched by the repository's own Python matcher (whole-word aliases, then fuzzy matching for typos). dbt models on DuckDB then apply the quality checks, the market statistics and the position against the market, and reproduce the demo's numbers exactly: 1,167 clean ads, 187 through typo correction, and a 2023 Onix LTZ market of 6 ads with a median of R$ 68,400.</li>
       <li>An ad that disappears counts as sold on its last day online. Days to sell count sold ads only, so slow cars that are still online make the gap between price bands smaller, not larger.</li>
       <li>In production InfoCars held about 250,000 listings, cut 5,114 model spellings to 641 real models, and the dealer measured a saving of about R$ 2,000 per negotiation, with time in stock down to one to three months.</li>
+      <li>Version 2 (November 2026) adds to the generator the attributes the production table had: seller type, gearbox, fuel, colour, photos, city and a price history. Every version 1 column is unchanged, so the numbers above did not move; the new columns are drawn from a second generator conditioned on each ad's distance to its market, which plants the patterns the buy list, the price drivers and the stock-risk score look for. The km depreciation, the buy list, the liquidity curve and the risk score are dbt marts; this page recomputes them from the same ads in the browser, and the notebook checks they agree.</li>
       <li>The same star schema (ads, version, state, date) feeds a Power BI model in TMDL with DAX measures and a Qlik Sense app with set analysis.</li>
     </ul>
     <p class="note">Code: <a href="https://github.com/Alpralex/infocars-pricing-showcase">github.com/Alpralex/infocars-pricing-showcase</a></p>
@@ -201,7 +301,7 @@ th.yr, td.yr { min-width: 4.2rem; }
 (function () {
   var NS = 'http://www.w3.org/2000/svg';
   var D = {};
-  var state = { model: 'ALL', st: 'ALL', all: false };
+  var state = { model: 'ALL', st: 'ALL', all: false, cut: 5, factor: 'Mileage', allRisk: false };
 
   function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
   function txt(parent, x, y, s, attrs) { var t = el('text', Object.assign({ x: x, y: y }, attrs || {}), parent); t.textContent = s; return t; }
@@ -220,10 +320,12 @@ th.yr, td.yr { min-width: 4.2rem; }
   function dayIso(n) { return new Date(n * 864e5).toISOString().slice(0, 10); }
   function dayLabel(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
 
-  // listing row: [id, version_key, year, state, price, listed, removed, days, comparables, p25, median, p75, band, source]
+  // listing row: [id, version_key, year, state, price, listed, removed, days, comparables, p25, median, p75, band, source,
+  //   km, market median km, seller (p/d), transmission (a/m), fuel (f/p/h), colour, photos, city, price before the cut, cut date]
   function L(r) {
     var pos = r[10] == null ? 'few' : r[4] > r[11] ? 'above' : r[4] < r[9] ? 'below' : 'within';
     return { id: r[0], vk: r[1], year: r[2], st: r[3], price: r[4], listed: r[5], removed: r[6], days: r[7], comp: r[8], p25: r[9], med: r[10], p75: r[11], band: r[12], src: r[13],
+      km: r[14], mkm: r[15], seller: r[16], trans: r[17], fuel: r[18], colour: r[19], photos: r[20], city: r[21], before: r[22], cutDate: r[23],
       sold: r[6] != null, gap: r[10] == null ? null : r[4] - r[10], gapPct: r[10] == null ? null : r[4] / r[10] - 1, pos: pos };
   }
   function rows() { return D.listings.filter(function (r) { return (state.model === 'ALL' || D.ver[r.vk][2] === state.model) && (state.st === 'ALL' || r.st === state.st); }); }
@@ -397,18 +499,193 @@ th.yr, td.yr { min-width: 4.2rem; }
     var list = R.filter(function (r) { return !r.sold && (r.pos === 'above' || r.pos === 'below'); })
       .sort(function (a, b) { return Math.abs(b.gap) - Math.abs(a.gap); });
     var shown = state.all ? list : list.slice(0, 12);
-    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th></tr></thead>';
+    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th><th>After a ' + state.cut + '% cut</th></tr></thead>';
     var body = shown.map(function (r) {
-      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td></tr>';
+      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td>' + (r.pos === 'above' ? '<td>' + brl(r.price * (1 - state.cut / 100)) + (r.price * (1 - state.cut / 100) <= r.p75 ? ' <span class="yes">in range</span>' : ' <span class="no">still above</span>') + '</td>' : '<td class="dim">–</td>') + '</tr>';
     }).join('');
-    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="10">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
+    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
     var ab = list.filter(function (r) { return r.pos === 'above'; }), be = list.filter(function (r) { return r.pos === 'below'; });
     document.getElementById('rv-sub').textContent = scopeName() + ' · ' + num(ab.length) + ' above market (' + brlS(ab.reduce(function (s, r) { return s + r.gap; }, 0)) + ' against the medians), ' + num(be.length) + ' below (' + brlS(be.reduce(function (s, r) { return s + r.gap; }, 0)) + '). Largest gaps first.';
     var t = document.getElementById('rv-toggle'); t.hidden = list.length <= 12;
     t.textContent = state.all ? 'Show the first 12' : 'Show all ' + list.length; t.setAttribute('aria-expanded', String(state.all));
   }
 
-  function render() { var R = rows(); renderKpis(R); renderBands(R); renderScatter(R); renderOnline(R); renderQuality(); renderMarket(R); renderReview(R); }
+  // What-if price cut: the web version of the Power BI parameter
+  function whatIf(R) {
+    var over = R.filter(function (r) { return !r.sold && r.pos === 'above'; }), c = state.cut / 100;
+    var back = over.filter(function (r) { return r.price * (1 - c) <= r.p75; });
+    var given = over.reduce(function (s, r) { return s + r.price * c; }, 0);
+    var sold = R.filter(function (r) { return r.sold; });
+    function md(p) { return median(sold.filter(function (r) { return r.pos === p; }).map(function (r) { return r.days; })); }
+    return { over: over.length, back: back.length, given: given, dOver: md('above'), dIn: md('within') };
+  }
+  function renderWhatIf(R) {
+    var w = whatIf(R);
+    document.getElementById('cut-out').textContent = state.cut + '%';
+    var tiles = [['Overpriced ads online', num(w.over), 'above the 75th percentile of comparables'],
+      ['Back in range after the cut', num(w.back), w.over ? share(w.back / w.over) + ' of the overpriced stock' : '–'],
+      ['Asking price given up', brl(w.given), 'over all ' + num(w.over) + ' overpriced ads'],
+      ['Days to sell: overpriced / in range', days(w.dOver).replace(' days', '') + ' / ' + days(w.dIn), 'median for sold ads']];
+    document.getElementById('wi-kpis').innerHTML = tiles.map(function (x) { return '<div class="kpi"><span class="label">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
+    document.getElementById('wi-bar').style.width = (w.over ? 100 * w.back / w.over : 0) + '%';
+    document.getElementById('wi-out').textContent = w.over ? num(w.back) + ' of ' + num(w.over) + ' overpriced ads back in their market range at a ' + state.cut + '% cut.' : 'No overpriced ads online in this selection.';
+  }
+  function renderHeadline(R) {
+    var w = whatIf(R), ads = R.length, withM = R.filter(function (r) { return r.pos !== 'few'; }).length, ab = R.filter(function (r) { return r.pos === 'above'; }).length;
+    var out = !ads ? 'No ads in this selection.' :
+      scopeName() + ': ' + num(ab) + ' of ' + num(ads) + ' ads (' + share(withM ? ab / withM : null) + ' of those with enough comparables) were priced above their market range' +
+      (w.dOver != null && w.dIn != null ? ' and took a median of ' + Math.round(w.dOver) + ' days to sell, against ' + Math.round(w.dIn) + ' within range' : '') + '. ' +
+      (w.over ? 'A ' + state.cut + '% price cut would bring ' + num(w.back) + ' of the ' + num(w.over) + ' still online back into range, for ' + brl(w.given) + ' less in asking price.' : 'None is still online.');
+    document.getElementById('headline').textContent = out;
+  }
+  document.getElementById('cut').addEventListener('input', function () { state.cut = Number(this.value); var R = rows(); renderHeadline(R); renderWhatIf(R); renderReview(R); });
+
+  // ---------- version 2: buy list, price drivers, km depreciation, liquidity, stock risk, price cuts ----------
+  function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+  function buyList(R) {
+    return R.filter(function (r) { return !r.sold && r.seller === 'p' && r.med != null && r.price <= r.med; }).map(function (r) {
+      var g = r.gapPct, cls = g <= -0.08 ? 'Buy now' : g <= -0.03 ? 'Negotiate' : 'Wait';
+      var target = Math.round(0.9 * r.med), prep = 0.02 * r.med;
+      return { r: r, cls: cls, order: cls === 'Buy now' ? 1 : cls === 'Negotiate' ? 2 : 3, target: target,
+        marginAsk: Math.round(r.med - r.price - prep), marginTarget: Math.round(r.med - Math.min(r.price, 0.9 * r.med) - prep),
+        prio: Math.round(100 * (0.6 * clamp01(-g / 0.15) + 0.25 * clamp01(r.days / 60) + 0.15 * clamp01((r.mkm - r.km) / r.mkm))) };
+    }).sort(function (a, b) { return a.order - b.order || b.prio - a.prio; });
+  }
+  function renderBuy(R) {
+    var list = buyList(R), now = list.filter(function (x) { return x.cls === 'Buy now'; }), neg = list.filter(function (x) { return x.cls === 'Negotiate'; });
+    var mAsk = now.reduce(function (s, x) { return s + x.marginAsk; }, 0), mT = now.concat(neg).reduce(function (s, x) { return s + x.marginTarget; }, 0);
+    var tiles = [['Candidates online', num(list.length), 'private sellers at or below the comparable median'],
+      ['Buy now', num(now.length), brl(mAsk) + ' margin at the asking price'],
+      ['Negotiate', num(neg.length), 'the margin needs the target offer'],
+      ['Margin at the target offer', brl(mT), now.length + neg.length ? 'median ' + brl(median(now.concat(neg).map(function (x) { return x.marginTarget; }))) + ' per car' : '–']];
+    document.getElementById('buy-kpis').innerHTML = tiles.map(function (x) { return '<div class="kpi"><span class="label">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
+    var CLS = { 'Buy now': 'now', 'Negotiate': 'neg', 'Wait': 'wait' };
+    var head = '<thead><tr><th>Class</th><th>Priority</th><th>Car</th><th>Year</th><th>City</th><th>km</th><th>Days online</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Target offer</th><th>Margin at target</th></tr></thead>';
+    var body = list.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + CLS[x.cls] + '">' + x.cls + '</span></td><td>' + x.prio + '</td><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.city + ' · ' + r.st + '</td><td>' + num(r.km) + '</td><td>' + r.days + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + pct(r.gapPct) + '</td><td>' + brl(x.target) + '</td><td class="' + (x.marginTarget > 0 ? 'pos' : '') + '">' + brl(x.marginTarget) + '</td></tr>'; }).join('');
+    document.getElementById('buy-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="12">No private-seller ads at or below their market median are online in this selection.</td></tr>') + '</tbody>';
+    document.getElementById('buy-note').textContent = scopeName() + '. Priority: 60% the discount to the median (full at 15%), 25% days online (full at 60), 15% kilometres under the comparable median (full at 100%). The production tool sent the same list by WhatsApp every morning.';
+    return { n: list.length, now: now.length, neg: neg.length, mAsk: mAsk, mT: mT };
+  }
+
+  var FACTORS = {
+    Mileage: { levels: ['Under 10k km', '10-30k km', '30-50k km', '50-100k km', 'Over 100k km'], of: function (r) { return r.km < 10000 ? 0 : r.km < 30000 ? 1 : r.km < 50000 ? 2 : r.km < 100000 ? 3 : 4; } },
+    Seller: { levels: ['Private seller', 'Dealer'], of: function (r) { return r.seller === 'p' ? 0 : 1; } },
+    Gearbox: { levels: ['Automatic', 'Manual'], of: function (r) { return r.trans === 'a' ? 0 : 1; } },
+    Fuel: { levels: ['Flex', 'Petrol', 'Hybrid'], of: function (r) { return r.fuel === 'f' ? 0 : r.fuel === 'p' ? 1 : 2; } },
+    Colour: { levels: ['White', 'Silver', 'Black', 'Grey', 'Red', 'Blue'], of: function (r) { return ['White', 'Silver', 'Black', 'Grey', 'Red', 'Blue'].indexOf(r.colour); } },
+    Photos: { levels: ['Under 8 photos', '8-15 photos', '16 or more'], of: function (r) { return r.photos < 8 ? 0 : r.photos < 16 ? 1 : 2; } }
+  };
+  function driverLevels(R, f) {
+    var F = FACTORS[f], P = R.filter(function (r) { return r.med != null; });
+    return F.levels.map(function (name, i) {
+      var g = P.filter(function (r) { return F.of(r) === i; });
+      return { name: name, n: g.length, gap: median(g.map(function (r) { return r.gapPct; })), above: g.length ? g.filter(function (r) { return r.pos === 'above'; }).length / g.length : null };
+    });
+  }
+  function renderDrivers(R) {
+    var host = document.getElementById('drv-chart'); host.innerHTML = '';
+    var lv = driverLevels(R, state.factor);
+    var W = 520, rowH = 36, m = { t: 18, r: 56, b: 6, l: 120 }, H = m.t + m.b + lv.length * rowH;
+    var lim = Math.max(0.03, Math.max.apply(null, lv.map(function (x) { return Math.abs(x.gap || 0); })) * 1.15);
+    var X = function (v) { return m.l + (v + lim) / (2 * lim) * (W - m.l - m.r); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Median gap to the comparable median by ' + state.factor.toLowerCase() }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    el('line', { x1: X(0), x2: X(0), y1: m.t - 6, y2: H - m.b, stroke: css('--muted'), 'stroke-dasharray': '2 3' }, svg);
+    txt(svg, X(0), m.t - 8, 'comparable median', { 'text-anchor': 'middle' });
+    lv.forEach(function (x, i) {
+      var y = m.t + i * rowH;
+      txt(svg, m.l - 8, y + rowH / 2 + 4, x.name, { 'text-anchor': 'end', class: 'lbl' });
+      if (x.gap != null) {
+        var x0 = X(Math.min(0, x.gap)), w = Math.abs(X(x.gap) - X(0));
+        el('rect', { x: x0, y: y + 9, width: Math.max(w, 1), height: rowH - 18, rx: 2, fill: css(x.gap > 0 ? '--s2' : '--s1') }, svg);
+        txt(svg, x.gap >= 0 ? X(x.gap) + 6 : X(0) + 6, y + rowH / 2 + 4, pct(x.gap), { 'text-anchor': 'start', class: 'lbl' });
+      } else txt(svg, X(0) + 6, y + rowH / 2 + 4, 'no ads', {});
+      var hit = el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent' }, svg);
+      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x.name + '<br>' + num(x.n) + ' ads with a market<br>Median gap: ' + pct(x.gap) + '<br>Above market: ' + share(x.above); tip.style.left = (X(0) / W * bb.width) + 'px'; tip.style.top = ((y + 9) / H * bb.height) + 'px'; tip.hidden = false; });
+      hit.addEventListener('pointerleave', function () { tip.hidden = true; });
+    });
+    var sel = driverLevels(R, 'Seller'), ph = driverLevels(R, 'Photos');
+    document.getElementById('drv-note').textContent = scopeName() + '. Seller and photos move the price, colour and fuel do not: private sellers ' + pct(sel[0].gap) + ', dealers ' + pct(sel[1].gap) + ', 16 or more photos ' + pct(ph[2].gap) + '. Hover for the number of ads.';
+  }
+  function renderKm() {
+    var rows = D.dep.filter(function (d) { return state.model === 'ALL' || D.ver[d[0]][2] === state.model; });
+    var head = '<thead><tr><th>Car</th><th>Ads</th><th>Median price</th><th>Per 10,000 km</th><th>%</th><th>R²</th></tr></thead>';
+    var body = rows.map(function (d) { return '<tr><td>' + d[1] + '</td><td>' + num(d[2]) + '</td><td>' + brl(d[4]) + '</td><td>' + brl(d[5]) + '</td><td>' + pct(d[6]) + '</td><td>' + d[7].toFixed(2) + '</td></tr>'; }).join('');
+    var ads = rows.reduce(function (s, d) { return s + d[2]; }, 0), loss = ads ? rows.reduce(function (s, d) { return s + d[5] * d[2]; }, 0) / ads : null, pc = ads ? rows.reduce(function (s, d) { return s + d[5] * d[2]; }, 0) / rows.reduce(function (s, d) { return s + d[4] * d[2]; }, 0) : null, r2 = ads ? rows.reduce(function (s, d) { return s + d[7] * d[2]; }, 0) / ads : null;
+    document.getElementById('km-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="6">No version with groups large enough for a fit.</td></tr>') + '</tbody>';
+    document.getElementById('km-note').textContent = ads ? 'Weighted by ads: ' + brl(loss) + ' per 10,000 km, ' + pct(pc) + ' of the median price, R² ' + r2.toFixed(2) + ' over ' + num(ads) + ' ads. Computed in dbt (mart_km_depreciation), not filtered by state.' : '';
+    return { loss: loss, pc: pc, r2: r2, ads: ads };
+  }
+  function liqCurve(rows, name) {
+    var cohort = rows.filter(function (r) { return r.listed <= '2025-08-03'; });
+    return [0, 7, 14, 21, 30, 45, 60, 90].map(function (d) {
+      var online = cohort.filter(function (r) { return !r.sold || dayDiff(r.listed, r.removed) > d; }).length;
+      return [name, d, cohort.length, online, cohort.length ? online / cohort.length : 0];
+    });
+  }
+  function dayDiff(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
+  function renderLiquidity() {
+    var host = document.getElementById('liquidity'); host.innerHTML = '';
+    var inState = D.listings.filter(function (r) { return state.st === 'ALL' || r.st === state.st; });
+    var all = liqCurve(inState, 'All models'), mod = state.model === 'ALL' ? [] : liqCurve(inState.filter(function (r) { return D.ver[r.vk][2] === state.model; }), state.model);
+    var leg = document.getElementById('lq-leg-model'); leg.hidden = !mod.length; leg.querySelector('span').textContent = state.model;
+    var W = 520, H = 250, m = { t: 14, r: 12, b: 30, l: 40 };
+    var X = function (d) { return m.l + d / 90 * (W - m.l - m.r); }, Y = function (v) { return H - m.b - v * (H - m.t - m.b); };
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Share of ads still online by days since listing' }, host);
+    var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (g) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, Math.round(g * 100) + '%', { 'text-anchor': 'end' }); });
+    [0, 7, 14, 21, 30, 45, 60, 90].forEach(function (d) { txt(svg, X(d), H - m.b + 16, String(d), { 'text-anchor': 'middle' }); });
+    txt(svg, W - m.r, H - 2, 'days since listing →', { 'text-anchor': 'end' });
+    [[all, '--s2'], [mod, '--s1']].forEach(function (s) {
+      if (!s[0].length || !s[0][0][2]) return;
+      el('path', { d: s[0].map(function (x, i) { return (i ? 'L' : 'M') + X(x[1]).toFixed(1) + ' ' + Y(x[4]).toFixed(1); }).join(''), fill: 'none', stroke: css(s[1]), 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, svg);
+      s[0].forEach(function (x) {
+        var c = el('circle', { cx: X(x[1]), cy: Y(x[4]), r: 4, fill: css(s[1]), stroke: css('--sheet'), 'stroke-width': 1.5 }, svg);
+        c.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x[0] + ' · day ' + x[1] + '<br>' + share(x[4]) + ' still online (' + num(x[3]) + ' of ' + num(x[2]) + ')'; tip.style.left = (Math.min(Math.max(X(x[1]), 80), W - 80) / W * bb.width) + 'px'; tip.style.top = (Y(x[4]) / H * bb.height) + 'px'; tip.hidden = false; });
+        c.addEventListener('pointerleave', function () { tip.hidden = true; });
+      });
+    });
+    var a30 = all[4], a90 = all[7], stName = state.st === 'ALL' ? 'all states' : D.stName[state.st];
+    document.getElementById('lq-note').textContent = a30[2] ? 'All models, ' + stName + ': ' + share(1 - a30[4]) + ' of ads leave the site within 30 days; ' + share(a90[4]) + ' are still online after 90. Cohort of ' + num(a30[2]) + ' clean ads listed at least 90 days before the snapshot (as mart_liquidity_curve).' : 'No ads listed at least 90 days before the snapshot in this selection.';
+    return { s30: a30[4], s90: a90[4] };
+  }
+  function riskRows(R) {
+    return R.filter(function (r) { return !r.sold && r.med != null; }).map(function (r) {
+      var p = Math.round(50 * clamp01(r.gapPct / 0.15)), t = Math.round(30 * clamp01(r.days / 90)), k = Math.round(20 * clamp01((r.km - r.mkm) / r.mkm / 0.5)), s = p + t + k;
+      return { r: r, p: p, t: t, k: k, score: s, band: s >= 60 ? 'High' : s >= 35 ? 'Medium' : 'Low', cut: r.price > r.p75 ? Math.round(r.price - r.p75) : null };
+    }).sort(function (a, b) { return b.score - a.score; });
+  }
+  function priceCuts(R) {
+    var cut = R.filter(function (r) { return r.before != null && r.med != null; }), never = R.filter(function (r) { return r.before == null && r.med != null && r.sold; });
+    var soldCut = cut.filter(function (r) { return r.sold; });
+    return { n: cut.length, after: median(soldCut.map(function (r) { return dayNum(r.removed) - dayNum(r.cutDate); })), never: median(never.map(function (r) { return r.days; })),
+      into: cut.length ? cut.filter(function (r) { return r.before > r.p75 && r.price <= r.p75; }).length / cut.length : null, size: median(cut.map(function (r) { return r.price / r.before - 1; })) };
+  }
+  function renderRisk(R) {
+    var rows = riskRows(R), hi = rows.filter(function (x) { return x.band === 'High'; }), shown = state.allRisk ? rows : rows.slice(0, 12);
+    var BAND = { High: 'high', Medium: 'med', Low: 'low' };
+    function bar(v, max, colour) { return '<i class="pts" style="width:' + Math.round(v / max * 40) + 'px;background:' + colour + '"></i> ' + v; }
+    var head = '<thead><tr><th>Risk</th><th>Score</th><th>Car</th><th>Days online</th><th>Gap</th><th>Price (50)</th><th>Time (30)</th><th>km (20)</th><th>Cut to range</th></tr></thead>';
+    var body = shown.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + BAND[x.band] + '">' + x.band + '</span></td><td><b>' + x.score + '</b></td><td>' + carName(r) + ' ' + r.year + ' · ' + r.st + '</td><td>' + r.days + '</td><td>' + pct(r.gapPct) + '</td><td>' + bar(x.p, 50, 'var(--s2)') + '</td><td>' + bar(x.t, 30, 'var(--total)') + '</td><td>' + bar(x.k, 20, 'var(--s1)') + '</td><td>' + (x.cut == null ? '<span class="dim">–</span>' : brl(x.cut)) + '</td></tr>'; }).join('');
+    document.getElementById('risk-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="9">No ads online with a market in this selection.</td></tr>') + '</tbody>';
+    var t = document.getElementById('rk-toggle'); t.hidden = rows.length <= 12; t.textContent = state.allRisk ? 'Show the first 12' : 'Show all ' + rows.length; t.setAttribute('aria-expanded', String(state.allRisk));
+    var pc = priceCuts(R), cutHi = hi.reduce(function (s, x) { return s + (x.cut || 0); }, 0);
+    document.getElementById('rk-note').textContent = scopeName() + ': ' + num(rows.length) + ' ads online with a market, ' + num(hi.length) + ' at high risk; ' + brl(cutHi) + ' of cuts would bring the high-risk ads back to the 75th percentile. ' +
+      (pc.n ? 'Price cuts: the ' + num(pc.n) + ' ads that cut once (median ' + pct(pc.size) + ') sold a median of ' + (pc.after == null ? '–' : Math.round(pc.after)) + ' days after the cut, against ' + (pc.never == null ? '–' : Math.round(pc.never)) + ' days in all for sold ads that never cut; ' + share(pc.into) + ' of the cuts took the ad from above its range to inside it.' : 'No ad cut its price in this selection.');
+    return { n: rows.length, hi: hi.length, cutHi: cutHi, pc: pc };
+  }
+  function renderHeadline2(R, b, k, q, l) {
+    var out = !R.length ? '' :
+      (b.n ? num(b.now) + (b.now === 1 ? ' private-seller ad is' : ' private-seller ads are') + ' a buy at the asking price and ' + num(b.now + b.neg) + ' would clear ' + brl(b.mT) + ' at the target offer. ' : 'No private-seller ad is a buy in this selection. ') +
+      (k.ads ? 'Each 10,000 km takes about ' + brl(-k.loss) + ' (' + pct(-k.pc, 1).replace('+', '') + ') off the asking price. ' : '') +
+      num(q.hi) + (q.hi === 1 ? ' ad online is' : ' ads online are') + ' at high risk of getting stuck' + (q.pc.n && q.pc.after != null ? '; the ads that cut their price sold a median of ' + Math.round(q.pc.after) + ' days after the cut.' : '.');
+    document.getElementById('headline2').textContent = out;
+  }
+  document.getElementById('drv-seg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; state.factor = b.dataset.f; this.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); renderDrivers(rows()); });
+  document.getElementById('rk-toggle').addEventListener('click', function () { state.allRisk = !state.allRisk; renderRisk(rows()); });
+
+  function render() { var R = rows(); renderHeadline(R); renderWhatIf(R); renderKpis(R); renderBands(R); renderScatter(R); renderOnline(R); renderQuality(); renderMarket(R); renderReview(R);
+    var b = renderBuy(R); renderDrivers(R); var k = renderKm(); var l = renderLiquidity(); var q = renderRisk(R); renderHeadline2(R, b, k, q, l); }
 
   function seg(id, key, attr) {
     document.getElementById(id).addEventListener('click', function (e) {
@@ -420,9 +697,9 @@ th.yr, td.yr { min-width: 4.2rem; }
   }
   document.getElementById('rv-toggle').addEventListener('click', function () { state.all = !state.all; renderReview(rows()); });
 
-  Promise.all(['listings', 'meta'].map(function (n) { return fetch('data/' + n + '.json').then(function (r) { return r.json(); }); }))
+  Promise.all(['listings', 'meta', 'depreciation', 'liquidity'].map(function (n) { return fetch('data/' + n + '.json').then(function (r) { return r.json(); }); }))
     .then(function (res) {
-      D.meta = res[1]; D.listings = res[0].map(L);
+      D.meta = res[1]; D.listings = res[0].map(L); D.dep = res[2]; D.liq = res[3];
       D.ver = {}; D.meta.versions.forEach(function (v) { D.ver[v[0]] = v; });
       D.stName = {}; D.meta.states.forEach(function (s) { D.stName[s[0]] = s[1]; });
       var models = []; D.meta.versions.forEach(function (v) { if (models.indexOf(v[2]) < 0) models.push(v[2]); });

@@ -75,3 +75,60 @@ models:
         tests: [unique, not_null]
       - name: ads
         tests: [not_null]
+  - name: mart_km_depreciation
+    description: Loss of asking price per 10,000 km per version, from a price-on-km fit inside each model year.
+    columns:
+      - name: version_key
+        tests:
+          - unique
+          - not_null
+          - relationships: {to: ref('dim_version'), field: version_key}
+      - name: loss_per_10k_km_brl
+        tests: [not_null]
+  - name: mart_price_drivers
+    description: Median gap to the comparable median per factor (mileage band, seller, gearbox, fuel, colour, photos) and level.
+    tests:
+      - unique_combination: {columns: [factor, level]}
+    columns:
+      - name: ads
+        tests: [not_null]
+      - name: factor
+        tests:
+          - accepted_values: {values: ['Mileage', 'Seller', 'Gearbox', 'Fuel', 'Colour', 'Photos']}
+  - name: mart_buy_list
+    description: Private-seller ads still online at or below the comparable median, classed Buy now, Negotiate or Wait, with the dealer's expected margin.
+    columns:
+      - name: listing_id
+        tests:
+          - unique
+          - not_null
+          - relationships: {to: ref('fct_listings'), field: listing_id}
+      - name: buy_class
+        tests:
+          - not_null
+          - accepted_values: {values: ['Buy now', 'Negotiate', 'Wait']}
+      - name: expected_margin_brl
+        tests: [not_null]
+  - name: mart_price_changes
+    description: Every clean ad with a market, in two groups, with where the cut ads stood before and after the cut.
+    columns:
+      - name: listing_id
+        tests: [unique, not_null]
+      - name: cut_group
+        tests:
+          - accepted_values: {values: ['Cut the price', 'Never cut']}
+  - name: mart_liquidity_curve
+    description: Share of ads still online after 0 to 90 days, per model and for all models.
+    tests:
+      - unique_combination: {columns: [group_name, day]}
+    columns:
+      - name: still_online_share
+        tests: [not_null]
+  - name: mart_stock_risk
+    description: Risk-of-getting-stuck score (0-100) per active ad with a market, with the points of each factor.
+    columns:
+      - name: listing_id
+        tests: [unique, not_null]
+      - name: risk_band
+        tests:
+          - accepted_values: {values: ['High', 'Medium', 'Low']}
