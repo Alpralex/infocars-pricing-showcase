@@ -29,6 +29,13 @@ compared as (
         case when k.km < 10000 then 1 when k.km < 30000 then 2 when k.km < 50000 then 3 when k.km < 100000 then 4 else 5 end as km_band_order,
         case when k.km < 10000 then 'Under 10k km' when k.km < 30000 then '10-30k km' when k.km < 50000 then '30-50k km'
              when k.km < 100000 then '50-100k km' else 'Over 100k km' end as km_band,
+        -- the other price drivers as the dashboards label them, so every tool groups the same way
+        case k.seller_type when 'private' then 'Private seller' else 'Dealer' end          as seller_label,
+        case k.transmission when 'automatic' then 'Automatic' else 'Manual' end           as gearbox_label,
+        case k.fuel when 'flex' then 'Flex' when 'petrol' then 'Petrol' else 'Hybrid' end  as fuel_label,
+        case when k.photos < 8 then 1 when k.photos < 16 then 2 else 3 end                 as photos_band_order,
+        case when k.photos < 8 then 'Under 8 photos' when k.photos < 16 then '8-15 photos' else '16 or more' end
+                                                                                           as photos_band,
         c.changed_date                                          as price_cut_date,
         c.old_price_brl                                         as price_before_cut_brl,
         c.change_pct                                            as price_cut_pct,

@@ -616,9 +616,18 @@ th.yr, td.yr { min-width: 4.2rem; }
     document.getElementById('km-note').textContent = ads ? 'Weighted by ads: ' + brl(loss) + ' per 10,000 km, ' + pct(pc) + ' of the median price, R² ' + r2.toFixed(2) + ' over ' + num(ads) + ' ads. Computed in dbt (mart_km_depreciation), not filtered by state.' : '';
     return { loss: loss, pc: pc, r2: r2, ads: ads };
   }
+  function liqCurve(rows, name) {
+    var cohort = rows.filter(function (r) { return r.listed <= '2025-08-03'; });
+    return [0, 7, 14, 21, 30, 45, 60, 90].map(function (d) {
+      var online = cohort.filter(function (r) { return !r.sold || dayDiff(r.listed, r.removed) > d; }).length;
+      return [name, d, cohort.length, online, cohort.length ? online / cohort.length : 0];
+    });
+  }
+  function dayDiff(a, b) { return Math.round((new Date(b) - new Date(a)) / 86400000); }
   function renderLiquidity() {
     var host = document.getElementById('liquidity'); host.innerHTML = '';
-    var all = D.liq.filter(function (x) { return x[0] === 'All models'; }), mod = state.model === 'ALL' ? [] : D.liq.filter(function (x) { return x[0] === state.model; });
+    var inState = D.listings.filter(function (r) { return state.st === 'ALL' || r.st === state.st; });
+    var all = liqCurve(inState, 'All models'), mod = state.model === 'ALL' ? [] : liqCurve(inState.filter(function (r) { return D.ver[r.vk][2] === state.model; }), state.model);
     var leg = document.getElementById('lq-leg-model'); leg.hidden = !mod.length; leg.querySelector('span').textContent = state.model;
     var W = 520, H = 250, m = { t: 14, r: 12, b: 30, l: 40 };
     var X = function (d) { return m.l + d / 90 * (W - m.l - m.r); }, Y = function (v) { return H - m.b - v * (H - m.t - m.b); };
@@ -628,7 +637,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     [0, 7, 14, 21, 30, 45, 60, 90].forEach(function (d) { txt(svg, X(d), H - m.b + 16, String(d), { 'text-anchor': 'middle' }); });
     txt(svg, W - m.r, H - 2, 'days since listing →', { 'text-anchor': 'end' });
     [[all, '--s2'], [mod, '--s1']].forEach(function (s) {
-      if (!s[0].length) return;
+      if (!s[0].length || !s[0][0][2]) return;
       el('path', { d: s[0].map(function (x, i) { return (i ? 'L' : 'M') + X(x[1]).toFixed(1) + ' ' + Y(x[4]).toFixed(1); }).join(''), fill: 'none', stroke: css(s[1]), 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, svg);
       s[0].forEach(function (x) {
         var c = el('circle', { cx: X(x[1]), cy: Y(x[4]), r: 4, fill: css(s[1]), stroke: css('--sheet'), 'stroke-width': 1.5 }, svg);
@@ -636,8 +645,8 @@ th.yr, td.yr { min-width: 4.2rem; }
         c.addEventListener('pointerleave', function () { tip.hidden = true; });
       });
     });
-    var a30 = all.filter(function (x) { return x[1] === 30; })[0], a90 = all.filter(function (x) { return x[1] === 90; })[0];
-    document.getElementById('lq-note').textContent = 'All models: ' + share(1 - a30[4]) + ' of ads leave the site within 30 days; ' + share(a90[4]) + ' are still online after 90. Computed in dbt (mart_liquidity_curve) over ' + num(a30[2]) + ' ads, not filtered by state.';
+    var a30 = all[4], a90 = all[7], stName = state.st === 'ALL' ? 'all states' : D.stName[state.st];
+    document.getElementById('lq-note').textContent = a30[2] ? 'All models, ' + stName + ': ' + share(1 - a30[4]) + ' of ads leave the site within 30 days; ' + share(a90[4]) + ' are still online after 90. Cohort of ' + num(a30[2]) + ' clean ads listed at least 90 days before the snapshot (as mart_liquidity_curve).' : 'No ads listed at least 90 days before the snapshot in this selection.';
     return { s30: a30[4], s90: a90[4] };
   }
   function riskRows(R) {

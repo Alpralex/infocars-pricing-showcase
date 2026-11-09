@@ -475,6 +475,51 @@ table fct_listings
 
 		annotation SummarizationSetBy = Automatic
 
+	column seller_label
+		dataType: string
+		isHidden
+		lineageTag: 9fee2dbd-be71-500f-a1ee-14fff776d07d
+		summarizeBy: none
+		sourceColumn: seller_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column gearbox_label
+		dataType: string
+		isHidden
+		lineageTag: 5c4dbd8a-6046-5142-bb64-493b5e1d0b92
+		summarizeBy: none
+		sourceColumn: gearbox_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column fuel_label
+		dataType: string
+		isHidden
+		lineageTag: e0195d9d-836a-5c48-8fdb-1833272d5290
+		summarizeBy: none
+		sourceColumn: fuel_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_band
+		dataType: string
+		isHidden
+		lineageTag: 8c963a87-e6c0-5625-bbf6-b4dd8d133adb
+		summarizeBy: none
+		sourceColumn: photos_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_band_order
+		dataType: int64
+		isHidden
+		lineageTag: 44a02e5d-ef44-59a1-aa89-708fe1a77c04
+		summarizeBy: none
+		sourceColumn: photos_band_order
+
+		annotation SummarizationSetBy = Automatic
+
 	column km_band_order
 		dataType: int64
 		isHidden

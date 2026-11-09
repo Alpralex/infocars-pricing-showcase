@@ -20,6 +20,7 @@ tables = {
     "fct_listings": """
         select listing_id, version_key, model_year, state, city, source, match_method, price_brl, km,
                seller_type, transmission, fuel, colour, photos, km_band, km_band_order,
+               seller_label, gearbox_label, fuel_label, photos_band, photos_band_order,
                listed_date, removed_date, last_seen_date, days_on_market,
                is_active::integer as is_active, is_sold::integer as is_sold,
                had_price_cut::integer as had_price_cut, price_cut_date, price_before_cut_brl, price_cut_pct,

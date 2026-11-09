@@ -1,9 +1,21 @@
 table mart_price_drivers
 	lineageTag: 1442612a-8be7-5137-82fc-426e7b53dcc3
 
+	/// Computed from fct_listings for the level on the axis, so the state and model slicers apply.
 	/// Median gap of the asking price to the comparable median, for one factor level.
 	measure 'Median Gap at Level' =
-			MAX ( mart_price_drivers[median_gap_pct] )
+			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
+			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
+			RETURN
+				SWITCH (
+					f,
+					"Mileage", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[km_band] = l ),
+					"Seller", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[seller_label] = l ),
+					"Gearbox", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[gearbox_label] = l ),
+					"Fuel", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[fuel_label] = l ),
+					"Colour", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[colour] = l ),
+					"Photos", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[photos_band] = l )
+				)
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: Drivers
 		lineageTag: 6ef1dbdf-c2d8-5507-8715-a129788c9f61
@@ -11,7 +23,18 @@ table mart_price_drivers
 
 	/// Clean ads with a market at this factor level.
 	measure 'Ads at Level' =
-			SUM ( mart_price_drivers[ads] )
+			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
+			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
+			RETURN
+				SWITCH (
+					f,
+					"Mileage", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[km_band] = l ),
+					"Seller", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[seller_label] = l ),
+					"Gearbox", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[gearbox_label] = l ),
+					"Fuel", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[fuel_label] = l ),
+					"Colour", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[colour] = l ),
+					"Photos", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[photos_band] = l )
+				)
 		formatString: #,0
 		displayFolder: Drivers
 		lineageTag: 3e3f253d-4167-5751-8568-daa924bff8ee
@@ -19,7 +42,18 @@ table mart_price_drivers
 
 	/// Share of the ads at this level priced above the 75th percentile of comparables.
 	measure 'Above Market Share at Level' =
-			MAX ( mart_price_drivers[above_market_share] )
+			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
+			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
+			RETURN
+				DIVIDE ( SWITCH (
+						f,
+						"Mileage", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[km_band] = l ),
+						"Seller", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[seller_label] = l ),
+						"Gearbox", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[gearbox_label] = l ),
+						"Fuel", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[fuel_label] = l ),
+						"Colour", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[colour] = l ),
+						"Photos", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] = "above market", fct_listings[photos_band] = l )
+					), [Ads at Level] )
 		formatString: 0%
 		displayFolder: Drivers
 		lineageTag: c514523e-0eb2-5d07-9f77-099b86f532bd
@@ -29,7 +63,16 @@ table mart_price_drivers
 	measure 'Driver Gap' =
 			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
 			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
-			RETURN CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), ALL ( mart_price_drivers ), mart_price_drivers[factor] = f, mart_price_drivers[level] = l )
+			RETURN
+				SWITCH (
+					f,
+					"Mileage", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[km_band] = l ),
+					"Seller", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[seller_label] = l ),
+					"Gearbox", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[gearbox_label] = l ),
+					"Fuel", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[fuel_label] = l ),
+					"Colour", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[colour] = l ),
+					"Photos", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[photos_band] = l )
+				)
 		formatString: +0.0%;-0.0%;0.0%
 		isHidden
 		displayFolder: Drivers
@@ -40,11 +83,11 @@ table mart_price_drivers
 	measure 'Headline Drivers' =
 			VAR Loss = [Loss per 10k km]
 			VAR LossPct = [Loss per 10k km %]
-			VAR Priv = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Seller", mart_price_drivers[level] = "Private seller" )
-			VAR Deal = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Seller", mart_price_drivers[level] = "Dealer" )
-			VAR Photos = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Photos", mart_price_drivers[level] = "16 or more" )
-			VAR Colour = CALCULATE ( MAXX ( mart_price_drivers, ABS ( mart_price_drivers[median_gap_pct] ) ), mart_price_drivers[factor] = "Colour" )
-			VAR Fuel = CALCULATE ( MAXX ( mart_price_drivers, ABS ( mart_price_drivers[median_gap_pct] ) ), mart_price_drivers[factor] = "Fuel" )
+			VAR Priv = CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[seller_label] = "Private seller" )
+			VAR Deal = CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[seller_label] = "Dealer" )
+			VAR Photos = CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[photos_band] = "16 or more" )
+			VAR Colour = MAXX ( VALUES ( fct_listings[colour] ), ABS ( CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ) ) ) )
+			VAR Fuel = MAXX ( VALUES ( fct_listings[fuel_label] ), ABS ( CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ) ) ) )
 			RETURN
 				IF (
 					ISBLANK ( Loss ),

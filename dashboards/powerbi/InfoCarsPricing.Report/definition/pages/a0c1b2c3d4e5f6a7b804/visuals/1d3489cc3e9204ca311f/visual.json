@@ -138,7 +138,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Loss per 10,000 km, by car'"
+                  "Value": "'Loss per 10,000 km, by car (all states)'"
                 }
               }
             }
@@ -151,7 +151,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Loss per 10,000 km, by car'"
+                  "Value": "'Loss per 10,000 km, by car (all states)'"
                 }
               }
             }

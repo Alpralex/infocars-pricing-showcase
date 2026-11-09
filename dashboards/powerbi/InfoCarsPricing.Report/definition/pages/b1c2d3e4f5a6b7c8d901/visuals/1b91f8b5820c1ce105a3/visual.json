@@ -221,7 +221,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'From raw ads to clean ads'"
+                  "Value": "'From raw ads to clean ads (all ads)'"
                 }
               }
             }

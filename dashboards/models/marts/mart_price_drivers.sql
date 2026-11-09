@@ -1,6 +1,6 @@
 -- What moves an ad's price against its market: one row per factor and level, with the median gap to the
 -- comparable median (same version and model year, so the car and its age are already held constant).
--- The web page and the Power BI Key Influencers visual read this; the factors are the columns the
+-- The web page reads this; Power BI uses it as the axis and recomputes the medians from fct_listings so slicers apply; the factors are the columns the
 -- production table had (gearbox, seller account, colour, fuel, photos) plus the mileage bands.
 with ads as (
     select * from {{ ref('fct_listings') }} where market_median_brl is not null
@@ -8,20 +8,16 @@ with ads as (
 long as (
     select 'Mileage'      as factor, 1 as factor_order, km_band as level, km_band_order as level_order, * from ads
     union all
-    select 'Seller',      2, case seller_type when 'private' then 'Private seller' else 'Dealer' end,
-           case seller_type when 'private' then 1 else 2 end, * from ads
+    select 'Seller',      2, seller_label, case seller_type when 'private' then 1 else 2 end, * from ads
     union all
-    select 'Gearbox',     3, case transmission when 'automatic' then 'Automatic' else 'Manual' end,
-           case transmission when 'automatic' then 1 else 2 end, * from ads
+    select 'Gearbox',     3, gearbox_label, case transmission when 'automatic' then 1 else 2 end, * from ads
     union all
-    select 'Fuel',        4, case fuel when 'flex' then 'Flex' when 'petrol' then 'Petrol' else 'Hybrid' end,
-           case fuel when 'flex' then 1 when 'petrol' then 2 else 3 end, * from ads
+    select 'Fuel',        4, fuel_label, case fuel when 'flex' then 1 when 'petrol' then 2 else 3 end, * from ads
     union all
     select 'Colour',      5, colour, case colour when 'White' then 1 when 'Silver' then 2 when 'Black' then 3
                                              when 'Grey' then 4 when 'Red' then 5 else 6 end, * from ads
     union all
-    select 'Photos',      6, case when photos < 8 then 'Under 8 photos' when photos < 16 then '8-15 photos' else '16 or more' end,
-           case when photos < 8 then 1 when photos < 16 then 2 else 3 end, * from ads
+    select 'Photos',      6, photos_band, photos_band_order, * from ads
 )
 select
     factor,
