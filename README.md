@@ -97,11 +97,11 @@ dashboards/        dbt + DuckDB model, web dashboard, Power BI and Qlik Sense ve
 
 ## Dashboards
 
-[`dashboards/`](dashboards/) rebuilds the market statistics in SQL with dbt on DuckDB and shows the same model three ways: a static web page, a Power BI project (PBIP/TMDL) and a Qlik Sense app. See its README for how to run each one.
+[`dashboards/`](dashboards/) rebuilds the market statistics in SQL with dbt on DuckDB and shows the same model three ways: a static web page, a Power BI project (PBIP/TMDL) and a Qlik Sense app. See its README for how to run each one. Beyond the price check it answers what the production screens answered: which private ads are worth buying and at what offer (buy list), what moves the price once the car and its age are fixed (kilometres, seller, photos), how fast the stock turns and which ads are at risk of getting stuck, and whether cutting the price worked.
 
 ## Python notebook
 
-[`notebooks/how_it_was_built.ipynb`](notebooks/how_it_was_built.ipynb) walks through the build step by step: generate the sample ads, load and check them with pandas, match titles to the catalogue, rebuild the market statistics with dbt, and redo the analysis with interactive Altair charts (click a price band, drag a box over the scatter, pick a car). Every number is reconciled against the dbt marts. A rendered version is on [guilhermerigonato.com/infocars/notebook/](https://guilhermerigonato.com/infocars/notebook/).
+[`notebooks/how_it_was_built.ipynb`](notebooks/how_it_was_built.ipynb) walks through the build step by step: generate the sample ads, load and check them with pandas, match titles to the catalogue, rebuild the market statistics with dbt, and redo the analysis with interactive Altair charts (click a price band, drag a box over the scatter, pick a car), then fit price on kilometres, draw the liquidity curve and build the buy list in pandas. Every number is reconciled against the dbt marts. A rendered version is on [guilhermerigonato.com/infocars/notebook/](https://guilhermerigonato.com/infocars/notebook/).
 
 ## About the data
 
