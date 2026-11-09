@@ -31,6 +31,7 @@ table dim_date
 		annotation UnderlyingDateTimeDataType = Date
 
 	column year_number
+		isHidden
 		dataType: int64
 		formatString: 0
 		lineageTag: 3511c9df-bd46-48df-b6fe-7f0e7f83582a
@@ -38,6 +39,7 @@ table dim_date
 		sourceColumn: year_number
 
 	column month_number
+		isHidden
 		dataType: int64
 		formatString: 0
 		lineageTag: da464cb6-b668-49ea-8b22-7bac4837edf6

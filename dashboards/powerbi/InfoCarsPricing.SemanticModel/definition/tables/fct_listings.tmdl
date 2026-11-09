@@ -233,6 +233,7 @@ table fct_listings
 		lineageTag: 61ce553b-b57d-543f-a079-c8797fe4d66b
 
 	column listing_id
+		isHidden
 		dataType: int64
 		isKey
 		formatString: 0

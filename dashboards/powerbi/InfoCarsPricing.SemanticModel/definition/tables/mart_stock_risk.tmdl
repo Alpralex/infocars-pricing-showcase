@@ -58,6 +58,7 @@ table mart_stock_risk
 
 
 	column listing_id
+		isHidden
 		dataType: int64
 		isKey
 		formatString: #,0

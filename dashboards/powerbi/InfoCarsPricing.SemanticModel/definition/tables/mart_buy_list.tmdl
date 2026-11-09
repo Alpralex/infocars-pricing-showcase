@@ -78,6 +78,7 @@ table mart_buy_list
 
 
 	column listing_id
+		isHidden
 		dataType: int64
 		isKey
 		formatString: #,0

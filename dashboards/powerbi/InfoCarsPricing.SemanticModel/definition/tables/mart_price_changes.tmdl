@@ -66,6 +66,7 @@ table mart_price_changes
 
 
 	column listing_id
+		isHidden
 		dataType: int64
 		isKey
 		formatString: #,0
