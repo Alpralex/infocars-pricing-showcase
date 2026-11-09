@@ -22,3 +22,31 @@ relationship market_version
 relationship market_state
 	fromColumn: mart_market_by_version.state
 	toColumn: dim_state.state
+
+relationship buy_version
+	fromColumn: mart_buy_list.version_key
+	toColumn: dim_version.version_key
+
+relationship buy_state
+	fromColumn: mart_buy_list.state
+	toColumn: dim_state.state
+
+relationship km_version
+	fromColumn: mart_km_depreciation.version_key
+	toColumn: dim_version.version_key
+
+relationship risk_version
+	fromColumn: mart_stock_risk.version_key
+	toColumn: dim_version.version_key
+
+relationship risk_state
+	fromColumn: mart_stock_risk.state
+	toColumn: dim_state.state
+
+relationship changes_version
+	fromColumn: mart_price_changes.version_key
+	toColumn: dim_version.version_key
+
+relationship changes_state
+	fromColumn: mart_price_changes.state
+	toColumn: dim_state.state

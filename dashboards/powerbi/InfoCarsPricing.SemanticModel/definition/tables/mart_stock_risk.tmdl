@@ -1,0 +1,293 @@
+table mart_stock_risk
+	lineageTag: 0043903f-a70f-50fe-9765-ac132e4ac2f1
+
+	/// Ads still online with enough comparables to score.
+	measure 'Ads Scored' =
+			COUNTROWS ( mart_stock_risk )
+		formatString: #,0
+		displayFolder: Stock risk
+		lineageTag: 59f48296-d56d-58cd-9824-b3331c213d24
+
+
+	/// Ads online with a risk score of 60 or more: likely to get stuck.
+	measure 'High Risk Ads' =
+			CALCULATE ( COUNTROWS ( mart_stock_risk ), mart_stock_risk[risk_band] = "High" )
+		formatString: #,0
+		displayFolder: Stock risk
+		lineageTag: 4e7ef032-8b7b-5caf-889d-9d49f60aa57e
+
+
+	/// Ads online with a risk score from 35 to 59.
+	measure 'Medium Risk Ads' =
+			CALCULATE ( COUNTROWS ( mart_stock_risk ), mart_stock_risk[risk_band] = "Medium" )
+		formatString: #,0
+		displayFolder: Stock risk
+		lineageTag: 86ab3604-fa06-5850-9f86-514676d30b21
+
+
+	/// Total price cut that would bring the high-risk ads back to the 75th percentile of their comparables.
+	measure 'High Risk Cut to Range' =
+			CALCULATE ( SUM ( mart_stock_risk[cut_to_range_brl] ), mart_stock_risk[risk_band] = "High" )
+		formatString: \R\$ #,0
+		displayFolder: Stock risk
+		lineageTag: 14492d52-79d6-5f24-b8a4-ee00413b116c
+
+
+	/// Median days online of the high-risk ads.
+	measure 'High Risk Median Days Online' =
+			CALCULATE ( MEDIAN ( mart_stock_risk[days_on_market] ), mart_stock_risk[risk_band] = "High" )
+		formatString: 0
+		displayFolder: Stock risk
+		lineageTag: 5356b327-70a1-548e-b0dc-74206ab7cb4d
+
+
+	/// Median gap to the comparable median of the high-risk ads.
+	measure 'High Risk Median Gap' =
+			CALCULATE ( MEDIAN ( mart_stock_risk[gap_to_median_pct] ), mart_stock_risk[risk_band] = "High" )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Stock risk
+		lineageTag: 9cb1f1d2-3a41-5c10-8d3f-3dd5d8e19ffc
+
+
+	/// Average risk score of the ads in context (0 to 100).
+	measure 'Average Risk Score' =
+			AVERAGE ( mart_stock_risk[risk_score] )
+		formatString: 0
+		displayFolder: Stock risk
+		lineageTag: 1accf0ca-aae3-5ada-a43d-0724df23b2da
+
+
+	column listing_id
+		dataType: int64
+		isKey
+		formatString: #,0
+		lineageTag: 49715385-498f-5cb1-a59a-13877c84cfa6
+		summarizeBy: none
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: 08ffe153-0189-51b3-90a8-37cbe5220219
+		summarizeBy: none
+		sourceColumn: version_key
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column car_name
+		dataType: string
+		lineageTag: 21034f3c-545f-5611-896e-8ef8fd0a6a44
+		summarizeBy: none
+		sourceColumn: car_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_name
+		dataType: string
+		lineageTag: e247804a-4f57-5cd0-8c72-3fa4b06816d2
+		summarizeBy: none
+		sourceColumn: model_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_year
+		dataType: int64
+		formatString: #,0
+		lineageTag: 783b83e7-e58c-5f00-9489-cf01df0cfaf8
+		summarizeBy: none
+		sourceColumn: model_year
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: ad66e5b5-6677-502f-9e67-d1bc4f95cb21
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column city
+		dataType: string
+		lineageTag: 85f7f053-ba04-53c4-a15e-f67bdfd48049
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column seller_type
+		dataType: string
+		lineageTag: 96997138-aedb-5a47-a389-f3ce93a11bd5
+		summarizeBy: none
+		sourceColumn: seller_type
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column km
+		dataType: int64
+		formatString: #,0
+		lineageTag: 7b6d1150-b94b-55a8-b5d6-4b1108c08ae6
+		summarizeBy: none
+		sourceColumn: km
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_median_km
+		dataType: double
+		formatString: #,0
+		lineageTag: 0072008d-12b4-579d-9741-0ab9f817536d
+		summarizeBy: none
+		sourceColumn: market_median_km
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column days_on_market
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5eb93d81-dd07-52a4-b56b-dc46927538ee
+		summarizeBy: none
+		sourceColumn: days_on_market
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 813f9e2a-146f-5ca6-9388-7db4b3feab45
+		summarizeBy: none
+		sourceColumn: price_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 2153dd16-0778-5baa-9c03-a6ad123bc9e7
+		summarizeBy: none
+		sourceColumn: market_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_p75_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 3a25f657-77a3-570e-9bfe-f2481f6c7d85
+		summarizeBy: none
+		sourceColumn: market_p75_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_to_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 63bc5732-782a-519e-b94c-e3889a9de144
+		summarizeBy: none
+		sourceColumn: gap_to_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_to_median_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 3e6dbc87-77b5-58e7-9183-c95329a7c478
+		summarizeBy: none
+		sourceColumn: gap_to_median_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_position
+		dataType: string
+		lineageTag: 81baebc0-f227-5b93-86ae-4eaa400c78cb
+		summarizeBy: none
+		sourceColumn: price_position
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_points
+		dataType: double
+		formatString: #,0
+		lineageTag: d0c3f41c-583d-5e20-a4fa-1d78d4222bd0
+		summarizeBy: none
+		sourceColumn: price_points
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column time_points
+		dataType: double
+		formatString: #,0
+		lineageTag: a3d440e6-ebc4-5db7-90b0-0164007eabcb
+		summarizeBy: none
+		sourceColumn: time_points
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column mileage_points
+		dataType: double
+		formatString: #,0
+		lineageTag: f772397b-b330-5bcc-a64b-f4d0478fe8b8
+		summarizeBy: none
+		sourceColumn: mileage_points
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column risk_score
+		dataType: double
+		formatString: #,0
+		lineageTag: d3098fb8-0359-5cac-a603-4bf226edb50a
+		summarizeBy: none
+		sourceColumn: risk_score
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column risk_band
+		dataType: string
+		lineageTag: dd7e324c-1b30-5e77-8846-216d7cda8c00
+		summarizeBy: none
+		sourceColumn: risk_band
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column cut_to_range_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 7a4e760c-8dd8-5b4f-a6bf-e8de77520579
+		summarizeBy: none
+		sourceColumn: cut_to_range_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_stock_risk = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_stock_risk.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table

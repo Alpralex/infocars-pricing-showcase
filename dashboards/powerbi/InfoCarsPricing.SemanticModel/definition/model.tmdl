@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["DataFolder","dim_date","dim_version","dim_state","fct_listings","mart_market_by_version","mart_data_quality"]
+annotation PBI_QueryOrder = ["DataFolder","dim_date","dim_version","dim_state","fct_listings","mart_market_by_version","mart_data_quality","mart_km_depreciation","mart_price_drivers","mart_buy_list","mart_price_changes","mart_liquidity_curve","mart_stock_risk"]
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
@@ -18,6 +18,12 @@ ref table dim_state
 ref table fct_listings
 ref table mart_market_by_version
 ref table mart_data_quality
+ref table mart_km_depreciation
+ref table mart_price_drivers
+ref table mart_buy_list
+ref table mart_price_changes
+ref table mart_liquidity_curve
+ref table mart_stock_risk
 ref table 'Price Cut'
 
 ref cultureInfo en-US

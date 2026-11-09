@@ -418,6 +418,127 @@ table fct_listings
 
 		annotation SummarizationSetBy = Automatic
 
+	column city
+		dataType: string
+		lineageTag: ec43bac6-37fe-554f-9165-728e259ebb7b
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_type
+		dataType: string
+		lineageTag: e4d7e76b-8895-58c5-a227-7e9e7d353dd0
+		summarizeBy: none
+		sourceColumn: seller_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column transmission
+		dataType: string
+		lineageTag: f707b800-2eed-57ec-bec1-387022a4a901
+		summarizeBy: none
+		sourceColumn: transmission
+
+		annotation SummarizationSetBy = Automatic
+
+	column fuel
+		dataType: string
+		lineageTag: 2f60c674-c6b8-54b8-9f77-b7cc7754f5f9
+		summarizeBy: none
+		sourceColumn: fuel
+
+		annotation SummarizationSetBy = Automatic
+
+	column colour
+		dataType: string
+		lineageTag: ec185367-68af-5837-9d6f-b3fea489a052
+		summarizeBy: none
+		sourceColumn: colour
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos
+		dataType: int64
+		formatString: #,0
+		lineageTag: 41615225-9b25-598a-a823-e1d53da4ac52
+		summarizeBy: none
+		sourceColumn: photos
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_band
+		dataType: string
+		lineageTag: de69d787-271a-5b3a-bfef-9e47f4e63d38
+		summarizeBy: none
+		sourceColumn: km_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_band_order
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e09ee32a-9cfa-5019-9e01-538fcc915f8c
+		summarizeBy: none
+		sourceColumn: km_band_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column had_price_cut
+		dataType: int64
+		formatString: 0
+		lineageTag: 99d594a9-c8a5-5a5f-9ba4-00adffdaa0ba
+		summarizeBy: none
+		sourceColumn: had_price_cut
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_cut_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: bee34be3-c467-5cf7-bc3e-368aa85455de
+		summarizeBy: none
+		sourceColumn: price_cut_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_before_cut_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 493bedee-014b-5904-9e17-a80a4a097c79
+		summarizeBy: none
+		sourceColumn: price_before_cut_brl
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_cut_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: e42f1e10-8a60-5992-b75c-81d2b64001a1
+		summarizeBy: none
+		sourceColumn: price_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column market_median_km
+		dataType: double
+		formatString: #,0
+		lineageTag: 6290906e-9b93-5d56-8b8b-fb2968cdf873
+		summarizeBy: none
+		sourceColumn: market_median_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column km_vs_market
+		dataType: double
+		formatString: #,0
+		lineageTag: a5afa8d2-f1cc-5257-b63d-ed7cf1e857cd
+		summarizeBy: none
+		sourceColumn: km_vs_market
+
+		annotation SummarizationSetBy = Automatic
+
 	partition fct_listings = m
 		mode: import
 		source =

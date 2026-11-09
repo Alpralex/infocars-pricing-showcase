@@ -3,9 +3,9 @@
   "name": "1b930c0bcdd8fa6af591",
   "position": {
     "x": 848,
-    "y": 380,
+    "y": 372,
     "z": 1400,
-    "height": 260,
+    "height": 300,
     "width": 416,
     "tabOrder": 1400
   },
@@ -32,7 +32,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Python matching of free-text ads to a car catalogue, quality checks and market statistics (25th, 50th and 75th percentiles by version, year and state).",
+                    "value": "Python matching of free-text ads to a car catalogue; quality checks; market statistics (25th, 50th and 75th percentiles by version and year) in dbt on DuckDB, 108 tests.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11px",
@@ -45,7 +45,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Star schema with a calendar, version and state; an inactive relationship for the sale date.",
+                    "value": "Buy list, price drivers (price-on-km regression in SQL), liquidity curve and a 0-100 stock-risk score are dbt marts; the same numbers feed the web page and the notebook.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11px",
@@ -58,7 +58,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "DAX: a what-if price cut parameter, measures with descriptions, live headlines; auto date/time off.",
+                    "value": "Star schema with a calendar, version and state; an inactive relationship for the sale date; a what-if price cut parameter; live headlines; auto date/time off.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11px",

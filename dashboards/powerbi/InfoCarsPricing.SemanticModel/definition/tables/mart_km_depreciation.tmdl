@@ -1,0 +1,141 @@
+table mart_km_depreciation
+	lineageTag: 49c2c7c6-0587-51e5-923e-bcc4f4859856
+
+	/// Asking price lost per 10,000 km for the same version and model year, weighted by ads. Negative: the price falls.
+	measure 'Loss per 10k km' =
+			DIVIDE ( SUMX ( mart_km_depreciation, mart_km_depreciation[loss_per_10k_km_brl] * mart_km_depreciation[ads] ), SUM ( mart_km_depreciation[ads] ) )
+		formatString: \R\$ #,0
+		displayFolder: Drivers
+		lineageTag: 891db55b-70ab-59df-bb92-12a9dd690e89
+
+
+	/// The same loss as a share of the median price.
+	measure 'Loss per 10k km %' =
+			DIVIDE ( SUMX ( mart_km_depreciation, mart_km_depreciation[loss_per_10k_km_pct] * mart_km_depreciation[ads] ), SUM ( mart_km_depreciation[ads] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Drivers
+		lineageTag: 3058f245-66d4-56d0-a39b-dcd72ec2c8ef
+
+
+	/// Clean ads in the version and model-year groups large enough for a price-on-km fit.
+	measure 'Ads in Regression' =
+			SUM ( mart_km_depreciation[ads] )
+		formatString: #,0
+		displayFolder: Drivers
+		lineageTag: 4c255858-b560-52ff-a1df-35d115d82b7d
+
+
+	/// Share of the price spread inside a version and year that kilometres explain (R squared, weighted by ads).
+	measure 'Fit R2' =
+			DIVIDE ( SUMX ( mart_km_depreciation, mart_km_depreciation[r2] * mart_km_depreciation[ads] ), SUM ( mart_km_depreciation[ads] ) )
+		formatString: 0%
+		displayFolder: Drivers
+		lineageTag: f030000d-b00a-57e2-8e4f-a0bbbdabee2a
+
+
+	column car_name
+		dataType: string
+		lineageTag: d4120b57-e7c7-5681-bb73-4620ebdd119a
+		summarizeBy: none
+		sourceColumn: car_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column make_name
+		dataType: string
+		lineageTag: 7c572fbe-1c62-5aa0-95ad-384b6cea8993
+		summarizeBy: none
+		sourceColumn: make_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_name
+		dataType: string
+		lineageTag: cb919d1b-4d5e-57ea-bd5d-111d1324d7cc
+		summarizeBy: none
+		sourceColumn: model_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: 26c94a0f-2967-5389-add7-c21ae95bd2c8
+		summarizeBy: none
+		sourceColumn: version_key
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column ads
+		dataType: double
+		formatString: #,0
+		lineageTag: 39ca872f-25e0-54b0-8db4-d9b52da901ab
+		summarizeBy: none
+		sourceColumn: ads
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_years
+		dataType: int64
+		formatString: #,0
+		lineageTag: e731a2e3-c65f-5964-ad00-c99aa10059a9
+		summarizeBy: none
+		sourceColumn: model_years
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column median_price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 9ad44f72-e355-542a-aeca-56bd9b6694aa
+		summarizeBy: none
+		sourceColumn: median_price_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column loss_per_10k_km_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 89c1ff1d-4af2-51df-abfb-6ee99db7b220
+		summarizeBy: none
+		sourceColumn: loss_per_10k_km_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column loss_per_10k_km_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: d6446a3b-f8b8-5641-82d1-fce18fca25cc
+		summarizeBy: none
+		sourceColumn: loss_per_10k_km_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column r2
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2872d292-cdcc-5b53-ad54-04dda220ef99
+		summarizeBy: none
+		sourceColumn: r2
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_km_depreciation = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_km_depreciation.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table

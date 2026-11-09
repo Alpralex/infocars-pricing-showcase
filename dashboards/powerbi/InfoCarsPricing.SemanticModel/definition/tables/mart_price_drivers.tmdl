@@ -1,0 +1,170 @@
+table mart_price_drivers
+	lineageTag: 1442612a-8be7-5137-82fc-426e7b53dcc3
+
+	/// Median gap of the asking price to the comparable median, for one factor level.
+	measure 'Median Gap at Level' =
+			MAX ( mart_price_drivers[median_gap_pct] )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Drivers
+		lineageTag: 6ef1dbdf-c2d8-5507-8715-a129788c9f61
+
+
+	/// Clean ads with a market at this factor level.
+	measure 'Ads at Level' =
+			SUM ( mart_price_drivers[ads] )
+		formatString: #,0
+		displayFolder: Drivers
+		lineageTag: 3e3f253d-4167-5751-8568-daa924bff8ee
+
+
+	/// Share of the ads at this level priced above the 75th percentile of comparables.
+	measure 'Above Market Share at Level' =
+			MAX ( mart_price_drivers[above_market_share] )
+		formatString: 0%
+		displayFolder: Drivers
+		lineageTag: c514523e-0eb2-5d07-9f77-099b86f532bd
+
+
+	/// Helper: the median gap for the factor and level in context, ignoring other filters on the table.
+	measure 'Driver Gap' =
+			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
+			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
+			RETURN CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), ALL ( mart_price_drivers ), mart_price_drivers[factor] = f, mart_price_drivers[level] = l )
+		formatString: +0.0%;-0.0%;0.0%
+		isHidden
+		displayFolder: Drivers
+		lineageTag: e48376b4-9cf7-5b3a-bd87-87fecf71a5b5
+
+
+	/// One-sentence answer for the Price drivers page: what moves an ad's price against its market.
+	measure 'Headline Drivers' =
+			VAR Loss = [Loss per 10k km]
+			VAR LossPct = [Loss per 10k km %]
+			VAR Priv = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Seller", mart_price_drivers[level] = "Private seller" )
+			VAR Deal = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Seller", mart_price_drivers[level] = "Dealer" )
+			VAR Photos = CALCULATE ( MAX ( mart_price_drivers[median_gap_pct] ), mart_price_drivers[factor] = "Photos", mart_price_drivers[level] = "16 or more" )
+			VAR Colour = CALCULATE ( MAXX ( mart_price_drivers, ABS ( mart_price_drivers[median_gap_pct] ) ), mart_price_drivers[factor] = "Colour" )
+			VAR Fuel = CALCULATE ( MAXX ( mart_price_drivers, ABS ( mart_price_drivers[median_gap_pct] ) ), mart_price_drivers[factor] = "Fuel" )
+			RETURN
+				IF (
+					ISBLANK ( Loss ),
+					"No groups large enough for a fit in this selection.",
+					"Same car, same year: each 10,000 km takes about R$ " & FORMAT ( -Loss, "#,0" ) & " (" & FORMAT ( -LossPct, "0.0%" )
+						& ") off the asking price. Private sellers ask " & FORMAT ( -Priv, "0.0%" ) & " under the comparable median and dealers "
+						& FORMAT ( Deal, "0.0%" ) & " over; ads with 16 or more photos sit " & FORMAT ( Photos, "0.0%" ) & " above. Colour and fuel move it by "
+						& FORMAT ( MAX ( Colour, Fuel ), "0.0%" ) & " at most."
+				)
+		isHidden
+		displayFolder: Story
+		lineageTag: aa775fff-b472-583f-8896-56663263e186
+
+
+	column factor
+		dataType: string
+		lineageTag: bacbdeed-ef93-5185-8024-718c8c713950
+		summarizeBy: none
+		sourceColumn: factor
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column factor_order
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 0a652d61-a712-5e9d-b892-f3ecf582c624
+		summarizeBy: none
+		sourceColumn: factor_order
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column level
+		dataType: string
+		lineageTag: f1fc064c-78bc-50c2-b4d8-4eb51a8077d8
+		summarizeBy: none
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column level_order
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 29a24b48-ab0c-5462-a2a9-f094f663302e
+		summarizeBy: none
+		sourceColumn: level_order
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column ads
+		dataType: int64
+		formatString: #,0
+		lineageTag: 07c70f94-8cb4-59ea-b848-8ea76ca1da0b
+		summarizeBy: none
+		sourceColumn: ads
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column median_gap_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: b91a5ae1-966a-5536-9cef-61c3a0dd4f80
+		summarizeBy: none
+		sourceColumn: median_gap_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column median_gap_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: fd5dc342-da77-586a-844e-8e9c2a541c2f
+		summarizeBy: none
+		sourceColumn: median_gap_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column above_market_share
+		dataType: double
+		formatString: 0.0%
+		lineageTag: fb0e175a-cb66-52a9-9244-6cace45bb513
+		summarizeBy: none
+		sourceColumn: above_market_share
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column below_market_share
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 400009f2-0a9e-5a3e-af2c-289d9cf68f8e
+		summarizeBy: none
+		sourceColumn: below_market_share
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column median_days_to_sell
+		dataType: double
+		formatString: #,0
+		lineageTag: fcca4f34-f10c-5777-9f17-2338b8b712e8
+		summarizeBy: none
+		sourceColumn: median_days_to_sell
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_price_drivers = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_price_drivers.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table

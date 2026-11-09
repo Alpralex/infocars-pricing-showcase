@@ -3,7 +3,7 @@
   "name": "87709f279a74641c4bba",
   "position": {
     "x": 848,
-    "y": 64,
+    "y": 56,
     "z": 1300,
     "height": 300,
     "width": 416,
@@ -58,7 +58,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "3. On Price review, change the Price cut from 0% to 15% and watch the cards, the chart and the table.",
+                    "value": "3. Buy list: the private-seller ads a dealer should buy, with the margin at the target offer.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11px",
@@ -71,7 +71,33 @@
               {
                 "textRuns": [
                   {
-                    "value": "4. Hover over a column in the days-to-sell chart for the share still online.",
+                    "value": "4. Price drivers: pick a factor and see how far each level sits from the market.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "11px",
+                      "color": "#182027"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "5. Stock risk: the ads online most likely to get stuck, and what cutting the price did for others.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "11px",
+                      "color": "#182027"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "6. Price review: change the Price cut from 0% to 15% and watch the cards, the chart and the table.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "11px",

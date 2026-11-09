@@ -1,0 +1,438 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "e66456d0c190479d203d",
+  "position": {
+    "x": 532,
+    "y": 284,
+    "z": 1300,
+    "height": 420,
+    "width": 732,
+    "tabOrder": 1300
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "risk_band"
+                }
+              },
+              "queryRef": "mart_stock_risk.risk_band",
+              "nativeQueryRef": "risk_band",
+              "displayName": "Risk"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "risk_score"
+                }
+              },
+              "queryRef": "mart_stock_risk.risk_score",
+              "nativeQueryRef": "risk_score",
+              "displayName": "Score"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "car_name"
+                }
+              },
+              "queryRef": "mart_stock_risk.car_name",
+              "nativeQueryRef": "car_name",
+              "displayName": "Car"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "model_year"
+                }
+              },
+              "queryRef": "mart_stock_risk.model_year",
+              "nativeQueryRef": "model_year",
+              "displayName": "Year"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "state"
+                }
+              },
+              "queryRef": "mart_stock_risk.state",
+              "nativeQueryRef": "state",
+              "displayName": "State"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "days_on_market"
+                }
+              },
+              "queryRef": "mart_stock_risk.days_on_market",
+              "nativeQueryRef": "days_on_market",
+              "displayName": "Days online"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "price_brl"
+                }
+              },
+              "queryRef": "mart_stock_risk.price_brl",
+              "nativeQueryRef": "price_brl",
+              "displayName": "Asking"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "gap_to_median_pct"
+                }
+              },
+              "queryRef": "mart_stock_risk.gap_to_median_pct",
+              "nativeQueryRef": "gap_to_median_pct",
+              "displayName": "Gap"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "price_points"
+                }
+              },
+              "queryRef": "mart_stock_risk.price_points",
+              "nativeQueryRef": "price_points",
+              "displayName": "Price pts"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "time_points"
+                }
+              },
+              "queryRef": "mart_stock_risk.time_points",
+              "nativeQueryRef": "time_points",
+              "displayName": "Time pts"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "mileage_points"
+                }
+              },
+              "queryRef": "mart_stock_risk.mileage_points",
+              "nativeQueryRef": "mileage_points",
+              "displayName": "km pts"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_stock_risk"
+                    }
+                  },
+                  "Property": "cut_to_range_brl"
+                }
+              },
+              "queryRef": "mart_stock_risk.cut_to_range_brl",
+              "nativeQueryRef": "cut_to_range_brl",
+              "displayName": "Cut to range"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_stock_risk"
+                  }
+                },
+                "Property": "risk_score"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Conditional": {
+                      "Cases": [
+                        {
+                          "Condition": {
+                            "Comparison": {
+                              "ComparisonKind": 0,
+                              "Left": {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Entity": "mart_stock_risk"
+                                    }
+                                  },
+                                  "Property": "risk_band"
+                                }
+                              },
+                              "Right": {
+                                "Literal": {
+                                  "Value": "'High'"
+                                }
+                              }
+                            }
+                          },
+                          "Value": {
+                            "Literal": {
+                              "Value": "'#DDAEC3'"
+                            }
+                          }
+                        },
+                        {
+                          "Condition": {
+                            "Comparison": {
+                              "ComparisonKind": 0,
+                              "Left": {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Entity": "mart_stock_risk"
+                                    }
+                                  },
+                                  "Property": "risk_band"
+                                }
+                              },
+                              "Right": {
+                                "Literal": {
+                                  "Value": "'Medium'"
+                                }
+                              }
+                            }
+                          },
+                          "Value": {
+                            "Literal": {
+                              "Value": "'#E4DCE0'"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "mart_stock_risk.risk_band"
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Ads online by risk of getting stuck'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Highest score first. The points show why: price (max 50), time online (max 30), kilometres (max 20)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Table of ads online with their risk score and its three components, car, year, state, days online, asking price, gap and the cut that would bring the ad into range.'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

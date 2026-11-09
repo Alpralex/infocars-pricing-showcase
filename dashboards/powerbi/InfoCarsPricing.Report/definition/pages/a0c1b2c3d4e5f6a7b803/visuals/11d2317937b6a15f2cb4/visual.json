@@ -1,0 +1,185 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "11d2317937b6a15f2cb4",
+  "position": {
+    "x": 16,
+    "y": 284,
+    "z": 1200,
+    "height": 420,
+    "width": 400,
+    "tabOrder": 1200
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "buy_class"
+                }
+              },
+              "queryRef": "mart_buy_list.buy_class",
+              "nativeQueryRef": "buy_class",
+              "displayName": "Class"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "Buy Candidates"
+                }
+              },
+              "queryRef": "mart_buy_list.Buy Candidates",
+              "nativeQueryRef": "Buy Candidates",
+              "displayName": "Ads"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "mart_buy_list"
+                    }
+                  },
+                  "Property": "Margin at Target Offer"
+                }
+              },
+              "queryRef": "mart_buy_list.Margin at Target Offer",
+              "nativeQueryRef": "Margin at Target Offer",
+              "displayName": "Margin at target offer"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "mart_buy_list"
+                  }
+                },
+                "Property": "buy_class_order"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#A6ACB1'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "mart_buy_list.Buy Candidates"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#970D63'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "mart_buy_list.Margin at Target Offer"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Candidates and margin by class'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Candidates and margin by class'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Buy now: 8% or more under the median. Negotiate: 3% to 8%. Wait: under 3%'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

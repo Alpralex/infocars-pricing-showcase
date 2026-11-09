@@ -3,9 +3,9 @@
   "name": "386a11af9ffcc5dfc18a",
   "position": {
     "x": 244,
-    "y": 324,
+    "y": 592,
     "z": 1200,
-    "height": 120,
+    "height": 96,
     "width": 572,
     "tabOrder": 1200
   },
@@ -201,7 +201,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Live answer to: What would a price cut do? Select to open the page.'"
+                  "Value": "'Live answer to: What would a price cut do to the overpriced stock? Select to open the page.'"
                 }
               }
             }

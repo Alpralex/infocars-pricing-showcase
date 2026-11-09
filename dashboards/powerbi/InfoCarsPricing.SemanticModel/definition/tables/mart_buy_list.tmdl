@@ -1,0 +1,438 @@
+table mart_buy_list
+	lineageTag: 6357d1f7-4bd3-5f5a-9346-d63b9d75e1de
+
+	/// Private-seller ads still online at or below the median of comparable ads.
+	measure 'Buy Candidates' =
+			COUNTROWS ( mart_buy_list )
+		formatString: #,0
+		displayFolder: Buy list
+		lineageTag: 376f79da-179f-558a-ac5c-630022428880
+
+
+	/// Candidates asked 8% or more under the comparable median: a buy at the asking price.
+	measure 'Buy Now Ads' =
+			CALCULATE ( COUNTROWS ( mart_buy_list ), mart_buy_list[buy_class] = "Buy now" )
+		formatString: #,0
+		displayFolder: Buy list
+		lineageTag: d0ca0683-b2ee-533b-a47a-3c0ce5b0173c
+
+
+	/// Candidates 3% to 8% under the median: the margin is there once the seller moves to the target offer.
+	measure 'Negotiate Ads' =
+			CALCULATE ( COUNTROWS ( mart_buy_list ), mart_buy_list[buy_class] = "Negotiate" )
+		formatString: #,0
+		displayFolder: Buy list
+		lineageTag: 1d3415c7-1233-5338-b90b-ac825c1e254f
+
+
+	/// Expected margin on the Buy now ads bought at the asking price: comparable median less asking price less 2% preparation.
+	measure 'Margin at Asking Price' =
+			CALCULATE ( SUM ( mart_buy_list[expected_margin_brl] ), mart_buy_list[buy_class] = "Buy now" )
+		formatString: \R\$ #,0
+		displayFolder: Buy list
+		lineageTag: 6d5da01f-0354-594d-a661-34f0c836be65
+
+
+	/// Expected margin on the Buy now and Negotiate ads bought at the target offer (90% of the comparable median, or the asking price when lower).
+	measure 'Margin at Target Offer' =
+			CALCULATE ( SUM ( mart_buy_list[margin_at_target_brl] ), mart_buy_list[buy_class] IN { "Buy now", "Negotiate" } )
+		formatString: \R\$ #,0
+		displayFolder: Buy list
+		lineageTag: b6d1bb0e-d450-5d23-8da6-583250803577
+
+
+	/// Median expected margin per car at the target offer, Buy now and Negotiate ads.
+	measure 'Median Margin per Car' =
+			CALCULATE ( MEDIAN ( mart_buy_list[margin_at_target_brl] ), mart_buy_list[buy_class] IN { "Buy now", "Negotiate" } )
+		formatString: \R\$ #,0
+		displayFolder: Buy list
+		lineageTag: 5d13105e-c01a-5f9d-a6bc-72b87ccc52a9
+
+
+	/// Total asking price of the Buy now ads.
+	measure 'Asking Price of Buy Now Ads' =
+			CALCULATE ( SUM ( mart_buy_list[price_brl] ), mart_buy_list[buy_class] = "Buy now" )
+		formatString: \R\$ #,0
+		displayFolder: Buy list
+		lineageTag: 42c93b8a-27ef-59d2-9915-2253f35351d4
+
+
+	/// One-sentence answer for the Buy list page: how many private-seller ads are worth buying and what they would earn.
+	measure 'Headline Buy' =
+			VAR N = [Buy Candidates]
+			VAR Now = [Buy Now Ads] + 0
+			VAR Neg = [Negotiate Ads] + 0
+			RETURN
+				IF (
+					ISBLANK ( N ),
+					"No private-seller ads at or below their market median are online in this selection.",
+					FORMAT ( N, "#,0" ) & " ads from private sellers are online at or below the median of comparable ads. "
+						& FORMAT ( Now, "#,0" ) & IF ( Now = 1, " is", " are" ) & " a buy at the asking price (R$ " & FORMAT ( [Margin at Asking Price] + 0, "#,0" )
+						& " expected margin after 2% preparation); at a target offer of 90% of the median, " & FORMAT ( Now + Neg, "#,0" )
+						& " ads would clear R$ " & FORMAT ( [Margin at Target Offer] + 0, "#,0" ) & " in all, a median of R$ "
+						& FORMAT ( [Median Margin per Car] + 0, "#,0" ) & " per car."
+				)
+		isHidden
+		displayFolder: Story
+		lineageTag: 3a5dd470-89c0-56d6-94c1-b80627389931
+
+
+	column listing_id
+		dataType: int64
+		isKey
+		formatString: #,0
+		lineageTag: 9371148a-6216-5e87-bf33-d8eaf46fde23
+		summarizeBy: none
+		sourceColumn: listing_id
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column car_name
+		dataType: string
+		lineageTag: d86401b1-2b52-599e-8b5b-f7128ee0ad58
+		summarizeBy: none
+		sourceColumn: car_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column make_name
+		dataType: string
+		lineageTag: 4ea13757-00d7-5a13-9d07-8f9d5ca12f02
+		summarizeBy: none
+		sourceColumn: make_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_name
+		dataType: string
+		lineageTag: c02ec262-7a2a-5c9a-8945-67b3a7178c17
+		summarizeBy: none
+		sourceColumn: model_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column body_type
+		dataType: string
+		lineageTag: a79a2abe-a227-5dc1-98da-a03ae103d252
+		summarizeBy: none
+		sourceColumn: body_type
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column version_key
+		dataType: string
+		isHidden
+		lineageTag: 7907199c-95ac-59da-8edf-6dcc2dd9aade
+		summarizeBy: none
+		sourceColumn: version_key
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column model_year
+		dataType: int64
+		formatString: #,0
+		lineageTag: e310e286-e729-57b2-b508-55667e4e96de
+		summarizeBy: none
+		sourceColumn: model_year
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column state
+		dataType: string
+		isHidden
+		lineageTag: 60715a49-0785-5cc4-b40e-cb55da79f5cf
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column state_name
+		dataType: string
+		lineageTag: eea4a8a0-1edd-5e03-b551-7d7fa83dc031
+		summarizeBy: none
+		sourceColumn: state_name
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column region
+		dataType: string
+		lineageTag: 11e186ed-3841-5299-8941-fe0aad3405ab
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column city
+		dataType: string
+		lineageTag: bb28f287-fe8b-5287-bb05-759d329113a2
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column source
+		dataType: string
+		lineageTag: f9f465f9-a094-5abf-bcf0-2217df364182
+		summarizeBy: none
+		sourceColumn: source
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column km
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5dc8bc78-d65f-50f1-9a58-f546d1459304
+		summarizeBy: none
+		sourceColumn: km
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_median_km
+		dataType: double
+		formatString: #,0
+		lineageTag: ab5dae0e-47d0-5b9d-a8d6-8e7492bd6589
+		summarizeBy: none
+		sourceColumn: market_median_km
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column km_vs_market
+		dataType: double
+		formatString: #,0
+		lineageTag: 66574d06-89f1-56a9-a72c-f21a3b0a45c0
+		summarizeBy: none
+		sourceColumn: km_vs_market
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column transmission
+		dataType: string
+		lineageTag: 3432e45d-0725-5a8d-8f5e-cb289203da13
+		summarizeBy: none
+		sourceColumn: transmission
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column fuel
+		dataType: string
+		lineageTag: 387b7651-fec4-5a08-9a97-78d4af078569
+		summarizeBy: none
+		sourceColumn: fuel
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column colour
+		dataType: string
+		lineageTag: e6763a45-464c-5203-bd97-d4bb5216c2be
+		summarizeBy: none
+		sourceColumn: colour
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column photos
+		dataType: int64
+		formatString: #,0
+		lineageTag: a5f4638f-e93d-5727-8572-37c1336b61bc
+		summarizeBy: none
+		sourceColumn: photos
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column listed_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 822a334a-ae23-5e2d-8dd1-801860fc2be1
+		summarizeBy: none
+		sourceColumn: listed_date
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column days_on_market
+		dataType: int64
+		formatString: #,0
+		lineageTag: 74247543-8246-5efc-bb70-2ebd041f302d
+		summarizeBy: none
+		sourceColumn: days_on_market
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 075cf4af-b6a0-5cc6-afb1-27a2b50f3bf9
+		summarizeBy: none
+		sourceColumn: price_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_p25_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 50c6ce66-2d7d-5e70-9a98-56dd0aa5975f
+		summarizeBy: none
+		sourceColumn: market_p25_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 380e7151-bf94-5ac8-84a2-c2e3b89b48e8
+		summarizeBy: none
+		sourceColumn: market_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column market_p75_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 4d8f9a4e-907d-5dd4-8a9a-2f3eb6011ecc
+		summarizeBy: none
+		sourceColumn: market_p75_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column comparables
+		dataType: int64
+		formatString: #,0
+		lineageTag: 31c2afe2-8494-54ca-a895-b610963f097b
+		summarizeBy: none
+		sourceColumn: comparables
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_to_median_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: ecfb0dc9-a3bb-5e96-b88d-727da1cdb609
+		summarizeBy: none
+		sourceColumn: gap_to_median_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column gap_to_median_pct
+		dataType: double
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: b1b1604d-e4bb-5310-b68f-69869b4a1d1b
+		summarizeBy: none
+		sourceColumn: gap_to_median_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column price_cut_pct
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 448352e4-607a-5cf1-b07c-242107c654fc
+		summarizeBy: none
+		sourceColumn: price_cut_pct
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column target_offer_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: 73c7aa1e-60cb-5aba-977c-2e2e6e6cb4e4
+		summarizeBy: none
+		sourceColumn: target_offer_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column expected_margin_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: e04fdc89-2a25-5e64-91f6-2cab6ac90814
+		summarizeBy: none
+		sourceColumn: expected_margin_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column margin_at_target_brl
+		dataType: double
+		formatString: \R\$ #,0
+		lineageTag: a1f15e50-3c6a-584b-bd2c-1a96f3f9c05a
+		summarizeBy: none
+		sourceColumn: margin_at_target_brl
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column buy_class
+		dataType: string
+		lineageTag: ce23af33-9571-5d90-9591-4250d1fd3412
+		summarizeBy: none
+		sourceColumn: buy_class
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column buy_class_order
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: dda9f066-4f17-5b76-a674-dec36a5f2740
+		summarizeBy: none
+		sourceColumn: buy_class_order
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column priority_score
+		dataType: double
+		formatString: #,0
+		lineageTag: bdf3693f-5590-5153-bc74-ff8d8d659ab0
+		summarizeBy: none
+		sourceColumn: priority_score
+
+		annotation SummarizationSetBy = Automatic
+
+
+	column had_price_cut
+		dataType: int64
+		formatString: #,0
+		lineageTag: 115540f6-a047-5680-807b-1d8250bdb1b7
+		summarizeBy: none
+		sourceColumn: had_price_cut
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition mart_buy_list = m
+		mode: import
+		source =
+				let
+					Source = Parquet.Document ( File.Contents ( DataFolder & "mart_buy_list.parquet" ) )
+				in
+					Source
+
+	annotation PBI_ResultType = Table
