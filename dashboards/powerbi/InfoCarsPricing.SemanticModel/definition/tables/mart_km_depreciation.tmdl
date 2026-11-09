@@ -11,7 +11,7 @@ table mart_km_depreciation
 
 	/// The same loss as a share of the median price.
 	measure 'Loss per 10k km %' =
-			DIVIDE ( SUMX ( mart_km_depreciation, mart_km_depreciation[loss_per_10k_km_pct] * mart_km_depreciation[ads] ), SUM ( mart_km_depreciation[ads] ) )
+			DIVIDE ( SUMX ( mart_km_depreciation, mart_km_depreciation[loss_per_10k_km_brl] * mart_km_depreciation[ads] ), SUMX ( mart_km_depreciation, mart_km_depreciation[median_price_brl] * mart_km_depreciation[ads] ) )
 		formatString: +0.0%;-0.0%;0.0%
 		displayFolder: Drivers
 		lineageTag: 3058f245-66d4-56d0-a39b-dcd72ec2c8ef

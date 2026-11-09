@@ -54,5 +54,17 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "c59c70252134d1cbf368",
+      "target": "f744580ad2e4de9bd6ab",
+      "type": "NoFilter"
+    },
+    {
+      "source": "c59c70252134d1cbf368",
+      "target": "1d3489cc3e9204ca311f",
+      "type": "NoFilter"
+    }
+  ]
 }

@@ -208,7 +208,7 @@
                     "Entity": "mart_buy_list"
                   }
                 },
-                "Property": "buy_class_order"
+                "Property": "buy_class"
               }
             },
             "direction": "Ascending"
@@ -268,79 +268,6 @@
                 }
               }
             }
-          }
-        },
-        {
-          "properties": {
-            "backColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Conditional": {
-                      "Cases": [
-                        {
-                          "Condition": {
-                            "Comparison": {
-                              "ComparisonKind": 0,
-                              "Left": {
-                                "Column": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Entity": "mart_buy_list"
-                                    }
-                                  },
-                                  "Property": "buy_class"
-                                }
-                              },
-                              "Right": {
-                                "Literal": {
-                                  "Value": "'Buy now'"
-                                }
-                              }
-                            }
-                          },
-                          "Value": {
-                            "Literal": {
-                              "Value": "'#DDAEC3'"
-                            }
-                          }
-                        },
-                        {
-                          "Condition": {
-                            "Comparison": {
-                              "ComparisonKind": 0,
-                              "Left": {
-                                "Column": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Entity": "mart_buy_list"
-                                    }
-                                  },
-                                  "Property": "buy_class"
-                                }
-                              },
-                              "Right": {
-                                "Literal": {
-                                  "Value": "'Negotiate'"
-                                }
-                              }
-                            }
-                          },
-                          "Value": {
-                            "Literal": {
-                              "Value": "'#E4DCE0'"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "mart_buy_list.buy_class"
           }
         }
       ],

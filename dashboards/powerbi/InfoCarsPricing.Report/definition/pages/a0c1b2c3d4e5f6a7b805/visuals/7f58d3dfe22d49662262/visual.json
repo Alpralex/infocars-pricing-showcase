@@ -23,11 +23,11 @@
                       "Entity": "mart_liquidity_curve"
                     }
                   },
-                  "Property": "Still Online at 30 Days"
+                  "Property": "Gone Within 30 Days"
                 }
               },
-              "queryRef": "mart_liquidity_curve.Still Online at 30 Days",
-              "nativeQueryRef": "Still Online at 30 Days"
+              "queryRef": "mart_liquidity_curve.Gone Within 30 Days",
+              "nativeQueryRef": "Gone Within 30 Days"
             }
           ]
         }
@@ -63,7 +63,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Still online after 30 days'"
+                  "Value": "'Leave within 30 days'"
                 }
               }
             },

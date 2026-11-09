@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Gap of the asking price to the median of comparable ads (same version and model year), by factor. Kilometres from a price-on-km fit inside each year.",
+                    "value": "Gap of the asking price to the comparable median (same version and model year), by factor; kilometres from a price-on-km fit.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "12px",

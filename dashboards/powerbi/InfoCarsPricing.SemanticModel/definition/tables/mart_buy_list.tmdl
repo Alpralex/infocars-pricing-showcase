@@ -27,7 +27,7 @@ table mart_buy_list
 
 	/// Expected margin on the Buy now ads bought at the asking price: comparable median less asking price less 2% preparation.
 	measure 'Margin at Asking Price' =
-			CALCULATE ( SUM ( mart_buy_list[expected_margin_brl] ), mart_buy_list[buy_class] = "Buy now" )
+			CALCULATE ( SUM ( mart_buy_list[expected_margin_brl] ), KEEPFILTERS ( mart_buy_list[buy_class] = "Buy now" ) )
 		formatString: \R\$ #,0
 		displayFolder: Buy list
 		lineageTag: 6d5da01f-0354-594d-a661-34f0c836be65
@@ -35,7 +35,7 @@ table mart_buy_list
 
 	/// Expected margin on the Buy now and Negotiate ads bought at the target offer (90% of the comparable median, or the asking price when lower).
 	measure 'Margin at Target Offer' =
-			CALCULATE ( SUM ( mart_buy_list[margin_at_target_brl] ), mart_buy_list[buy_class] IN { "Buy now", "Negotiate" } )
+			CALCULATE ( SUM ( mart_buy_list[margin_at_target_brl] ), KEEPFILTERS ( mart_buy_list[buy_class] IN { "Buy now", "Negotiate" } ) )
 		formatString: \R\$ #,0
 		displayFolder: Buy list
 		lineageTag: b6d1bb0e-d450-5d23-8da6-583250803577

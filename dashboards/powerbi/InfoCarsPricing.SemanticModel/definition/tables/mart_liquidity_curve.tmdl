@@ -17,6 +17,14 @@ table mart_liquidity_curve
 		lineageTag: 63f0dfba-eae4-523f-b329-4fd5d346b569
 
 
+	/// Share of ads that left the site within 30 days of listing, all models: 1 - [Still Online at 30 Days].
+	measure 'Gone Within 30 Days' =
+			1 - [Still Online at 30 Days]
+		formatString: 0%
+		displayFolder: Stock risk
+		lineageTag: 78c43c8d-3b00-5420-86ec-d507428d7fb7
+
+
 	/// Share of ads still online 90 days after listing, all models.
 	measure 'Still Online at 90 Days' =
 			CALCULATE ( MAX ( mart_liquidity_curve[still_online_share] ), mart_liquidity_curve[day] = 90, mart_liquidity_curve[group_name] = "All models" )

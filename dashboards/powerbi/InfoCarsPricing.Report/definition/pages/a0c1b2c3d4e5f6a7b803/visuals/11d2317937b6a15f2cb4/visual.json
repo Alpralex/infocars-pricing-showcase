@@ -42,12 +42,12 @@
                       "Entity": "mart_buy_list"
                     }
                   },
-                  "Property": "Buy Candidates"
+                  "Property": "Margin at Asking Price"
                 }
               },
-              "queryRef": "mart_buy_list.Buy Candidates",
-              "nativeQueryRef": "Buy Candidates",
-              "displayName": "Ads"
+              "queryRef": "mart_buy_list.Margin at Asking Price",
+              "nativeQueryRef": "Margin at Asking Price",
+              "displayName": "At the asking price"
             },
             {
               "field": {
@@ -62,7 +62,7 @@
               },
               "queryRef": "mart_buy_list.Margin at Target Offer",
               "nativeQueryRef": "Margin at Target Offer",
-              "displayName": "Margin at target offer"
+              "displayName": "At the target offer"
             }
           ]
         }
@@ -103,7 +103,7 @@
             }
           },
           "selector": {
-            "metadata": "mart_buy_list.Buy Candidates"
+            "metadata": "mart_buy_list.Margin at Asking Price"
           }
         },
         {
@@ -140,7 +140,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Candidates and margin by class'"
+                  "Value": "'Expected margin by class, at the asking price and at the target offer'"
                 }
               }
             }
@@ -153,7 +153,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Candidates and margin by class'"
+                  "Value": "'Expected margin by class, at the asking price and at the target offer'"
                 }
               }
             }
