@@ -2,7 +2,7 @@
 
 [![Dashboard screenshot](https://guilhermerigonato.com/img/infocars.webp)](https://guilhermerigonato.com/infocars/)
 
-**Live:** [case study](https://guilhermerigonato.com/infocars/) · [Power BI report (publish to web)](https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9) · [all projects](https://guilhermerigonato.com)
+**Live:** [case study](https://guilhermerigonato.com/infocars/) · [Power BI report (publish to web)](https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9&pageName=a0c1b2c3d4e5f6a7b801) · [all projects](https://guilhermerigonato.com)
 
 InfoCars was a pricing tool for used-car dealers in Brazil. It collected car ads from sale websites, matched each one to a standard make, model, version and year, and showed dealers what comparable cars were listed for and how long they took to sell. A chat assistant answered pricing questions in plain language.
 

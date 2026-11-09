@@ -1,6 +1,6 @@
 # InfoCars pricing in Power BI
 
-**Live report (Publish to web):** https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9
+**Live report (Publish to web):** https://app.powerbi.com/view?r=eyJrIjoiMTYxODFjYTUtYjZmOC00NDQ5LTgxZmQtNDA5Y2I5YmMzMDdlIiwidCI6IjY2MDMwOWU1LWI1YWEtNDQzNS1iMDU2LTJhYmViOGZmNDZjNyJ9&pageName=a0c1b2c3d4e5f6a7b801
 
 The same model as the web dashboard, as a Power BI project (PBIP). The semantic model is written in TMDL, so every table, relationship and DAX measure is readable in Git.
 
