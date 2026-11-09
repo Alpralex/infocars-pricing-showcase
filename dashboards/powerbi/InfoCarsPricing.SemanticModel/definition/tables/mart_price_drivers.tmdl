@@ -4,6 +4,14 @@ table mart_price_drivers
 	/// Computed from fct_listings for the level on the axis, so the state and model slicers apply.
 	/// Median gap of the asking price to the comparable median, for one factor level.
 	measure 'Median Gap at Level' =
+			IF ( HASONEVALUE ( mart_price_drivers[level] ), [Median Gap at Level One], MAXX ( VALUES ( mart_price_drivers[level] ), [Median Gap at Level One] ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: Drivers
+		lineageTag: 8c456e97-a814-59aa-81fc-1c2988d3c0d5
+
+
+	/// Helper for one level: the same measure when the factor and level are fixed.
+	measure 'Median Gap at Level One' =
 			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
 			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
 			RETURN
@@ -17,12 +25,21 @@ table mart_price_drivers
 					"Photos", CALCULATE ( MEDIAN ( fct_listings[gap_to_median_pct] ), fct_listings[photos_band] = l )
 				)
 		formatString: +0.0%;-0.0%;0.0%
+		isHidden
 		displayFolder: Drivers
 		lineageTag: 6ef1dbdf-c2d8-5507-8715-a129788c9f61
 
 
 	/// Clean ads with a market at this factor level.
 	measure 'Ads at Level' =
+			IF ( HASONEVALUE ( mart_price_drivers[level] ), [Ads at Level One], SUMX ( VALUES ( mart_price_drivers[level] ), [Ads at Level One] ) )
+		formatString: #,0
+		displayFolder: Drivers
+		lineageTag: bd54e004-64e3-5120-9a61-b82cf9bad950
+
+
+	/// Helper for one level: the same measure when the factor and level are fixed.
+	measure 'Ads at Level One' =
 			VAR f = SELECTEDVALUE ( mart_price_drivers[factor] )
 			VAR l = SELECTEDVALUE ( mart_price_drivers[level] )
 			RETURN
@@ -36,6 +53,7 @@ table mart_price_drivers
 					"Photos", CALCULATE ( COUNTROWS ( fct_listings ), fct_listings[price_position] <> "too few comparables", fct_listings[photos_band] = l )
 				)
 		formatString: #,0
+		isHidden
 		displayFolder: Drivers
 		lineageTag: 3e3f253d-4167-5751-8568-daa924bff8ee
 
