@@ -148,9 +148,97 @@ th.yr, td.yr { min-width: 4.2rem; }
 .drv .seg { margin-bottom: .25rem; }
 </style>
 
+<style id="i18n-style">
+.crumb { max-width: none; display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.4rem; }
+.lang-sw { margin-left: auto; display: inline-flex; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+.lang-sw button { font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.04em; padding: 0.2rem 0.55rem; background: var(--sheet); color: var(--ink); border: 0; border-right: 1px solid var(--rule); cursor: pointer; }
+.lang-sw button:last-child { border-right: 0; }
+.lang-sw button[aria-pressed="true"] { background: var(--signal-soft); box-shadow: inset 0 -2px 0 var(--signal); font-weight: 600; }
+.lang-sw button:focus-visible { outline: 2px solid var(--signal); outline-offset: -2px; }
+</style>
+<script id="i18n-core">
+// Language layer shared by the portfolio dashboards. English is written in the page; Portuguese (pt-PT) comes from I18N.add({...}).
+// Order of choice: ?lang= in the URL (the home page adds it), then the visitor's last choice (localStorage "lang", the same key the home page uses), then English.
+(function () {
+  var KEY = 'lang';
+  function pick() {
+    var q = null;
+    try { q = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+    if (q === 'pt' || q === 'en') { try { localStorage.setItem(KEY, q); } catch (e) {} return q; }
+    try { var s = localStorage.getItem(KEY); if (s === 'pt' || s === 'en') return s; } catch (e) {}
+    try { if (/^\/pt\/?$/.test(new URL(document.referrer).pathname)) return 'pt'; } catch (e) {}
+    return 'en';
+  }
+  var I = window.I18N = { lang: pick(), dict: {}, fns: [] };
+  function norm(s) { return String(s).replace(/\s+/g, ' ').trim(); }
+  I.add = function (d) { for (var k in d) I.dict[norm(k)] = d[k]; };
+  I.pt = function () { return I.lang === 'pt'; };
+  // Inline pair for sentences whose word order differs: I18N.p('English', 'Português').
+  I.p = function (en, pt) { return I.lang === 'pt' ? pt : en; };
+  // Text: the Portuguese entry for an English string, or the string itself.
+  I.t = function (s) { if (I.lang !== 'pt') return s; var v = I.dict[norm(s)]; return v == null ? s : v; };
+  // Numbers already formatted the English way ("1,234.5") become "1 234,5" in Portuguese.
+  I.n = function (s) {
+    s = String(s); if (I.lang !== 'pt') return s;
+    return s.replace(/(\d),(?=\d{3}(?:\D|$))/g, '$1 ').replace(/(\d)\.(\d)/g, '$1,$2');
+  };
+  I.locale = function () { return I.lang === 'pt' ? 'pt-PT' : 'en-US'; };
+  I.on = function (fn) { I.fns.push(fn); };
+  var ATTRS = ['aria-label', 'title', 'placeholder'];
+  function swapAttrs(el) {
+    ATTRS.forEach(function (a) {
+      if (!el.hasAttribute(a)) return;
+      el._enA = el._enA || {};
+      if (el._enA[a] == null) { if (!(norm(el.getAttribute(a)) in I.dict)) return; el._enA[a] = el.getAttribute(a); }
+      el.setAttribute(a, I.t(el._enA[a]));
+    });
+    if (el.tagName === 'A' && (el.getAttribute('href') === '/' || el._enHref != null)) {
+      if (el._enHref == null) el._enHref = el.getAttribute('href');
+      el.setAttribute('href', I.lang === 'pt' ? '/pt/' : '/?lang=en');
+    }
+  }
+  // Static text in the page: a whole element when its markup has an entry, otherwise each text node.
+  function walk(node) {
+    for (var c = node.firstChild; c; c = c.nextSibling) {
+      if (c.nodeType === 3) {
+        if (c._en == null) { var k = norm(c.nodeValue); if (!k || !(k in I.dict)) continue; c._en = c.nodeValue; }
+        var en = c._en, lead = en.match(/^\s*/)[0], trail = en.match(/\s*$/)[0];
+        c.nodeValue = I.lang === 'pt' ? lead + I.dict[norm(en)] + trail : en;
+      } else if (c.nodeType === 1) {
+        if (/^(SCRIPT|STYLE|SVG|svg)$/.test(c.tagName) || c.hasAttribute('data-i18n-skip')) continue;
+        swapAttrs(c);
+        if (c._enH == null && c.children.length && (norm(c.innerHTML) in I.dict)) c._enH = c.innerHTML;
+        if (c._enH != null) { c.innerHTML = I.lang === 'pt' ? I.dict[norm(c._enH)] : c._enH; continue; }
+        walk(c);
+      }
+    }
+  }
+  I.apply = function () {
+    document.documentElement.lang = I.lang === 'pt' ? 'pt-PT' : 'en';
+    if (I._title == null) I._title = document.title;
+    document.title = I.t(I._title);
+    walk(document.body);
+    document.querySelectorAll('.lang-sw button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === I.lang)); });
+  };
+  I.set = function (lang) {
+    if (lang === I.lang) return;
+    I.lang = lang;
+    try { localStorage.setItem(KEY, lang); } catch (e) {}
+    try { var u = new URL(location.href); u.searchParams.set('lang', lang); history.replaceState(history.state, '', u); } catch (e) {}
+    I.apply();
+    I.fns.forEach(function (fn) { try { fn(); } catch (e) { if (window.console) console.error(e); } });
+  };
+  // Runs after the page script: translate the static text and wire the EN / PT buttons.
+  I.start = function () {
+    document.querySelectorAll('.lang-sw button').forEach(function (b) { b.addEventListener('click', function () { I.set(b.dataset.lang); }); });
+    I.apply();
+  };
+})();
+</script>
+
 <main class="wrap">
   <header>
-    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects /</span> <a href="/infocars/">InfoCars</a></p>
+    <p class="crumb"><a href="/">Guilherme Rigonato</a> <span class="label">/ Projects /</span> <a href="/infocars/">InfoCars</a><span class="lang-sw" role="group" aria-label="Language · Idioma" data-i18n-skip><button type="button" data-lang="en" lang="en" title="English">EN</button><button type="button" data-lang="pt" lang="pt-PT" title="Português">PT</button></span></p>
     <span class="label">Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL · version 2</span>
     <h1>Which used cars are priced out of line, which are worth buying, and what moves the price?</h1>
     <p>A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, which private-seller ads a dealer should buy, what moves the price (kilometres, seller, gearbox, photos), and which ads online are likely to get stuck.</p>
@@ -297,28 +385,237 @@ th.yr, td.yr { min-width: 4.2rem; }
   </section>
 </main>
 
+<script id="i18n-pt">
+I18N.add({
+"InfoCars Pricing Dashboard": "Painel de preços InfoCars",
+"/ Projects /": "/ Projetos /",
+"Synthetic car ads · 1,200 listings · 7 models · May – Nov 2025 · BRL · version 2": "Anúncios de automóveis sintéticos · 1 200 anúncios · 7 modelos · mai – nov 2025 · BRL · versão 2",
+"Which used cars are priced out of line, which are worth buying, and what moves the price?": "Que usados estão com o preço desajustado, quais vale a pena comprar e o que faz mexer o preço?",
+"A pricing desk for a used-car dealer in Brazil, built on the InfoCars showcase. Each ad is matched to a catalogue of make, model, version and year, checked for bad prices, and compared with every other ad for the same car. The page shows what comparable cars are listed for, how the asking price changes the time on the site, which private-seller ads a dealer should buy, what moves the price (kilometres, seller, gearbox, photos), and which ads online are likely to get stuck.": "Uma mesa de preços para um stand de usados no Brasil, construída sobre a demonstração InfoCars. Cada anúncio é associado a um catálogo de marca, modelo, versão e ano, verificado quanto a preços errados e comparado com todos os outros anúncios do mesmo carro. A página mostra por quanto estão anunciados carros comparáveis, como o preço pedido altera o tempo no site, que anúncios de particulares um stand deve comprar, o que faz mexer o preço (quilómetros, vendedor, caixa, fotografias) e que anúncios online têm mais probabilidade de ficar parados.",
+"Snapshot: 1 November 2025": "Data de referência: 1 de novembro de 2025",
+"dbt + DuckDB · 18 models · 90 tests": "dbt + DuckDB · 18 modelos · 90 testes",
+"Also in Power BI and Qlik Sense": "Também em Power BI e Qlik Sense",
+"Open the Power BI report ↗": "Abrir o relatório Power BI ↗",
+"Case study": "Estudo de caso (em inglês)",
+"Python notebook": "Notebook Python (em inglês)",
+"Code on GitHub": "Código no GitHub",
+"These sentences are computed from the data and rewrite themselves when you change the model, the state or the price cut below.": "Estas frases são calculadas a partir dos dados e reescrevem-se quando muda o modelo, o estado ou o corte de preço mais abaixo.",
+"Key findings": "Principais conclusões",
+"Finding 1": "Conclusão 1",
+"Finding 2": "Conclusão 2",
+"Finding 3": "Conclusão 3",
+"Finding 4": "Conclusão 4",
+"Finding 5": "Conclusão 5",
+"Finding 6": "Conclusão 6",
+"Finding 7": "Conclusão 7",
+"Cars priced under the market sell in about half the time.": "Os carros com preço abaixo do mercado vendem-se em cerca de metade do tempo.",
+"Ads more than 6% below the median of comparable ads sold in a median of 17 days, and 74% of them within 30 days. Ads more than 6% above took 30 days, and only 51% sold within 30 days.": "Os anúncios mais de 6% abaixo da mediana dos comparáveis venderam-se numa mediana de 17 dias, e 74% deles em 30 dias. Os que estavam mais de 6% acima levaram 30 dias, e só 51% se venderam em 30 dias.",
+"82 ads still online are priced above the market.": "82 anúncios ainda online estão com preço acima do mercado.",
+"On 1 November 2025 they ask R$ 530,500 more than their comparable medians in total, a median of 7.8% each, and have been online for a median of 50.5 days.": "A 1 de novembro de 2025 pedem, no total, mais R$ 530 500 do que as medianas dos comparáveis, uma mediana de 7,8% cada, e estão online há uma mediana de 50,5 dias.",
+"31 ads still online are priced below the market.": "31 anúncios ainda online estão com preço abaixo do mercado.",
+"They ask R$ 156,950 less than their comparable medians, a median of 6.1% each. They should sell fast, but the gap is margin a dealer may not need to give away.": "Pedem menos R$ 156 950 do que as medianas dos comparáveis, uma mediana de 6,1% cada. Devem vender-se depressa, mas essa diferença é margem que o stand talvez não precise de oferecer.",
+"34 private-seller ads online are at or below their market median; 4 are a buy at the asking price.": "34 anúncios de particulares online estão na mediana do mercado ou abaixo; 4 compensam comprar ao preço pedido.",
+"Bought at a target offer of 90% of the comparable median, the 23 ads in Buy now and Negotiate would clear R$ 137,197 after preparation, a median of R$ 5,548 per car. Private sellers ask 2.0% under the comparable median and dealers 1.8% over.": "Comprados com uma oferta-alvo de 90% da mediana dos comparáveis, os 23 anúncios em Comprar já e Negociar deixariam R$ 137 197 depois da preparação, uma mediana de R$ 5 548 por carro. Os particulares pedem 2,0% abaixo da mediana dos comparáveis e os stands 1,8% acima.",
+"Same car, same year: each 10,000 km takes about R$ 5,840 (6.5%) off the asking price.": "Mesmo carro, mesmo ano: cada 10 000 km tiram cerca de R$ 5 840 (6,5%) ao preço pedido.",
+"A least-squares fit of price on km inside each version and model year, over 699 ads in groups of 8 or more. Kilometres explain 48% of the price spread; ads with 16 or more photos sit 1.8% above the market, colour and fuel move it by 2% at most.": "Regressão por mínimos quadrados do preço sobre os quilómetros dentro de cada versão e ano, em 699 anúncios de grupos com 8 ou mais. Os quilómetros explicam 48% da dispersão de preços; os anúncios com 16 ou mais fotografias ficam 1,8% acima do mercado, e a cor e o combustível mexem no preço 2%, no máximo.",
+"Half of the ads leave the site within 30 days; the 87 that cut their price sold a median of 9 days after the cut.": "Metade dos anúncios sai do site em 30 dias; os 87 que baixaram o preço venderam-se numa mediana de 9 dias após a descida.",
+"46% of ads are still online after 30 days and 12% after 90. 15 ads online score 60 or more on the stock-risk scale (price, days online, kilometres): R$ 68,200 of cuts would bring them back into range.": "46% dos anúncios continuam online ao fim de 30 dias e 12% ao fim de 90. 15 anúncios online têm 60 pontos ou mais na escala de risco de stock (preço, dias online, quilómetros): cortes de R$ 68 200 trá-los-iam de volta ao intervalo de mercado.",
+"33 of 1,200 ads never reach the statistics.": "33 dos 1 200 anúncios nunca chegam às estatísticas.",
+"15 have no price or one out of range, and 18 sit far from comparable cars, usually a price typed without its last digit. 187 clean ads were matched only through typo correction, and 116 make and model spellings reduce to 7 models.": "15 não têm preço ou têm um preço fora dos limites, e 18 ficam muito longe dos carros comparáveis, normalmente um preço escrito sem o último dígito. 187 anúncios válidos só foram identificados graças à correção de erros de escrita, e 116 grafias de marca e modelo reduzem-se a 7 modelos.",
+"Filters": "Filtros",
+"Sections": "Secções",
+"Findings": "Conclusões",
+"Price and speed": "Preço e rapidez",
+"Online and quality": "Online e qualidade",
+"Market prices": "Preços de mercado",
+"Price cut": "Corte de preço",
+"Buy list": "Lista de compras",
+"Price drivers": "O que mexe o preço",
+"Stock risk": "Risco de stock",
+"Stock to review": "Stock a rever",
+"How it is built": "Como foi feito",
+"Model": "Modelo",
+"State": "Estado",
+"All": "Todos",
+"Headline figures": "Números principais",
+"Days to sell by asking price against the market": "Dias até à venda, pelo preço pedido face ao mercado",
+"Median days on the site for sold ads, by how far the asking price sits from the median of comparable ads (same version and model year, other ads only).": "Mediana de dias no site dos anúncios vendidos, conforme a distância do preço pedido à mediana dos anúncios comparáveis (mesma versão e ano, só os outros anúncios).",
+"Every sold ad: price gap and days on the site": "Todos os anúncios vendidos: desvio de preço e dias no site",
+"Position as in the pricing assistant: above the 75th percentile of comparable ads is above market, below the 25th is below.": "Posição como no assistente de preços: acima do percentil 75 dos comparáveis está acima do mercado; abaixo do percentil 25 está abaixo.",
+"Below market": "Abaixo do mercado",
+"Within market range": "Dentro do intervalo de mercado",
+"Above market": "Acima do mercado",
+"Ads online per day": "Anúncios online por dia",
+"An ad counts from the day it is listed to its last day online. Above-market ads are shown on their own.": "Cada anúncio conta desde o dia em que é publicado até ao último dia online. Os anúncios acima do mercado aparecem à parte.",
+"All ads online": "Todos os anúncios online",
+"From raw ads to market statistics": "Dos anúncios em bruto às estatísticas de mercado",
+"All 1,200 raw ads, before filters. The same checks as the Python demo, rewritten in SQL.": "Os 1 200 anúncios em bruto, antes de filtros. As mesmas verificações da demonstração em Python, reescritas em SQL.",
+"What comparable cars are listed for": "Por quanto estão anunciados carros comparáveis",
+"Median asking price of all clean ads for the version and model year, in thousands of reais, with the number of ads. Fewer than 5 ads is a weak estimate and is greyed out, as the assistant would say.": "Mediana do preço pedido de todos os anúncios válidos da versão e ano, em milhares de reais, com o número de anúncios. Menos de 5 anúncios é uma estimativa fraca e aparece a cinzento, tal como o assistente avisaria.",
+"What would a price cut do to the overpriced stock?": "O que faria um corte de preço ao stock acima do mercado?",
+"Cut the asking price of every ad still online and above its market range, and count how many fall back to or below the 75th percentile of comparable ads. The Power BI report has the same what-if parameter on its Price review page.": "Baixe o preço pedido de todos os anúncios ainda online e acima do intervalo de mercado, e veja quantos voltam ao percentil 75 dos comparáveis ou abaixo. O relatório Power BI tem o mesmo parâmetro de simulação na página Price review.",
+"Buy list: which private-seller ads are worth buying this morning?": "Lista de compras: que anúncios de particulares vale a pena comprar esta manhã?",
+"Ads from private sellers still online, asked at or below the median of comparable ads. A dealer pays about 90% of the market price (the target offer) and spends about 2% on preparation; the margin is the comparable median less what is paid less preparation. Buy now: 8% or more under the median. Negotiate: 3% to 8%. Wait: under 3%.": "Anúncios de particulares ainda online, com preço na mediana dos comparáveis ou abaixo. Um stand paga cerca de 90% do preço de mercado (a oferta-alvo) e gasta cerca de 2% em preparação; a margem é a mediana dos comparáveis menos o valor pago e a preparação. Comprar já: 8% ou mais abaixo da mediana. Negociar: 3% a 8%. Aguardar: menos de 3%.",
+"What moves an ad's price against its market?": "O que afasta o preço de um anúncio do seu mercado?",
+"Median gap of the asking price to the median of comparable ads (same version and model year, so the car and its age are held constant), by factor. Pick a factor.": "Desvio mediano do preço pedido face à mediana dos comparáveis (mesma versão e ano, para manter fixos o carro e a idade), por fator. Escolha um fator.",
+"Mileage": "Quilometragem",
+"Seller": "Vendedor",
+"Gearbox": "Caixa",
+"Fuel": "Combustível",
+"Colour": "Cor",
+"Photos": "Fotografias",
+"Loss of asking price per 10,000 km, by car": "Perda de preço pedido por cada 10 000 km, por carro",
+"Least-squares fit of price on kilometres inside each version and model year, over groups of 8 or more clean ads, pooled per version and weighted by ads. The production tool computed the same figure to adjust a quote to the car's mileage.": "Regressão por mínimos quadrados do preço sobre os quilómetros dentro de cada versão e ano, em grupos de 8 ou mais anúncios válidos, agregada por versão e ponderada pelo número de anúncios. A ferramenta em produção calculava este mesmo valor para ajustar uma cotação aos quilómetros do carro.",
+"How fast the stock turns: share of ads still online by days since listing": "A que ritmo roda o stock: parte dos anúncios ainda online, por dias desde a publicação",
+"Ads listed at least 90 days before the snapshot, so every ad could be followed for 90 days. The selected model is drawn against all models.": "Anúncios publicados pelo menos 90 dias antes da data de referência, para que cada um possa ser seguido durante 90 dias. O modelo selecionado aparece contra todos os modelos.",
+"All models": "Todos os modelos",
+"Ads online most likely to get stuck": "Anúncios online com maior risco de ficarem parados",
+"Risk score 0-100 per ad still online with a market: price above the comparable median (up to 50 points, full at +15%), days online (up to 30, full at 90 days), kilometres above the comparable median (up to 20, full at +50%). High: 60 or more.": "Pontuação de risco de 0 a 100 por anúncio ainda online com mercado: preço acima da mediana dos comparáveis (até 50 pontos, máximo a +15%), dias online (até 30, máximo aos 90 dias), quilómetros acima da mediana dos comparáveis (até 20, máximo a +50%). Alto: 60 ou mais.",
+"Show all": "Mostrar todos",
+"Show the first 12": "Mostrar os primeiros 12",
+"Stock to review: ads still online and outside the market range": "Stock a rever: anúncios ainda online e fora do intervalo de mercado",
+"Method": "Método",
+"The data are the 1,200 synthetic ads of the showcase repository, generated with a fixed seed. Titles copy the mistakes of real ads; prices, mileage and dates are invented. The generator makes cars priced below market leave the site faster, so the first chart checks that the pipeline recovers that pattern. Nothing on this page is a result of the real business.": "Os dados são os 1 200 anúncios sintéticos do repositório de demonstração, gerados com uma semente fixa. Os títulos copiam os erros dos anúncios reais; preços, quilometragem e datas são inventados. O gerador faz sair do site mais depressa os carros com preço abaixo do mercado, por isso o primeiro gráfico confirma que o pipeline recupera esse padrão. Nada nesta página é resultado do negócio real.",
+"Titles are matched by the repository's own Python matcher (whole-word aliases, then fuzzy matching for typos). dbt models on DuckDB then apply the quality checks, the market statistics and the position against the market, and reproduce the demo's numbers exactly: 1,167 clean ads, 187 through typo correction, and a 2023 Onix LTZ market of 6 ads with a median of R$ 68,400.": "Os títulos são associados pelo próprio motor de correspondência em Python do repositório (sinónimos por palavra inteira e, depois, correspondência aproximada para erros de escrita). Os modelos dbt em DuckDB aplicam então as verificações de qualidade, as estatísticas de mercado e a posição face ao mercado, e reproduzem exatamente os números da demonstração: 1 167 anúncios válidos, 187 por correção de erros e um mercado do Onix LTZ 2023 com 6 anúncios e mediana de R$ 68 400.",
+"An ad that disappears counts as sold on its last day online. Days to sell count sold ads only, so slow cars that are still online make the gap between price bands smaller, not larger.": "Um anúncio que desaparece conta como vendido no último dia online. Os dias até à venda só contam anúncios vendidos, por isso os carros lentos que ainda estão online tornam a diferença entre faixas de preço menor, não maior.",
+"In production InfoCars held about 250,000 listings, cut 5,114 model spellings to 641 real models, and the dealer measured a saving of about R$ 2,000 per negotiation, with time in stock down to one to three months.": "Em produção, o InfoCars tinha cerca de 250 000 anúncios, reduziu 5 114 grafias de modelos a 641 modelos reais, e o stand mediu uma poupança de cerca de R$ 2 000 por negociação, com o tempo em stock reduzido para um a três meses.",
+"Version 2 (November 2026) adds to the generator the attributes the production table had: seller type, gearbox, fuel, colour, photos, city and a price history. Every version 1 column is unchanged, so the numbers above did not move; the new columns are drawn from a second generator conditioned on each ad's distance to its market, which plants the patterns the buy list, the price drivers and the stock-risk score look for. The km depreciation, the buy list, the liquidity curve and the risk score are dbt marts; this page recomputes them from the same ads in the browser, and the notebook checks they agree.": "A versão 2 (novembro de 2026) acrescenta ao gerador os atributos que a tabela de produção tinha: tipo de vendedor, caixa, combustível, cor, fotografias, cidade e histórico de preços. Nenhuma coluna da versão 1 mudou, por isso os números acima não se alteraram; as novas colunas saem de um segundo gerador condicionado à distância de cada anúncio ao seu mercado, que planta os padrões que a lista de compras, os fatores de preço e a pontuação de risco procuram. A desvalorização por km, a lista de compras, a curva de liquidez e a pontuação de risco são marts dbt; esta página recalcula-os no browser a partir dos mesmos anúncios, e o notebook confirma que coincidem.",
+"The same star schema (ads, version, state, date) feeds a Power BI model in TMDL with DAX measures and a Qlik Sense app with set analysis.": "O mesmo esquema em estrela (anúncios, versão, estado, data) alimenta um modelo Power BI em TMDL com medidas DAX e uma app Qlik Sense com set analysis.",
+"Code:": "Código:",
+"all states": "todos os estados",
+"below market": "abaixo do mercado",
+"within market range": "dentro do intervalo de mercado",
+"above market": "acima do mercado",
+"too few comparables": "poucos comparáveis",
+"Clean ads": "Anúncios válidos",
+"Median asking price": "Preço pedido mediano",
+"Median days to sell": "Mediana de dias até à venda",
+"Above market, still online": "Acima do mercado, ainda online",
+"Median days to sell by price band": "Mediana de dias até à venda por faixa de preço",
+"days": "dias",
+"Below -6%": "Abaixo de −6%",
+"-6% to -2%": "−6% a −2%",
+"-2% to +2%": "−2% a +2%",
+"+2% to +6%": "+2% a +6%",
+"Above +6%": "Acima de +6%",
+"Too few comparables": "Poucos comparáveis",
+"Sold ads by price gap to the market median and days on the site": "Anúncios vendidos por desvio face à mediana do mercado e dias no site",
+"median": "mediana",
+"asking price vs comparable median →": "preço pedido face à mediana dos comparáveis →",
+"days on the site": "dias no site",
+"Asking": "Preço pedido",
+"Ads online per day, all and above market": "Anúncios online por dia, todos e acima do mercado",
+"Raw ads": "Anúncios em bruto",
+"Bad price": "Preço inválido",
+"No full match": "Sem correspondência completa",
+"Price outlier": "Preço atípico",
+"Dropped: ": "Excluídos: ",
+"Data quality funnel": "Funil de qualidade dos dados",
+"Raw ads collected": "Anúncios em bruto recolhidos",
+"Dropped: price missing or out of range": "Excluídos: preço em falta ou fora dos limites",
+"Dropped: no full catalogue match": "Excluídos: sem correspondência completa no catálogo",
+"Dropped: price far from comparable cars": "Excluídos: preço muito longe dos carros comparáveis",
+"Clean ads matched to the catalogue": "Anúncios válidos associados ao catálogo",
+"Version": "Versão",
+"Median asking price by version and model year": "Preço pedido mediano por versão e ano",
+"R$ thousands": "milhares de R$",
+"Car": "Carro",
+"Year": "Ano",
+"Comparable median": "Mediana dos comparáveis",
+"Gap": "Desvio",
+"Gap %": "Desvio %",
+"Comparables": "Comparáveis",
+"Days online": "Dias online",
+"Position": "Posição",
+"in range": "no intervalo",
+"still above": "ainda acima",
+"No ads outside the market range for this selection.": "Não há anúncios fora do intervalo de mercado nesta seleção.",
+"Overpriced ads online": "Anúncios online acima do mercado",
+"above the 75th percentile of comparables": "acima do percentil 75 dos comparáveis",
+"Back in range after the cut": "De volta ao intervalo após o corte",
+"Asking price given up": "Preço pedido a que se renuncia",
+"Days to sell: overpriced / in range": "Dias até à venda: acima do mercado / no intervalo",
+"median for sold ads": "mediana dos anúncios vendidos",
+"Buy now": "Comprar já",
+"Negotiate": "Negociar",
+"Wait": "Aguardar",
+"Candidates online": "Candidatos online",
+"private sellers at or below the comparable median": "particulares na mediana dos comparáveis ou abaixo",
+"the margin needs the target offer": "a margem exige a oferta-alvo",
+"Margin at the target offer": "Margem com a oferta-alvo",
+"Class": "Classe",
+"Priority": "Prioridade",
+"City": "Cidade",
+"Target offer": "Oferta-alvo",
+"Margin at target": "Margem com a oferta-alvo",
+"No private-seller ads at or below their market median are online in this selection.": "Não há anúncios de particulares online na mediana do mercado ou abaixo nesta seleção.",
+"Under 10k km": "Menos de 10 mil km",
+"10-30k km": "10–30 mil km",
+"30-50k km": "30–50 mil km",
+"50-100k km": "50–100 mil km",
+"Over 100k km": "Mais de 100 mil km",
+"Private seller": "Particular",
+"Dealer": "Stand",
+"Automatic": "Automática",
+"Manual": "Manual",
+"Flex": "Flex",
+"Petrol": "Gasolina",
+"Hybrid": "Híbrido",
+"White": "Branco",
+"Silver": "Prata",
+"Black": "Preto",
+"Grey": "Cinzento",
+"Red": "Vermelho",
+"Blue": "Azul",
+"Under 8 photos": "Menos de 8 fotografias",
+"8-15 photos": "8–15 fotografias",
+"16 or more": "16 ou mais",
+"comparable median": "mediana dos comparáveis",
+"no ads": "sem anúncios",
+"Ads": "Anúncios",
+"Median price": "Preço mediano",
+"Per 10,000 km": "Por 10 000 km",
+"No version with groups large enough for a fit.": "Nenhuma versão tem grupos grandes o suficiente para a regressão.",
+"Share of ads still online by days since listing": "Parte dos anúncios ainda online por dias desde a publicação",
+"days since listing →": "dias desde a publicação →",
+"High": "Alto",
+"Medium": "Médio",
+"Low": "Baixo",
+"Risk": "Risco",
+"Score": "Pontos",
+"Price (50)": "Preço (50)",
+"Time (30)": "Tempo (30)",
+"km (20)": "km (20)",
+"Cut to range": "Corte até ao intervalo",
+"No ads online with a market in this selection.": "Não há anúncios online com mercado nesta seleção.",
+"The data files did not load. Reload the page to try again.": "Os ficheiros de dados não carregaram. Recarregue a página para tentar de novo."
+});
+</script>
 <script>
 (function () {
   var NS = 'http://www.w3.org/2000/svg';
   var D = {};
   var state = { model: 'ALL', st: 'ALL', all: false, cut: 5, factor: 'Mileage', allRisk: false };
+  var T = I18N.t, N = I18N.n, P = I18N.p;
+  var MON_PT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  function thead(a) { return '<thead><tr>' + a.map(function (h) { return '<th>' + T(h) + '</th>'; }).join('') + '</tr></thead>'; }
 
   function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
   function txt(parent, x, y, s, attrs) { var t = el('text', Object.assign({ x: x, y: y }, attrs || {}), parent); t.textContent = s; return t; }
   function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   function niceStep(span) { var raw = span / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
   var minus = '−';
-  function brl(v) { return (v < 0 ? minus : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('en-US'); }
-  function brlS(v) { return (v < 0 ? minus : v > 0 ? '+' : '') + 'R$ ' + Math.abs(Math.round(v)).toLocaleString('en-US'); }
-  function kBrl(v) { return (v / 1000).toFixed(1); }
-  function pct(v, d) { if (v == null || !isFinite(v)) return '–'; return (v > 0 ? '+' : v < 0 ? minus : '') + Math.abs(v * 100).toFixed(d == null ? 1 : d) + '%'; }
+  function brl(v) { return (v < 0 ? minus : '') + 'R$ ' + N(Math.abs(Math.round(v)).toLocaleString('en-US')); }
+  function brlS(v) { return (v < 0 ? minus : v > 0 ? '+' : '') + 'R$ ' + N(Math.abs(Math.round(v)).toLocaleString('en-US')); }
+  function kBrl(v) { return N((v / 1000).toFixed(1)); }
+  function pct(v, d) { if (v == null || !isFinite(v)) return '–'; return (v > 0 ? '+' : v < 0 ? minus : '') + N(Math.abs(v * 100).toFixed(d == null ? 1 : d)) + '%'; }
   function share(v) { return v == null || !isFinite(v) ? '–' : Math.round(v * 100) + '%'; }
-  function num(v) { return v.toLocaleString('en-US'); }
-  function days(v) { return v == null ? '–' : (Math.round(v * 10) / 10) + ' days'; }
+  function num(v) { return N(v.toLocaleString('en-US')); }
+  function days(v) { return v == null ? '–' : N(String(Math.round(v * 10) / 10)) + P(' days', ' dias'); }
   function median(a) { if (!a.length) return null; var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
   function dayNum(iso) { return Math.round(Date.parse(iso + 'T00:00:00Z') / 864e5); }
   function dayIso(n) { return new Date(n * 864e5).toISOString().slice(0, 10); }
-  function dayLabel(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+  function dayLabel(iso) { var d = new Date(iso + 'T00:00:00'); return I18N.pt() ? d.getDate() + ' ' + MON_PT[d.getMonth()] : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
 
   // listing row: [id, version_key, year, state, price, listed, removed, days, comparables, p25, median, p75, band, source,
   //   km, market median km, seller (p/d), transmission (a/m), fuel (f/p/h), colour, photos, city, price before the cut, cut date]
@@ -329,7 +626,7 @@ th.yr, td.yr { min-width: 4.2rem; }
       sold: r[6] != null, gap: r[10] == null ? null : r[4] - r[10], gapPct: r[10] == null ? null : r[4] / r[10] - 1, pos: pos };
   }
   function rows() { return D.listings.filter(function (r) { return (state.model === 'ALL' || D.ver[r.vk][2] === state.model) && (state.st === 'ALL' || r.st === state.st); }); }
-  function scopeName() { return (state.model === 'ALL' ? 'All models' : state.model) + ' · ' + (state.st === 'ALL' ? 'all states' : D.stName[state.st]); }
+  function scopeName() { return (state.model === 'ALL' ? T('All models') : state.model) + ' · ' + (state.st === 'ALL' ? T('all states') : D.stName[state.st]); }
   function carName(r) { var v = D.ver[r.vk]; return v[2] + ' ' + v[3]; }
   var POS_COLOR = { below: '--s1', within: '--total', above: '--s2' };
   var POS_NAME = { below: 'below market', within: 'within market range', above: 'above market', few: 'too few comparables' };
@@ -341,10 +638,10 @@ th.yr, td.yr { min-width: 4.2rem; }
     var avg = R.reduce(function (s, r) { return s + r.price; }, 0) / (R.length || 1);
     var in30 = sold.filter(function (r) { return r.days <= 30; }).length / (sold.length || 1);
     var tiles = [
-      ['Clean ads', num(R.length), num(active.length) + ' still online on 1 Nov 2025'],
-      ['Median asking price', R.length ? brl(median(R.map(function (r) { return r.price; }))) : '–', 'average ' + brl(avg)],
-      ['Median days to sell', days(median(sold.map(function (r) { return r.days; }))), share(in30) + ' of ' + num(sold.length) + ' sold ads went within 30 days'],
-      ['Above market, still online', num(above.length), brl(gapAbove) + ' above comparable medians']
+      [T('Clean ads'), num(R.length), num(active.length) + P(' still online on 1 Nov 2025', ' ainda online a 1 nov 2025')],
+      [T('Median asking price'), R.length ? brl(median(R.map(function (r) { return r.price; }))) : '–', P('average ', 'média ') + brl(avg)],
+      [T('Median days to sell'), days(median(sold.map(function (r) { return r.days; }))), share(in30) + P(' of ', ' dos ') + num(sold.length) + P(' sold ads went within 30 days', ' anúncios vendidos saíram em 30 dias')],
+      [T('Above market, still online'), num(above.length), brl(gapAbove) + P(' above comparable medians', ' acima das medianas dos comparáveis')]
     ];
     document.getElementById('kpis').innerHTML = tiles.map(function (x) {
       return '<div class="kpi"><span class="label">' + x[0] + ' · ' + scopeName() + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>';
@@ -356,7 +653,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     var host = document.getElementById('bands'); host.innerHTML = '';
     var bands = D.meta.bands.filter(function (b) { return b[0] <= 5; }).map(function (b) {
       var all = R.filter(function (r) { return r.band === b[0]; }), sold = all.filter(function (r) { return r.sold; });
-      return { name: b[1], n: all.length, sold: sold.length, med: median(sold.map(function (r) { return r.days; })),
+      return { name: T(b[1]), n: all.length, sold: sold.length, med: median(sold.map(function (r) { return r.days; })),
         in30: sold.length ? sold.filter(function (r) { return r.days <= 30; }).length / sold.length : null,
         online: all.length ? (all.length - sold.length) / all.length : null };
     });
@@ -364,28 +661,28 @@ th.yr, td.yr { min-width: 4.2rem; }
     var hiV = Math.max.apply(null, bands.map(function (b) { return b.med || 0; })) || 10, st = niceStep(hiV), top = Math.ceil(hiV / st) * st;
     var bw = (W - m.l - m.r) / bands.length;
     var Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Median days to sell by price band' }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T('Median days to sell by price band') }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
-    txt(svg, m.l - 6, m.t - 10, 'days', { 'text-anchor': 'end' });
+    txt(svg, m.l - 6, m.t - 10, T('days'), { 'text-anchor': 'end' });
     bands.forEach(function (b, i) {
       var cx = m.l + bw * (i + 0.5), w = Math.min(56, bw - 18), h = b.med == null ? 0 : H - m.b - Y(b.med);
       if (b.med != null) {
         el('path', { d: 'M' + (cx - w / 2) + ' ' + (H - m.b) + 'V' + (Y(b.med) + 4) + 'q0 -4 4 -4H' + (cx + w / 2 - 4) + 'q4 0 4 4V' + (H - m.b) + 'Z', fill: css('--s1') }, svg);
-        txt(svg, cx, Y(b.med) - 6, String(b.med), { 'text-anchor': 'middle', class: 'lbl' });
+        txt(svg, cx, Y(b.med) - 6, N(String(b.med)), { 'text-anchor': 'middle', class: 'lbl' });
       }
       txt(svg, cx, H - m.b + 16, b.name, { 'text-anchor': 'middle' });
       txt(svg, cx, H - m.b + 32, share(b.online) + ' online', { 'text-anchor': 'middle' });
       var hit = el('rect', { x: cx - bw / 2, y: m.t, width: bw, height: H - m.t - m.b, fill: 'transparent' }, svg);
       hit.addEventListener('pointerenter', function () {
         var bb = svg.getBoundingClientRect();
-        tip.innerHTML = 'Asking price ' + b.name.toLowerCase() + ' vs the median<br>' + num(b.n) + ' ads, ' + num(b.sold) + ' sold<br>Median days to sell: ' + (b.med == null ? '–' : b.med) + '<br>Sold within 30 days: ' + share(b.in30) + '<br>Still online: ' + share(b.online);
+        tip.innerHTML = P('Asking price ' + b.name.toLowerCase() + ' vs the median', 'Preço pedido face à mediana: ' + b.name) + '<br>' + num(b.n) + P(' ads, ', ' anúncios, ') + num(b.sold) + P(' sold', ' vendidos') + '<br>' + T('Median days to sell') + ': ' + (b.med == null ? '–' : N(String(b.med))) + '<br>' + P('Sold within 30 days: ', 'Vendidos em 30 dias: ') + share(b.in30) + '<br>' + P('Still online: ', 'Ainda online: ') + share(b.online);
         tip.style.left = (Math.min(Math.max(cx, 90), W - 90) / W * bb.width) + 'px'; tip.style.top = ((b.med == null ? H - m.b : Y(b.med)) / H * bb.height) + 'px'; tip.hidden = false;
       });
       hit.addEventListener('pointerleave', function () { tip.hidden = true; });
     });
     var few = R.filter(function (r) { return r.band === 6; }).length;
-    document.getElementById('band-note').textContent = scopeName() + '. "Online" is the share of the band still on the site at the snapshot. ' + num(few) + ' ads have fewer than 5 comparable ads and no band.';
+    document.getElementById('band-note').textContent = scopeName() + P('. "Online" is the share of the band still on the site at the snapshot. ', '. «Online» é a parte da faixa ainda no site na data de referência. ') + num(few) + P(' ads have fewer than 5 comparable ads and no band.', ' anúncios têm menos de 5 comparáveis e ficam sem faixa.');
   }
 
   // ---------- scatter ----------
@@ -396,13 +693,13 @@ th.yr, td.yr { min-width: 4.2rem; }
     var lim = 0.16, hiD = Math.max(30, Math.max.apply(null, P.map(function (r) { return r.days; }).concat([0]))), st = niceStep(hiD), top = Math.ceil(hiD / st) * st;
     var X = function (v) { return m.l + (Math.max(-lim, Math.min(lim, v)) + lim) / (2 * lim) * (W - m.l - m.r); };
     var Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Sold ads by price gap to the market median and days on the site' }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T('Sold ads by price gap to the market median and days on the site') }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
-    [-0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15].forEach(function (v) { txt(svg, X(v), H - m.b + 15, v === 0 ? 'median' : pct(v, 0), { 'text-anchor': 'middle' }); });
+    [-0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15].forEach(function (v) { txt(svg, X(v), H - m.b + 15, v === 0 ? T('median') : pct(v, 0), { 'text-anchor': 'middle' }); });
     el('line', { x1: X(0), x2: X(0), y1: m.t, y2: H - m.b, stroke: css('--muted'), 'stroke-dasharray': '2 3' }, svg);
-    txt(svg, W - m.r, H - 4, 'asking price vs comparable median →', { 'text-anchor': 'end' });
-    txt(svg, m.l + 4, m.t + 4, 'days on the site', {});
+    txt(svg, W - m.r, H - 4, T('asking price vs comparable median →'), { 'text-anchor': 'end' });
+    txt(svg, m.l + 4, m.t + 4, T('days on the site'), {});
     var surface = css('--sheet');
     P.forEach(function (r) { r._x = X(r.gapPct); r._y = Y(r.days); el('circle', { cx: r._x, cy: r._y, r: 3.2, fill: css(POS_COLOR[r.pos]), 'fill-opacity': 0.8, stroke: surface, 'stroke-width': 0.8 }, svg); });
     var ring = el('circle', { r: 6, fill: 'none', stroke: css('--ink'), 'stroke-width': 1.5, visibility: 'hidden' }, svg);
@@ -413,7 +710,7 @@ th.yr, td.yr { min-width: 4.2rem; }
       P.forEach(function (r) { var d = (r._x - px) * (r._x - px) + (r._y - py) * (r._y - py); if (d < bd) { bd = d; best = r; } });
       if (!best) { ring.setAttribute('visibility', 'hidden'); tip.hidden = true; return; }
       ring.setAttribute('cx', best._x); ring.setAttribute('cy', best._y); ring.setAttribute('visibility', 'visible');
-      tip.innerHTML = carName(best) + ' ' + best.year + ' · ' + best.st + '<br>Asking ' + brl(best.price) + ' · median ' + brl(best.med) + '<br>' + pct(best.gapPct) + ', ' + POS_NAME[best.pos] + '<br>Sold after ' + best.days + ' days';
+      tip.innerHTML = carName(best) + ' ' + best.year + ' · ' + best.st + '<br>' + T('Asking') + ' ' + brl(best.price) + ' · ' + T('median') + ' ' + brl(best.med) + '<br>' + pct(best.gapPct) + ', ' + T(POS_NAME[best.pos]) + '<br>' + P('Sold after ' + best.days + ' days', 'Vendido ao fim de ' + best.days + ' dias');
       tip.style.left = (Math.min(Math.max(best._x, 100), W - 100) / W * b.width) + 'px'; tip.style.top = (best._y / H * b.height) + 'px'; tip.hidden = false;
     });
     hit.addEventListener('pointerleave', function () { ring.setAttribute('visibility', 'hidden'); tip.hidden = true; });
@@ -434,10 +731,10 @@ th.yr, td.yr { min-width: 4.2rem; }
     var W = 520, H = 250, m = { t: 12, r: 12, b: 26, l: 40 };
     var hiV = Math.max.apply(null, A) || 1, st = niceStep(hiV), top = Math.ceil(hiV / st) * st;
     var X = function (i) { return m.l + i / (n - 1) * (W - m.l - m.r); }, Y = function (v) { return H - m.b - v / top * (H - m.t - m.b); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Ads online per day, all and above market' }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T('Ads online per day, all and above market') }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     for (var g = 0; g <= top + 1e-9; g += st) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, String(g), { 'text-anchor': 'end' }); }
-    for (var j = 0; j < n; j++) { var iso = dayIso(d0 + j); if (iso.slice(8) === '01') txt(svg, X(j), H - 8, new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { month: 'short' }), { 'text-anchor': 'middle' }); }
+    for (var j = 0; j < n; j++) { var iso = dayIso(d0 + j); if (iso.slice(8) === '01') txt(svg, X(j), H - 8, I18N.pt() ? MON_PT[Number(iso.slice(5, 7)) - 1] : new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { month: 'short' }), { 'text-anchor': 'middle' }); }
     series.forEach(function (s) {
       el('path', { d: s.values.map(function (v, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); }).join(''), fill: 'none', stroke: css(s.color), 'stroke-width': 2, 'stroke-linejoin': 'round' }, svg);
     });
@@ -449,7 +746,7 @@ th.yr, td.yr { min-width: 4.2rem; }
       var i = Math.max(0, Math.min(n - 1, Math.round((px - m.l) / (W - m.l - m.r) * (n - 1))));
       cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('visibility', 'visible');
       dots.forEach(function (d, k) { d.setAttribute('cx', X(i)); d.setAttribute('cy', Y(series[k].values[i])); d.setAttribute('visibility', 'visible'); });
-      tip.innerHTML = dayLabel(dayIso(d0 + i)) + ' 2025<br>All ads online: ' + A[i] + '<br>Above market: ' + B[i];
+      tip.innerHTML = dayLabel(dayIso(d0 + i)) + ' 2025<br>' + T('All ads online') + ': ' + A[i] + '<br>' + T('Above market') + ': ' + B[i];
       tip.style.left = (Math.min(Math.max(X(i), 70), W - 70) / W * b.width) + 'px'; tip.style.top = (Y(A[i]) / H * b.height) + 'px'; tip.hidden = false;
     });
     hit.addEventListener('pointerleave', function () { cross.setAttribute('visibility', 'hidden'); dots.forEach(function (d) { d.setAttribute('visibility', 'hidden'); }); tip.hidden = true; });
@@ -460,21 +757,21 @@ th.yr, td.yr { min-width: 4.2rem; }
     var host = document.getElementById('quality'); host.innerHTML = '';
     var q = {}; D.meta.quality.forEach(function (x) { q[x[0]] = x; });
     var SHORT = { raw_ads: 'Raw ads', bad_price: 'Bad price', incomplete: 'No full match', price_outlier: 'Price outlier', clean_ads: 'Clean ads' };
-    var steps = ['raw_ads', 'bad_price', 'incomplete', 'price_outlier', 'clean_ads'].map(function (k) { return { key: k, name: SHORT[k], v: q[k][2], drop: k !== 'raw_ads' && k !== 'clean_ads' }; });
+    var steps = ['raw_ads', 'bad_price', 'incomplete', 'price_outlier', 'clean_ads'].map(function (k) { return { key: k, name: T(SHORT[k]), v: q[k][2], drop: k !== 'raw_ads' && k !== 'clean_ads' }; });
     var W = 520, rowH = 34, m = { t: 6, r: 56, b: 6, l: 150 }, H = m.t + m.b + steps.length * rowH;
     var X = function (v) { return m.l + v / q.raw_ads[2] * (W - m.l - m.r); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Data quality funnel' }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T('Data quality funnel') }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     steps.forEach(function (s, i) {
       var y = m.t + i * rowH, w = Math.max(s.v ? 2 : 0, X(s.v) - m.l);
-      txt(svg, m.l - 8, y + rowH / 2 + 4, (s.drop ? 'Dropped: ' : '') + s.name, { 'text-anchor': 'end', class: s.drop ? '' : 'lbl' });
+      txt(svg, m.l - 8, y + rowH / 2 + 4, (s.drop ? T('Dropped: ') : '') + s.name, { 'text-anchor': 'end', class: s.drop ? '' : 'lbl' });
       if (w) el('rect', { x: m.l, y: y + 8, width: w, height: rowH - 16, rx: 2, fill: s.drop ? css('--warn') : css('--total') }, svg);
       txt(svg, m.l + w + 6, y + rowH / 2 + 4, (s.drop && s.v ? minus : '') + num(s.v), { class: 'lbl' });
       var hit = el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent' }, svg);
-      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = q[s.key][1] + '<br>' + num(s.v) + ' ads, ' + (s.v / q.raw_ads[2] * 100).toFixed(1) + '% of raw'; tip.style.left = (Math.min(Math.max(m.l + w / 2, 110), W - 110) / W * bb.width) + 'px'; tip.style.top = ((y + 8) / H * bb.height) + 'px'; tip.hidden = false; });
+      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = T(q[s.key][1]) + '<br>' + num(s.v) + P(' ads, ', ' anúncios, ') + N((s.v / q.raw_ads[2] * 100).toFixed(1)) + P('% of raw', '% do total em bruto'); tip.style.left = (Math.min(Math.max(m.l + w / 2, 110), W - 110) / W * bb.width) + 'px'; tip.style.top = ((y + 8) / H * bb.height) + 'px'; tip.hidden = false; });
       hit.addEventListener('pointerleave', function () { tip.hidden = true; });
     });
-    document.getElementById('dq-note').textContent = num(q.fuzzy_matched[2]) + ' of the clean ads were matched only through typo correction ("Corola", "Platinun"). The raw titles spell make and model ' + num(q.title_spellings[2]) + ' ways; after matching they are ' + q.canonical_models[2] + ' models.';
+    document.getElementById('dq-note').textContent = num(q.fuzzy_matched[2]) + P(' of the clean ads were matched only through typo correction ("Corola", "Platinun"). The raw titles spell make and model ', ' dos anúncios válidos só foram identificados graças à correção de erros de escrita («Corola», «Platinun»). Os títulos originais escrevem marca e modelo de ') + num(q.title_spellings[2]) + P(' ways; after matching they are ', ' formas diferentes; depois da correspondência ficam ') + q.canonical_models[2] + P(' models.', ' modelos.');
   }
 
   // ---------- market grid ----------
@@ -483,7 +780,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     var by = {};
     R.forEach(function (r) { var k = r.vk + '|' + r.year; (by[k] = by[k] || []).push(r.price); });
     var vers = D.meta.versions.filter(function (v) { return state.model === 'ALL' || v[2] === state.model; });
-    var head = '<thead><tr><th>Version</th>' + years.map(function (y) { return '<th class="yr">' + y + '</th>'; }).join('') + '</tr></thead>';
+    var head = '<thead><tr><th>' + T('Version') + '</th>' + years.map(function (y) { return '<th class="yr">' + y + '</th>'; }).join('') + '</tr></thead>';
     var body = vers.map(function (v) {
       return '<tr><td>' + v[2] + ' ' + v[3] + '</td>' + years.map(function (y) {
         var p = by[v[0] + '|' + y]; if (!p) return '<td class="yr dim">–</td>';
@@ -491,7 +788,7 @@ th.yr, td.yr { min-width: 4.2rem; }
       }).join('') + '</tr>';
     }).join('');
     document.getElementById('market').innerHTML = head + '<tbody>' + body + '</tbody>';
-    document.getElementById('mk-sub').textContent = 'Median asking price by version and model year · ' + scopeName() + ' · R$ thousands';
+    document.getElementById('mk-sub').textContent = T('Median asking price by version and model year') + ' · ' + scopeName() + ' · ' + T('R$ thousands');
   }
 
   // ---------- stock to review ----------
@@ -499,15 +796,15 @@ th.yr, td.yr { min-width: 4.2rem; }
     var list = R.filter(function (r) { return !r.sold && (r.pos === 'above' || r.pos === 'below'); })
       .sort(function (a, b) { return Math.abs(b.gap) - Math.abs(a.gap); });
     var shown = state.all ? list : list.slice(0, 12);
-    var head = '<thead><tr><th>Car</th><th>Year</th><th>State</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Gap %</th><th>Comparables</th><th>Days online</th><th>Position</th><th>After a ' + state.cut + '% cut</th></tr></thead>';
+    var head = thead(['Car', 'Year', 'State', 'Asking', 'Comparable median', 'Gap', 'Gap %', 'Comparables', 'Days online', 'Position']).replace('</tr>', '<th>' + P('After a ' + state.cut + '% cut', 'Após corte de ' + state.cut + '%') + '</th></tr>');
     var body = shown.map(function (r) {
-      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + POS_NAME[r.pos] + '</span></td>' + (r.pos === 'above' ? '<td>' + brl(r.price * (1 - state.cut / 100)) + (r.price * (1 - state.cut / 100) <= r.p75 ? ' <span class="yes">in range</span>' : ' <span class="no">still above</span>') + '</td>' : '<td class="dim">–</td>') + '</tr>';
+      return '<tr><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.st + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + brlS(r.gap) + '</td><td>' + pct(r.gapPct) + '</td><td>' + r.comp + '</td><td>' + r.days + '</td><td><span class="tag">' + T(POS_NAME[r.pos]) + '</span></td>' + (r.pos === 'above' ? '<td>' + brl(r.price * (1 - state.cut / 100)) + (r.price * (1 - state.cut / 100) <= r.p75 ? ' <span class="yes">' + T('in range') + '</span>' : ' <span class="no">' + T('still above') + '</span>') + '</td>' : '<td class="dim">–</td>') + '</tr>';
     }).join('');
-    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11">No ads outside the market range for this selection.</td></tr>') + '</tbody>';
+    document.getElementById('review').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11">' + T('No ads outside the market range for this selection.') + '</td></tr>') + '</tbody>';
     var ab = list.filter(function (r) { return r.pos === 'above'; }), be = list.filter(function (r) { return r.pos === 'below'; });
-    document.getElementById('rv-sub').textContent = scopeName() + ' · ' + num(ab.length) + ' above market (' + brlS(ab.reduce(function (s, r) { return s + r.gap; }, 0)) + ' against the medians), ' + num(be.length) + ' below (' + brlS(be.reduce(function (s, r) { return s + r.gap; }, 0)) + '). Largest gaps first.';
+    document.getElementById('rv-sub').textContent = scopeName() + ' · ' + num(ab.length) + P(' above market (', ' acima do mercado (') + brlS(ab.reduce(function (s, r) { return s + r.gap; }, 0)) + P(' against the medians), ', ' face às medianas), ') + num(be.length) + P(' below (', ' abaixo (') + brlS(be.reduce(function (s, r) { return s + r.gap; }, 0)) + P('). Largest gaps first.', '). Maiores desvios primeiro.');
     var t = document.getElementById('rv-toggle'); t.hidden = list.length <= 12;
-    t.textContent = state.all ? 'Show the first 12' : 'Show all ' + list.length; t.setAttribute('aria-expanded', String(state.all));
+    t.textContent = state.all ? T('Show the first 12') : T('Show all') + ' ' + list.length; t.setAttribute('aria-expanded', String(state.all));
   }
 
   // What-if price cut: the web version of the Power BI parameter
@@ -522,17 +819,20 @@ th.yr, td.yr { min-width: 4.2rem; }
   function renderWhatIf(R) {
     var w = whatIf(R);
     document.getElementById('cut-out').textContent = state.cut + '%';
-    var tiles = [['Overpriced ads online', num(w.over), 'above the 75th percentile of comparables'],
-      ['Back in range after the cut', num(w.back), w.over ? share(w.back / w.over) + ' of the overpriced stock' : '–'],
-      ['Asking price given up', brl(w.given), 'over all ' + num(w.over) + ' overpriced ads'],
-      ['Days to sell: overpriced / in range', days(w.dOver).replace(' days', '') + ' / ' + days(w.dIn), 'median for sold ads']];
+    var tiles = [[T('Overpriced ads online'), num(w.over), T('above the 75th percentile of comparables')],
+      [T('Back in range after the cut'), num(w.back), w.over ? share(w.back / w.over) + P(' of the overpriced stock', ' do stock acima do mercado') : '–'],
+      [T('Asking price given up'), brl(w.given), P('over all ' + num(w.over) + ' overpriced ads', 'no conjunto dos ' + num(w.over) + ' anúncios acima do mercado')],
+      [T('Days to sell: overpriced / in range'), days(w.dOver).replace(P(' days', ' dias'), '') + ' / ' + days(w.dIn), T('median for sold ads')]];
     document.getElementById('wi-kpis').innerHTML = tiles.map(function (x) { return '<div class="kpi"><span class="label">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
     document.getElementById('wi-bar').style.width = (w.over ? 100 * w.back / w.over : 0) + '%';
-    document.getElementById('wi-out').textContent = w.over ? num(w.back) + ' of ' + num(w.over) + ' overpriced ads back in their market range at a ' + state.cut + '% cut.' : 'No overpriced ads online in this selection.';
+    document.getElementById('wi-out').textContent = w.over ? P(num(w.back) + ' of ' + num(w.over) + ' overpriced ads back in their market range at a ' + state.cut + '% cut.', 'Com um corte de ' + state.cut + '%, ' + num(w.back) + ' dos ' + num(w.over) + ' anúncios acima do mercado voltam ao seu intervalo.') : P('No overpriced ads online in this selection.', 'Não há anúncios online acima do mercado nesta seleção.');
   }
   function renderHeadline(R) {
     var w = whatIf(R), ads = R.length, withM = R.filter(function (r) { return r.pos !== 'few'; }).length, ab = R.filter(function (r) { return r.pos === 'above'; }).length;
-    var out = !ads ? 'No ads in this selection.' :
+    var out = !ads ? P('No ads in this selection.', 'Não há anúncios nesta seleção.') : I18N.pt() ?
+      scopeName() + ': ' + num(ab) + ' de ' + num(ads) + ' anúncios (' + share(withM ? ab / withM : null) + ' dos que têm comparáveis suficientes) estavam acima do intervalo de mercado' +
+      (w.dOver != null && w.dIn != null ? ' e demoraram uma mediana de ' + Math.round(w.dOver) + ' dias a vender, contra ' + Math.round(w.dIn) + ' dentro do intervalo' : '') + '. ' +
+      (w.over ? 'Um corte de ' + state.cut + '% no preço traria ' + num(w.back) + ' dos ' + num(w.over) + ' ainda online de volta ao intervalo, com menos ' + brl(w.given) + ' de preço pedido.' : 'Nenhum continua online.') :
       scopeName() + ': ' + num(ab) + ' of ' + num(ads) + ' ads (' + share(withM ? ab / withM : null) + ' of those with enough comparables) were priced above their market range' +
       (w.dOver != null && w.dIn != null ? ' and took a median of ' + Math.round(w.dOver) + ' days to sell, against ' + Math.round(w.dIn) + ' within range' : '') + '. ' +
       (w.over ? 'A ' + state.cut + '% price cut would bring ' + num(w.back) + ' of the ' + num(w.over) + ' still online back into range, for ' + brl(w.given) + ' less in asking price.' : 'None is still online.');
@@ -554,16 +854,16 @@ th.yr, td.yr { min-width: 4.2rem; }
   function renderBuy(R) {
     var list = buyList(R), now = list.filter(function (x) { return x.cls === 'Buy now'; }), neg = list.filter(function (x) { return x.cls === 'Negotiate'; });
     var mAsk = now.reduce(function (s, x) { return s + x.marginAsk; }, 0), mT = now.concat(neg).reduce(function (s, x) { return s + x.marginTarget; }, 0);
-    var tiles = [['Candidates online', num(list.length), 'private sellers at or below the comparable median'],
-      ['Buy now', num(now.length), brl(mAsk) + ' margin at the asking price'],
-      ['Negotiate', num(neg.length), 'the margin needs the target offer'],
-      ['Margin at the target offer', brl(mT), now.length + neg.length ? 'median ' + brl(median(now.concat(neg).map(function (x) { return x.marginTarget; }))) + ' per car' : '–']];
+    var tiles = [[T('Candidates online'), num(list.length), T('private sellers at or below the comparable median')],
+      [T('Buy now'), num(now.length), brl(mAsk) + P(' margin at the asking price', ' de margem ao preço pedido')],
+      [T('Negotiate'), num(neg.length), T('the margin needs the target offer')],
+      [T('Margin at the target offer'), brl(mT), now.length + neg.length ? P('median ', 'mediana de ') + brl(median(now.concat(neg).map(function (x) { return x.marginTarget; }))) + P(' per car', ' por carro') : '–']];
     document.getElementById('buy-kpis').innerHTML = tiles.map(function (x) { return '<div class="kpi"><span class="label">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="d">' + x[2] + '</span></div>'; }).join('');
     var CLS = { 'Buy now': 'now', 'Negotiate': 'neg', 'Wait': 'wait' };
-    var head = '<thead><tr><th>Class</th><th>Priority</th><th>Car</th><th>Year</th><th>City</th><th>km</th><th>Days online</th><th>Asking</th><th>Comparable median</th><th>Gap</th><th>Target offer</th><th>Margin at target</th></tr></thead>';
-    var body = list.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + CLS[x.cls] + '">' + x.cls + '</span></td><td>' + x.prio + '</td><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.city + ' · ' + r.st + '</td><td>' + num(r.km) + '</td><td>' + r.days + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + pct(r.gapPct) + '</td><td>' + brl(x.target) + '</td><td class="' + (x.marginTarget > 0 ? 'pos' : '') + '">' + brl(x.marginTarget) + '</td></tr>'; }).join('');
-    document.getElementById('buy-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="12">No private-seller ads at or below their market median are online in this selection.</td></tr>') + '</tbody>';
-    document.getElementById('buy-note').textContent = scopeName() + '. Priority: 60% the discount to the median (full at 15%), 25% days online (full at 60), 15% kilometres under the comparable median (full at 100%). The production tool sent the same list by WhatsApp every morning.';
+    var head = thead(['Class', 'Priority', 'Car', 'Year', 'City', 'km', 'Days online', 'Asking', 'Comparable median', 'Gap', 'Target offer', 'Margin at target']);
+    var body = list.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + CLS[x.cls] + '">' + T(x.cls) + '</span></td><td>' + x.prio + '</td><td>' + carName(r) + '</td><td>' + r.year + '</td><td>' + r.city + ' · ' + r.st + '</td><td>' + num(r.km) + '</td><td>' + r.days + '</td><td>' + brl(r.price) + '</td><td>' + brl(r.med) + '</td><td>' + pct(r.gapPct) + '</td><td>' + brl(x.target) + '</td><td class="' + (x.marginTarget > 0 ? 'pos' : '') + '">' + brl(x.marginTarget) + '</td></tr>'; }).join('');
+    document.getElementById('buy-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="12">' + T('No private-seller ads at or below their market median are online in this selection.') + '</td></tr>') + '</tbody>';
+    document.getElementById('buy-note').textContent = scopeName() + P('. Priority: 60% the discount to the median (full at 15%), 25% days online (full at 60), 15% kilometres under the comparable median (full at 100%). The production tool sent the same list by WhatsApp every morning.', '. Prioridade: 60% o desconto face à mediana (máximo aos 15%), 25% os dias online (máximo aos 60), 15% os quilómetros abaixo da mediana dos comparáveis (máximo aos 100%). A ferramenta em produção enviava esta mesma lista por WhatsApp todas as manhãs.');
     return { n: list.length, now: now.length, neg: neg.length, mAsk: mAsk, mT: mT };
   }
 
@@ -579,7 +879,7 @@ th.yr, td.yr { min-width: 4.2rem; }
     var F = FACTORS[f], P = R.filter(function (r) { return r.med != null; });
     return F.levels.map(function (name, i) {
       var g = P.filter(function (r) { return F.of(r) === i; });
-      return { name: name, n: g.length, gap: median(g.map(function (r) { return r.gapPct; })), above: g.length ? g.filter(function (r) { return r.pos === 'above'; }).length / g.length : null };
+      return { name: T(name), n: g.length, gap: median(g.map(function (r) { return r.gapPct; })), above: g.length ? g.filter(function (r) { return r.pos === 'above'; }).length / g.length : null };
     });
   }
   function renderDrivers(R) {
@@ -588,10 +888,10 @@ th.yr, td.yr { min-width: 4.2rem; }
     var W = 520, rowH = 36, m = { t: 18, r: 56, b: 6, l: 120 }, H = m.t + m.b + lv.length * rowH;
     var lim = Math.max(0.03, Math.max.apply(null, lv.map(function (x) { return Math.abs(x.gap || 0); })) * 1.15);
     var X = function (v) { return m.l + (v + lim) / (2 * lim) * (W - m.l - m.r); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Median gap to the comparable median by ' + state.factor.toLowerCase() }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': P('Median gap to the comparable median by ' + state.factor.toLowerCase(), 'Desvio mediano face à mediana dos comparáveis por ' + T(state.factor).toLowerCase()) }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     el('line', { x1: X(0), x2: X(0), y1: m.t - 6, y2: H - m.b, stroke: css('--muted'), 'stroke-dasharray': '2 3' }, svg);
-    txt(svg, X(0), m.t - 8, 'comparable median', { 'text-anchor': 'middle' });
+    txt(svg, X(0), m.t - 8, T('comparable median'), { 'text-anchor': 'middle' });
     lv.forEach(function (x, i) {
       var y = m.t + i * rowH;
       txt(svg, m.l - 8, y + rowH / 2 + 4, x.name, { 'text-anchor': 'end', class: 'lbl' });
@@ -599,21 +899,21 @@ th.yr, td.yr { min-width: 4.2rem; }
         var x0 = X(Math.min(0, x.gap)), w = Math.abs(X(x.gap) - X(0));
         el('rect', { x: x0, y: y + 9, width: Math.max(w, 1), height: rowH - 18, rx: 2, fill: css(x.gap > 0 ? '--s2' : '--s1') }, svg);
         txt(svg, x.gap >= 0 ? X(x.gap) + 6 : X(0) + 6, y + rowH / 2 + 4, pct(x.gap), { 'text-anchor': 'start', class: 'lbl' });
-      } else txt(svg, X(0) + 6, y + rowH / 2 + 4, 'no ads', {});
+      } else txt(svg, X(0) + 6, y + rowH / 2 + 4, T('no ads'), {});
       var hit = el('rect', { x: 0, y: y, width: W, height: rowH, fill: 'transparent' }, svg);
-      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x.name + '<br>' + num(x.n) + ' ads with a market<br>Median gap: ' + pct(x.gap) + '<br>Above market: ' + share(x.above); tip.style.left = (X(0) / W * bb.width) + 'px'; tip.style.top = ((y + 9) / H * bb.height) + 'px'; tip.hidden = false; });
+      hit.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x.name + '<br>' + num(x.n) + P(' ads with a market', ' anúncios com mercado') + '<br>' + P('Median gap: ', 'Desvio mediano: ') + pct(x.gap) + '<br>' + T('Above market') + ': ' + share(x.above); tip.style.left = (X(0) / W * bb.width) + 'px'; tip.style.top = ((y + 9) / H * bb.height) + 'px'; tip.hidden = false; });
       hit.addEventListener('pointerleave', function () { tip.hidden = true; });
     });
     var sel = driverLevels(R, 'Seller'), ph = driverLevels(R, 'Photos');
-    document.getElementById('drv-note').textContent = scopeName() + '. Seller and photos move the price, colour and fuel do not: private sellers ' + pct(sel[0].gap) + ', dealers ' + pct(sel[1].gap) + ', 16 or more photos ' + pct(ph[2].gap) + '. Hover for the number of ads.';
+    document.getElementById('drv-note').textContent = scopeName() + P('. Seller and photos move the price, colour and fuel do not: private sellers ', '. O vendedor e as fotografias mexem no preço; a cor e o combustível não: particulares ') + pct(sel[0].gap) + P(', dealers ', ', stands ') + pct(sel[1].gap) + P(', 16 or more photos ', ', 16 ou mais fotografias ') + pct(ph[2].gap) + P('. Hover for the number of ads.', '. Passe o cursor para ver o número de anúncios.');
   }
   function renderKm() {
     var rows = D.dep.filter(function (d) { return state.model === 'ALL' || D.ver[d[0]][2] === state.model; });
-    var head = '<thead><tr><th>Car</th><th>Ads</th><th>Median price</th><th>Per 10,000 km</th><th>%</th><th>R²</th></tr></thead>';
-    var body = rows.map(function (d) { return '<tr><td>' + d[1] + '</td><td>' + num(d[2]) + '</td><td>' + brl(d[4]) + '</td><td>' + brl(d[5]) + '</td><td>' + pct(d[6]) + '</td><td>' + d[7].toFixed(2) + '</td></tr>'; }).join('');
+    var head = thead(['Car', 'Ads', 'Median price', 'Per 10,000 km', '%', 'R²']);
+    var body = rows.map(function (d) { return '<tr><td>' + d[1] + '</td><td>' + num(d[2]) + '</td><td>' + brl(d[4]) + '</td><td>' + brl(d[5]) + '</td><td>' + pct(d[6]) + '</td><td>' + N(d[7].toFixed(2)) + '</td></tr>'; }).join('');
     var ads = rows.reduce(function (s, d) { return s + d[2]; }, 0), loss = ads ? rows.reduce(function (s, d) { return s + d[5] * d[2]; }, 0) / ads : null, pc = ads ? rows.reduce(function (s, d) { return s + d[5] * d[2]; }, 0) / rows.reduce(function (s, d) { return s + d[4] * d[2]; }, 0) : null, r2 = ads ? rows.reduce(function (s, d) { return s + d[7] * d[2]; }, 0) / ads : null;
-    document.getElementById('km-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="6">No version with groups large enough for a fit.</td></tr>') + '</tbody>';
-    document.getElementById('km-note').textContent = ads ? 'Weighted by ads: ' + brl(loss) + ' per 10,000 km, ' + pct(pc) + ' of the median price, R² ' + r2.toFixed(2) + ' over ' + num(ads) + ' ads. Computed in dbt (mart_km_depreciation), not filtered by state.' : '';
+    document.getElementById('km-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="6">' + T('No version with groups large enough for a fit.') + '</td></tr>') + '</tbody>';
+    document.getElementById('km-note').textContent = ads ? P('Weighted by ads: ', 'Ponderado pelo número de anúncios: ') + brl(loss) + P(' per 10,000 km, ', ' por 10 000 km, ') + pct(pc) + P(' of the median price, R² ', ' do preço mediano, R² ') + N(r2.toFixed(2)) + P(' over ', ' em ') + num(ads) + P(' ads. Computed in dbt (mart_km_depreciation), not filtered by state.', ' anúncios. Calculado em dbt (mart_km_depreciation), sem filtro de estado.') : '';
     return { loss: loss, pc: pc, r2: r2, ads: ads };
   }
   function liqCurve(rows, name) {
@@ -627,26 +927,26 @@ th.yr, td.yr { min-width: 4.2rem; }
   function renderLiquidity() {
     var host = document.getElementById('liquidity'); host.innerHTML = '';
     var inState = D.listings.filter(function (r) { return state.st === 'ALL' || r.st === state.st; });
-    var all = liqCurve(inState, 'All models'), mod = state.model === 'ALL' ? [] : liqCurve(inState.filter(function (r) { return D.ver[r.vk][2] === state.model; }), state.model);
+    var all = liqCurve(inState, T('All models')), mod = state.model === 'ALL' ? [] : liqCurve(inState.filter(function (r) { return D.ver[r.vk][2] === state.model; }), state.model);
     var leg = document.getElementById('lq-leg-model'); leg.hidden = !mod.length; leg.querySelector('span').textContent = state.model;
     var W = 520, H = 250, m = { t: 14, r: 12, b: 30, l: 40 };
     var X = function (d) { return m.l + d / 90 * (W - m.l - m.r); }, Y = function (v) { return H - m.b - v * (H - m.t - m.b); };
-    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Share of ads still online by days since listing' }, host);
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': T('Share of ads still online by days since listing') }, host);
     var tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
     [0, 0.25, 0.5, 0.75, 1].forEach(function (g) { el('line', { x1: m.l, x2: W - m.r, y1: Y(g), y2: Y(g), stroke: css('--grid') }, svg); txt(svg, m.l - 6, Y(g) + 4, Math.round(g * 100) + '%', { 'text-anchor': 'end' }); });
     [0, 7, 14, 21, 30, 45, 60, 90].forEach(function (d) { txt(svg, X(d), H - m.b + 16, String(d), { 'text-anchor': 'middle' }); });
-    txt(svg, W - m.r, H - 2, 'days since listing →', { 'text-anchor': 'end' });
+    txt(svg, W - m.r, H - 2, T('days since listing →'), { 'text-anchor': 'end' });
     [[all, '--s2'], [mod, '--s1']].forEach(function (s) {
       if (!s[0].length || !s[0][0][2]) return;
       el('path', { d: s[0].map(function (x, i) { return (i ? 'L' : 'M') + X(x[1]).toFixed(1) + ' ' + Y(x[4]).toFixed(1); }).join(''), fill: 'none', stroke: css(s[1]), 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, svg);
       s[0].forEach(function (x) {
         var c = el('circle', { cx: X(x[1]), cy: Y(x[4]), r: 4, fill: css(s[1]), stroke: css('--sheet'), 'stroke-width': 1.5 }, svg);
-        c.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x[0] + ' · day ' + x[1] + '<br>' + share(x[4]) + ' still online (' + num(x[3]) + ' of ' + num(x[2]) + ')'; tip.style.left = (Math.min(Math.max(X(x[1]), 80), W - 80) / W * bb.width) + 'px'; tip.style.top = (Y(x[4]) / H * bb.height) + 'px'; tip.hidden = false; });
+        c.addEventListener('pointerenter', function () { var bb = svg.getBoundingClientRect(); tip.innerHTML = x[0] + P(' · day ', ' · dia ') + x[1] + '<br>' + share(x[4]) + P(' still online (', ' ainda online (') + num(x[3]) + P(' of ', ' de ') + num(x[2]) + ')'; tip.style.left = (Math.min(Math.max(X(x[1]), 80), W - 80) / W * bb.width) + 'px'; tip.style.top = (Y(x[4]) / H * bb.height) + 'px'; tip.hidden = false; });
         c.addEventListener('pointerleave', function () { tip.hidden = true; });
       });
     });
-    var a30 = all[4], a90 = all[7], stName = state.st === 'ALL' ? 'all states' : D.stName[state.st];
-    document.getElementById('lq-note').textContent = a30[2] ? 'All models, ' + stName + ': ' + share(1 - a30[4]) + ' of ads leave the site within 30 days; ' + share(a90[4]) + ' are still online after 90. Cohort of ' + num(a30[2]) + ' clean ads listed at least 90 days before the snapshot (as mart_liquidity_curve).' : 'No ads listed at least 90 days before the snapshot in this selection.';
+    var a30 = all[4], a90 = all[7], stName = state.st === 'ALL' ? T('all states') : D.stName[state.st];
+    document.getElementById('lq-note').textContent = a30[2] ? T('All models') + ', ' + stName + ': ' + share(1 - a30[4]) + P(' of ads leave the site within 30 days; ', ' dos anúncios saem do site em 30 dias; ') + share(a90[4]) + P(' are still online after 90. Cohort of ', ' continuam online ao fim de 90. Coorte de ') + num(a30[2]) + P(' clean ads listed at least 90 days before the snapshot (as mart_liquidity_curve).', ' anúncios válidos publicados pelo menos 90 dias antes da data de referência (como em mart_liquidity_curve).') : P('No ads listed at least 90 days before the snapshot in this selection.', 'Nesta seleção não há anúncios publicados pelo menos 90 dias antes da data de referência.');
     return { s30: a30[4], s90: a90[4] };
   }
   function riskRows(R) {
@@ -665,17 +965,21 @@ th.yr, td.yr { min-width: 4.2rem; }
     var rows = riskRows(R), hi = rows.filter(function (x) { return x.band === 'High'; }), shown = state.allRisk ? rows : rows.slice(0, 12);
     var BAND = { High: 'high', Medium: 'med', Low: 'low' };
     function bar(v, max, colour) { return '<i class="pts" style="width:' + Math.round(v / max * 40) + 'px;background:' + colour + '"></i> ' + v; }
-    var head = '<thead><tr><th>Risk</th><th>Score</th><th>Car</th><th>Days online</th><th>Gap</th><th>Price (50)</th><th>Time (30)</th><th>km (20)</th><th>Cut to range</th></tr></thead>';
-    var body = shown.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + BAND[x.band] + '">' + x.band + '</span></td><td><b>' + x.score + '</b></td><td>' + carName(r) + ' ' + r.year + ' · ' + r.st + '</td><td>' + r.days + '</td><td>' + pct(r.gapPct) + '</td><td>' + bar(x.p, 50, 'var(--s2)') + '</td><td>' + bar(x.t, 30, 'var(--total)') + '</td><td>' + bar(x.k, 20, 'var(--s1)') + '</td><td>' + (x.cut == null ? '<span class="dim">–</span>' : brl(x.cut)) + '</td></tr>'; }).join('');
-    document.getElementById('risk-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="9">No ads online with a market in this selection.</td></tr>') + '</tbody>';
-    var t = document.getElementById('rk-toggle'); t.hidden = rows.length <= 12; t.textContent = state.allRisk ? 'Show the first 12' : 'Show all ' + rows.length; t.setAttribute('aria-expanded', String(state.allRisk));
+    var head = thead(['Risk', 'Score', 'Car', 'Days online', 'Gap', 'Price (50)', 'Time (30)', 'km (20)', 'Cut to range']);
+    var body = shown.map(function (x) { var r = x.r; return '<tr><td><span class="cls ' + BAND[x.band] + '">' + T(x.band) + '</span></td><td><b>' + x.score + '</b></td><td>' + carName(r) + ' ' + r.year + ' · ' + r.st + '</td><td>' + r.days + '</td><td>' + pct(r.gapPct) + '</td><td>' + bar(x.p, 50, 'var(--s2)') + '</td><td>' + bar(x.t, 30, 'var(--total)') + '</td><td>' + bar(x.k, 20, 'var(--s1)') + '</td><td>' + (x.cut == null ? '<span class="dim">–</span>' : brl(x.cut)) + '</td></tr>'; }).join('');
+    document.getElementById('risk-table').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="9">' + T('No ads online with a market in this selection.') + '</td></tr>') + '</tbody>';
+    var t = document.getElementById('rk-toggle'); t.hidden = rows.length <= 12; t.textContent = state.allRisk ? T('Show the first 12') : T('Show all') + ' ' + rows.length; t.setAttribute('aria-expanded', String(state.allRisk));
     var pc = priceCuts(R), cutHi = hi.reduce(function (s, x) { return s + (x.cut || 0); }, 0);
-    document.getElementById('rk-note').textContent = scopeName() + ': ' + num(rows.length) + ' ads online with a market, ' + num(hi.length) + ' at high risk; ' + brl(cutHi) + ' of cuts would bring the high-risk ads back to the 75th percentile. ' +
-      (pc.n ? 'Price cuts: the ' + num(pc.n) + ' ads that cut once (median ' + pct(pc.size) + ') sold a median of ' + (pc.after == null ? '–' : Math.round(pc.after)) + ' days after the cut, against ' + (pc.never == null ? '–' : Math.round(pc.never)) + ' days in all for sold ads that never cut; ' + share(pc.into) + ' of the cuts took the ad from above its range to inside it.' : 'No ad cut its price in this selection.');
+    document.getElementById('rk-note').textContent = scopeName() + ': ' + num(rows.length) + P(' ads online with a market, ', ' anúncios online com mercado, ') + num(hi.length) + P(' at high risk; ', ' com risco alto; ') + P(brl(cutHi) + ' of cuts would bring the high-risk ads back to the 75th percentile. ', 'cortes de ' + brl(cutHi) + ' trariam os anúncios de risco alto de volta ao percentil 75. ') +
+      (pc.n ? P('Price cuts: the ' + num(pc.n) + ' ads that cut once (median ' + pct(pc.size) + ') sold a median of ' + (pc.after == null ? '–' : Math.round(pc.after)) + ' days after the cut, against ' + (pc.never == null ? '–' : Math.round(pc.never)) + ' days in all for sold ads that never cut; ' + share(pc.into) + ' of the cuts took the ad from above its range to inside it.',
+        'Descidas de preço: os ' + num(pc.n) + ' anúncios que baixaram o preço uma vez (mediana ' + pct(pc.size) + ') venderam-se numa mediana de ' + (pc.after == null ? '–' : Math.round(pc.after)) + ' dias após a descida, contra ' + (pc.never == null ? '–' : Math.round(pc.never)) + ' dias no total para os vendidos sem descida; ' + share(pc.into) + ' das descidas levaram o anúncio de acima do intervalo para dentro dele.') : P('No ad cut its price in this selection.', 'Nenhum anúncio baixou o preço nesta seleção.'));
     return { n: rows.length, hi: hi.length, cutHi: cutHi, pc: pc };
   }
   function renderHeadline2(R, b, k, q, l) {
     var out = !R.length ? '' :
+      I18N.pt() ? (b.n ? num(b.now) + (b.now === 1 ? ' anúncio de particular compensa' : ' anúncios de particulares compensam') + ' comprar ao preço pedido e ' + num(b.now + b.neg) + ' deixariam ' + brl(b.mT) + ' com a oferta-alvo. ' : 'Nesta seleção, nenhum anúncio de particular compensa comprar. ') +
+      (k.ads ? 'Cada 10 000 km tiram cerca de ' + brl(-k.loss) + ' (' + pct(-k.pc, 1).replace('+', '') + ') ao preço pedido. ' : '') +
+      num(q.hi) + (q.hi === 1 ? ' anúncio online tem' : ' anúncios online têm') + ' risco alto de ficar parado' + (q.pc.n && q.pc.after != null ? '; os que baixaram o preço venderam-se numa mediana de ' + Math.round(q.pc.after) + ' dias após a descida.' : '.') :
       (b.n ? num(b.now) + (b.now === 1 ? ' private-seller ad is' : ' private-seller ads are') + ' a buy at the asking price and ' + num(b.now + b.neg) + ' would clear ' + brl(b.mT) + ' at the target offer. ' : 'No private-seller ad is a buy in this selection. ') +
       (k.ads ? 'Each 10,000 km takes about ' + brl(-k.loss) + ' (' + pct(-k.pc, 1).replace('+', '') + ') off the asking price. ' : '') +
       num(q.hi) + (q.hi === 1 ? ' ad online is' : ' ads online are') + ' at high risk of getting stuck' + (q.pc.n && q.pc.after != null ? '; the ads that cut their price sold a median of ' + Math.round(q.pc.after) + ' days after the cut.' : '.');
@@ -703,13 +1007,19 @@ th.yr, td.yr { min-width: 4.2rem; }
       D.ver = {}; D.meta.versions.forEach(function (v) { D.ver[v[0]] = v; });
       D.stName = {}; D.meta.states.forEach(function (s) { D.stName[s[0]] = s[1]; });
       var models = []; D.meta.versions.forEach(function (v) { if (models.indexOf(v[2]) < 0) models.push(v[2]); });
-      document.getElementById('mod-seg').innerHTML = '<button data-model="ALL" aria-pressed="true">All</button>' + models.map(function (x) { return '<button data-model="' + x + '" aria-pressed="false">' + x + '</button>'; }).join('');
-      document.getElementById('st-seg').innerHTML = '<button data-st="ALL" aria-pressed="true">All</button>' + D.meta.states.map(function (s) { return '<button data-st="' + s[0] + '" aria-pressed="false" title="' + s[1] + '">' + s[0] + '</button>'; }).join('');
+      document.getElementById('mod-seg').innerHTML = '<button data-model="ALL" aria-pressed="true">' + T('All') + '</button>' + models.map(function (x) { return '<button data-model="' + x + '" aria-pressed="false">' + x + '</button>'; }).join('');
+      document.getElementById('st-seg').innerHTML = '<button data-st="ALL" aria-pressed="true">' + T('All') + '</button>' + D.meta.states.map(function (s) { return '<button data-st="' + s[0] + '" aria-pressed="false" title="' + s[1] + '">' + s[0] + '</button>'; }).join('');
       seg('mod-seg', 'model', 'model'); seg('st-seg', 'st', 'st');
       render();
       var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(render, 150); });
       if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
     })
-    .catch(function (err) { console.error(err); document.getElementById('kpis').innerHTML = '<p>The data files did not load. Reload the page to try again.</p>'; });
+    .catch(function (err) { console.error(err); document.getElementById('kpis').innerHTML = '<p>' + T('The data files did not load. Reload the page to try again.') + '</p>'; });
+  I18N.on(function () {
+    if (!D.listings) return;
+    document.querySelectorAll('#mod-seg [data-model="ALL"], #st-seg [data-st="ALL"]').forEach(function (b) { b.textContent = T('All'); });
+    render();
+  });
+  I18N.start();
 })();
 </script>
